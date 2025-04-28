@@ -1,0 +1,74 @@
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.k-text-gray {
+    color: #6C757D;
+}
+
+.k-topbar {
+    background-color: #0C6C44;
+}
+
+.k-header-main {
+    box-shadow: -4px 4px 14px 0px #0000000F;
+    padding: 20px;
+}
+
+.k-logo-link {
+    color: #0C6C44;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.k-user-link {
+    font-size: 14px;
+}
+
+.k-start-link {
+    border: 1px solid #0C6C44;
+    color: #0F0F0F;
+    padding: 5px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+
+}
+
+
+@media (min-width: 5px) and (max-width: 425px) {
+    .k-user-link {
+        font-size: 12px;
+    }
+
+    .k-start-link {
+        font-size: 12px;
+        padding: 5px 12px;
+    }
+
+    .k-logo-link {
+        font-size: 15px;
+    }
+    
+    .k-header-main {
+        padding: 10px;
+    }
+}
+
+
+@media (min-width: 425px) and (max-width: 768px) {
+
+    .k-user-link {
+        font-size: 13px;
+    }
+
+    .k-start-link {
+        font-size: 13px;
+        padding: 5px 15px;
+    }
+    .k-header-main {
+        padding: 12px;
+    }
+}

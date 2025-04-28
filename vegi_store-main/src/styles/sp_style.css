@@ -1,0 +1,693 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+.sp_text_grey {
+  color: #0f0f0f99;
+}
+.sp_linear1 {
+  position: relative;
+  border: none !important; /* Remove border to avoid conflicts */
+  border-radius: 4px;
+  background: transparent;
+  padding: 10px 20px;
+  color: #0f0f0f99; /* Ensures text remains readable */
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Optional: Adding an outline effect */
+.sp_linear1::before {
+  content: "";
+  position: absolute;
+  inset: 0; /* Covers the entire button */
+  border-radius: 3px;
+  padding: 1px; /* Thickness of the border */
+  background: linear-gradient(to bottom, #479529, #0c6c44);
+  -webkit-mask: linear-gradient(white, white) content-box,
+    linear-gradient(white, white);
+  mask: linear-gradient(white, white) content-box, linear-gradient(white, white);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.sp_main_sec {
+  width: calc(100% - 300px);
+}
+.sp_sidebar {
+  font-family: "Inter", sans-serif;
+  min-height: 100vh;
+  width: 300px;
+  min-width: 300px;
+  background-color: #0f7542;
+  padding: 30px 20px;
+}
+
+.sp_sidebar1 {
+  font-family: "Inter", sans-serif;
+  min-height: 100vh;
+  width: 300px;
+  min-width: 300px;
+  background-color: #0f7542;
+}
+
+.sp_logo {
+  color: white;
+  text-align: center;
+}
+
+.sp_side_menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  padding-top: 40px;
+  width: 100%;
+}
+
+.sp_side_menu li a {
+  display: flex;
+  align-items: center;
+  color: white;
+  padding: 15px 20px;
+  margin-bottom: 10px;
+}
+
+.sp_side_menu li a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: background-color 0.3s ease-in-out;
+  border-radius: 5px;
+}
+.sp_side_menu li a.sp_active {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: background-color 0.3s ease-in-out;
+  border-radius: 5px;
+}
+
+.sp_side_menu li h5 {
+  margin-bottom: 0px;
+  margin-left: 20px;
+}
+
+.sp_side_icon {
+  width: 24px;
+  min-width: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sp_off_canvas {
+  width: 300px !important;
+}
+
+.sp_header {
+  width: 100%;
+  height: 80px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
+.sp_header .sp_bar {
+  height: 60px;
+}
+
+.sp_profile_drop .btn {
+  outline: none !important;
+  border: none !important;
+  padding-left: 0px;
+}
+
+.sp_profile_drop h6 {
+  color: black;
+}
+
+.sp_profile_drop .dropdown-menu {
+  margin-top: 10px;
+  border: none;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sp_profile_drop .dropdown-item {
+  display: flex;
+  padding: 5px 10px;
+}
+
+.sp_profile_drop .dropdown-item:hover {
+  background-color: #0f7542;
+  color: white;
+  fill: white;
+}
+
+.sp_profile_drop .dropdown-item:hover path {
+  fill: white;
+}
+
+.sp_profile_drop .dropdown-item:active {
+  background-color: transparent;
+}
+
+.sp_profile_drop .sp_drop_icon {
+  width: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* product page css */
+.sp_container {
+  padding: 40px;
+  background-color: #f9f9f9;
+  min-height: calc(100vh - 80px);
+}
+
+.sp_search {
+  width: 300px;
+  border: 1px solid #00000080;
+  background-color: transparent;
+  border-radius: 4px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0px 10px;
+}
+
+.sp_search input {
+  padding: 0 10px;
+  font-size: 16px;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.sp_filter_btn {
+  border: 1px solid #00000080;
+  height: 40px;
+  background-color: transparent;
+  background: none;
+  border-radius: 4px;
+  width: 150px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f0f0f99;
+  cursor: pointer;
+}
+.sp_filter_btn:hover{
+  background:  linear-gradient(to bottom, #479529, #0c6c44);
+  color: white;
+}
+.sp_add_btn {
+  height: 40px;
+  border-radius: 4px;
+  background: linear-gradient(to bottom, #479529, #0c6c44);
+  width: 150px;
+  margin: 0px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f0f0f99;
+  color: white;
+}
+
+.sp_table {
+  width: 100%;
+  min-height: 750px;
+  border-collapse: collapse;
+  padding: 20px;
+  background-color: white;
+  margin-top: 20px;
+  border-radius: 5px;
+  box-shadow: -2px 4px 58px 0px #7777771a;
+  overflow-x: hidden;
+}
+.sp_table_img {
+  background-color: #ebebeb;
+  border-radius: 4px;
+  margin-right: 10px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+}
+.sp_table_img img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 4px;
+}
+/* .sp_table .table {
+    width: 100%;
+    max-width: 800px !important;
+} */
+.sp_table thead th {
+  background-color: #f3f9fb !important;
+  padding: 10px 20px;
+  text-wrap: nowrap;
+  text-transform: capitalize;
+}
+
+.sp_table th {
+  border-bottom: none;
+}
+
+.sp_td_action {
+  width: 100px;
+}
+
+.sp_table td {
+  text-align: left;
+  padding: 10px 20px;
+  border: none;
+  text-wrap: nowrap;
+}
+
+/* .sp_switch {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 22px;
+} */
+
+/* Toggle Switch Container */
+.sp_switch {
+  position: relative;
+  display: inline-block;
+  width: 40px; /* Adjust width */
+  height: 20px; /* Adjust height */
+}
+
+/* Hide the default checkbox */
+.sp_switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.sp_switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc; /* Gray color when unchecked */
+  transition: 0.4s;
+  border-radius: 20px; /* Rounded edges */
+}
+
+/* Slider circle */
+.sp_switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 16px; /* Adjust size */
+  width: 16px; /* Adjust size */
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%; /* Circular toggle */
+}
+
+/* When the checkbox is checked */
+.sp_switch input:checked + .slider {
+  background-color: linear-gradient(
+    180deg,
+    #479529 0%,
+    #0c6c44 100%
+  ) !important; /* Green color when checked */
+}
+
+/* Move the toggle circle when checked */
+.sp_switch input:checked + .slider:before {
+  transform: translateX(20px); /* Adjust based on width */
+}
+/* Rounded sliders */
+.sp_switch .slider.round {
+  border-radius: 34px;
+}
+
+.sp_switch .slider.round:before {
+  border-radius: 50%;
+}
+
+.sp_table_action {
+  text-decoration: none;
+  border-radius: 5px;
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  cursor: pointer;
+  border: 1px solid #0c6c44;
+  transition: background-color 0.3s ease;
+}
+
+.sp_table {
+  width: auto !important;
+  max-width: 100vw !important;
+  overflow: auto;
+  position: relative;
+}
+
+.sp_pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  position: sticky;
+  top: 0px;
+  left: 0px;
+}
+
+.sp_pagination button {
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  min-width: 32px;
+  border: 1px solid grey;
+  margin-left: 10px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  cursor: pointer;
+  color: grey;
+}
+.sp_pagination button.active{
+  background: linear-gradient(to bottom, #479529, #0c6c44);
+  color: white;
+  border-color: #0c6c44;
+}
+.sp_pagination button:hover {
+  background: linear-gradient(to bottom, #479529, #0c6c44);
+  color: white;
+  border-color: #0c6c44;
+}
+
+.sp_404 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* filter offcanvas css */
+.sp_filter_off .offcanvas-backdrop {
+  height: 100%;
+}
+
+.sp_filter_off .offcanvas-header {
+  border-bottom: 1px solid lightgray;
+}
+
+.sp_filter_select select,
+.sp_filter_select input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  /* height: 44px; */
+  background-color: #0f0f0f0f;
+  /* margin-bottom: 10px; */
+  color: #0f0f0f99;
+}
+
+/* price range css */
+.s_price_slider .multi-range-slider {
+  border: none;
+  box-shadow: none;
+}
+
+.s_price_slider .multi-range-slider .bar-left {
+  background-color: rgba(0, 0, 0, 0.1);
+  box-shadow: none;
+}
+
+.s_price_slider .multi-range-slider .bar .bar-right {
+  background-color: rgba(0, 0, 0, 0.1);
+  box-shadow: none;
+}
+
+.s_price_slider .multi-range-slider .ruler {
+  display: none;
+}
+
+.s_price_slider .multi-range-slider .label {
+  display: none;
+}
+
+.s_price_slider .multi-range-slider .thumb {
+  background-color: var(--brown);
+  border: none !important;
+}
+
+.s_price_slider .multi-range-slider .thumb::before {
+  border: none;
+  box-shadow: none;
+  background-color: #0f0f0f;
+  margin: -6px -2px;
+  width: 4px;
+  border-radius: 20%;
+}
+
+.s_price_slider .multi-range-slider .bar .bar-inner {
+  background-color: #0f0f0f;
+}
+.s_price_slider .multi-range-slider .caption {
+  display: block !important;
+}
+
+.s_price_slider .multi-range-slider .thumb .caption * {
+  display: block !important;
+  margin-top: 35px;
+  left: -30px !important;
+  background-color: transparent !important;
+  color: #0f0f0f !important;
+  box-shadow: none !important;
+  font-weight: 600;
+}
+
+.s_price_slider .multi-range-slider .thumb .caption span::before {
+  content: "$";
+}
+
+.s_price_slider .s_slider_text {
+  background-color: transparent;
+  box-shadow: none;
+  color: black;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.sp_btn_red  , .sp_btn_cancel{
+  background-color: #ffe9e9;
+  color: #ff0000;
+  border: none;
+  min-width: 45%;
+  width: 100%;
+  max-width: 100%;
+  padding: 4px 10px;
+  text-align: center;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.sp_btn_green , .sp_btn_success {
+  background-color: #e7f4ee;
+  color: #0d894f;
+  border: none;
+  min-width: 45%;
+  width: 100%;
+  max-width: 100%;
+  padding: 4px 10px;
+  text-align: center;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.sp_btn_yellow , .sp_btn_pending{
+  background-color: #f2ebdf;
+  color: #df8600;
+  border: none;
+  min-width: 45%;
+  width: 100%;
+  max-width: 100%;
+  padding: 4px 10px;
+  text-align: center;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.sp_status_col {
+  width: 180px;
+}
+
+/* Toggle Switch Container */
+.sp_switch {
+  position: relative;
+  display: inline-block;
+  width: 40px; /* Adjust width */
+  height: 20px; /* Adjust height */
+}
+
+/* Hide the default checkbox */
+.sp_switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.sp_switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc; /* Default background color */
+  transition: 0.4s;
+  border-radius: 20px; /* Rounded edges */
+}
+
+/* Slider when toggled */
+.sp_switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 16px; /* Adjust size */
+  width: 16px; /* Adjust size */
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%; /* Circular toggle */
+}
+
+/* When the checkbox is checked */
+.sp_switch input:checked + .slider {
+  background-color: #4caf50; /* Green background when active */
+}
+
+/* Move the toggle circle when checked */
+.sp_switch input:checked + .slider:before {
+  transform: translateX(20px); /* Adjust based on width */
+}
+
+
+
+/* add product csss  */
+.sp_uploadimg img{
+  width: 80px;
+  aspect-ratio: 1 / 1;
+  border-radius: 5px;
+  object-fit: cover;
+}
+.sp_uploadimg {
+  position: relative;
+}
+.sp_uploadimg .sp_icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+}
+.sp_image {
+  width: 80px;
+  aspect-ratio: 1 / 1;
+  border-radius: 5px;
+  background-color: #0F0F0F0F;
+}
+@media (max-width: 768px) {
+  .sp_sidebar {
+    width: 100%;
+    height: 100%;
+    background-color: #0f7542;
+    padding: 30px 20px;
+  }
+}
+
+@media (min-width: 769px) {
+  .sp_sidebar {
+    display: block !important;
+  }
+  .sp_bar {
+    display: none;
+  }
+  .sp_sidebar_main{
+    height: 100% !important;
+  }
+}
+
+@media (max-width: 575px) {
+  .sp_container {
+    padding: 20px;
+  }
+
+  .sp_search {
+    width: 100%;
+    flex-grow: fill;
+  }
+
+  .sp_filter_btn {
+    width: 48%;
+    margin: 0px;
+    margin-top: 10px;
+  }
+  .sp_filter_btn1 {
+    width: 100% !important;
+  }
+  .sp_add_btn {
+    width: 48%;
+    margin: 0px;
+    margin-top: 10px;
+  }
+  .sp_add_btn1 {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1480px) {
+  .ustat_box {
+    padding: 0px !important;
+    width: 20% !important;
+  }
+}
+@media (max-width: 1199px) {
+  .ustat_box {
+    padding: 0px !important;
+    width: 40% !important;
+  }
+}
+@media (max-width: 768px) {
+  .ustat_box {
+    padding: 0px;
+    width: 40% !important;
+  }
+  .ustats_container {
+    flex-direction: row !important;
+  }
+  .udivider {
+    display: block;
+  }
+}
+@media (max-width: 576px) {
+  .ustat_box {
+    padding: 0px !important;
+    width: 100% !important;
+    padding-bottom: 10px !important;
+    border-bottom: 2px dashed #eee;
+  }
+  .ustats_container {
+    flex-direction: column !important;
+  }
+  .udivider {
+    display: none;
+  }
+}

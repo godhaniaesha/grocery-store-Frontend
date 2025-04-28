@@ -1,0 +1,402 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+.a_header_container {
+    padding: 0px 12% !important;
+}
+
+.about-section {
+    padding: 40px 0;
+}
+
+.about-img {
+    border-radius: 10px;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+}
+
+.g_pad_topbottom {
+    padding: 80px 0;
+}
+
+.g_why_us {
+    font-size: 34px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.g_text_gredient {
+    font-weight: 600;
+    background: linear-gradient(90deg, #0C6C44 0%, #3D8E2D 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.g_icone {
+    width: 83px;
+    height: 83px;
+    margin-right: 20px;
+}
+
+.g_icon_p {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 5px !important;
+    color: rgba(15, 15, 15, 1);
+}
+
+.g_icon1_p {
+    font-size: 16px;
+    margin-bottom: 0 !important;
+    color: rgba(15, 15, 15, 0.6);
+}
+
+/* //////////////////////////////// contact us ////////////////////////////////////////////// */
+.g_main_box {
+    width: auto;
+    height: auto;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: -4px 4px 14px 0px rgba(0, 0, 0, 0.06);
+}
+
+.g_message {
+    padding: 22px;
+}
+
+.g_contact_box {
+    border-top: 1px solid rgba(15, 15, 15, 0.2);
+    padding: 15px 0;
+}
+
+.g_pad {
+    padding: 0 0 15px 0;
+}
+
+.g_icon_background {
+    border: 0.89px solid rgba(15, 15, 15, 0.1);
+    box-shadow: -4px 4px 14px 0px rgba(0, 0, 0, 0.06);
+    background: rgba(243, 249, 251, 1);
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.g_icon_text {
+    font-size: 16px;
+    color: rgba(15, 15, 15, 1);
+    margin-left: 15px;
+    font-weight: 600;
+}
+
+.g_icon_marpad {
+    margin: 25px 0 40px 0;
+}
+
+.g_contact_border {
+    border-left: 0.8px solid rgba(15, 15, 15, 0.6);
+
+}
+
+/* /////////////////////////////////////////////////// */
+.g_marpad {
+    margin: 20px 0 20px 0;
+}
+
+.g_Form_Control {
+    padding: 8px 20px !important;
+    background: #0f0f0f0f !important;
+    border-radius: 4px !important;
+}
+
+.g_form_label {
+    font-weight: 400;
+    font-size: 16px;
+    color: rgba(15, 15, 15, 1) !important;
+}
+
+.g_form_submit {
+    padding: 10px 50px;
+    margin-top: 30px;
+    background: linear-gradient(180deg, #479529 0%, #0C6C44 100%);
+    color: white;
+    border: none !important;
+
+}
+
+/* //////////////////////////////// contact us ////////////////////////////////////////////// */
+/* //////////////////////////////// FAQS  ////////////////////////////////////////////// */
+
+#G_faqs_acco.accordion-item,
+.accordion {
+    background-color: transparent !important;
+    --bs-accordion-bg: transparent !important;
+}
+
+#G_faqs_acco .accordion-button:not(.collapsed) {
+    background-color: transparent !important;
+    border-bottom: 1px solid #DEE2E6 !important;
+    color: black !important;
+}
+
+#G_faqs_acco .g_faqs_right {
+    height: 100%;
+    width: 100%;
+}
+
+/* //////////////////////////////// FAQS  ////////////////////////////////////////////// */
+/* //////////////////////////////// checkout  ////////////////////////////////////////////// */
+.g_checkout_border {
+    border: 1px solid rgba(15, 15, 15, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.g_check_p {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 5px !important;
+    color: rgba(15, 15, 15, 1);
+}
+
+.g_check_pad {
+    padding: 12px !important;
+}
+
+.g_icon_hover {
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.g_icon_hover:hover {
+    transform: scale(1.1) rotate(5deg);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.g_check_prize {
+    font-family: Inter;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0%;
+}
+
+.g_check_name {
+    font-family: Inter;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0%;
+
+}
+
+.g_check_interpad {
+    padding: 10px 0 !important;
+}
+
+.g_check_prize1 {
+    color: rgba(56, 142, 60, 1);
+    font-family: Inter;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0%;
+}
+
+.g_check_strike {
+    font-family: Inter;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    text-decoration: line-through !important;
+    color: rgba(15, 15, 15, 0.5);
+    margin-right: 8px !important;
+}
+
+.g_payment_method {
+    font-family: Inter;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: rgba(15, 15, 15, 1);
+
+}
+
+.g_method_border {
+    border: 1px solid rgba(15, 15, 15, 0.1);
+    border-radius: 5px;
+}
+
+.selected-border {
+    border: 2px solid rgba(15, 15, 15, 1);
+    /* Darker border when selected */
+}
+
+.g_payment_button {
+    padding: 8px 135px 8px 135px ;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #479529 0%, #0C6C44 100%);
+}
+.g_border_left{
+    border: 1px solid rgba(15, 15, 15, 1);
+}
+.g_upi_background{
+background-color: #EFEFEF !important ;
+}
+
+
+/* redio */
+.x_radio-input:checked+.x_radio-custom {
+    border: 2px solid transparent;
+    background: linear-gradient(white, white) padding-box,
+        linear-gradient(180deg, #0C6C44 0%, #479529 100%) border-box;
+}
+
+.x_radio-input:checked+.x_radio-custom::after {
+    content: '';
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #0C6C44 0%, #479529 100%);
+}
+
+.x_radio-label {
+    font-size: 14px;
+    color: #0f0f0f;
+}
+
+.x_radio-wrapper:hover .x_radio-custom {
+    border-color: #0C6C44;
+}
+
+
+/* //////////////////////////////// checkout  ////////////////////////////////////////////// */
+
+@media (max-width:1024px) {
+    .a_header_container {
+        padding: 0px 4% !important;
+    }
+}
+
+@media (max-width:991px) {
+    .a_header_container {
+        padding: 0px 8% !important;
+    }
+
+    .g_contact_border {
+        border-left: none !important;
+    }
+}
+
+@media (max-width:768px) {
+    .a_header_container {
+        padding: 0px 4% !important;
+    }
+
+    .about-img {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+}
+
+@media (max-width:425px) {
+    .g_icon_p {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 5px !important;
+    }
+
+    .g_icon1_p {
+        font-size: 12px;
+        margin-bottom: 0 !important;
+        color: rgba(15, 15, 15, 0.6);
+    }
+
+    .g_why_us {
+        font-size: 28px;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+}
+
+@media (max-width:375px) {
+.g_payment_button{
+    padding: 8px 118px 8px 118px;
+}
+}
+@media (max-width:320px) {
+    .g_icon_p {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 5px !important;
+    }
+
+    .g_icon1_p {
+        font-size: 11px;
+        margin-bottom: 0 !important;
+        color: rgba(15, 15, 15, 0.6);
+    }
+    .g_payment_button{
+        padding: 8px 94px 8px 94px;
+    }
+}
+
+/* redio start */
+.g_radio-wrapper {
+  position: relative;
+  /* display: flex; */
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 6px 15px;
+}
+
+.g_radio-wrapper:hover .g_radio-custom {
+ border-color: #0C6C44;
+}
+.g_radio-input {
+ position: absolute;
+ opacity: 0;
+ cursor: pointer;
+}
+
+.g_radio-input:checked+.g_radio-custom {
+ border: 2px solid transparent;
+ background: linear-gradient(white, white) padding-box,
+   linear-gradient(180deg, #0C6C44 0%, #479529 100%) border-box;
+}
+
+.g_radio-input:checked+.g_radio-custom::after {
+ content: '';
+ width: 8px;
+ height: 8px;
+ border-radius: 50%;
+ background: linear-gradient(180deg, #0C6C44 0%, #479529 100%);
+}
+.g_radio-custom {
+ width: 16px;
+ height: 16px;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ background: white;
+ position: relative;
+ border: 2px solid #e0e0e0;
+ transition: all 0.2s ease;
+}
+
+.g_radio-label {
+ font-size: 14px;
+ color: #0f0f0f;
+}
+/* redio end */

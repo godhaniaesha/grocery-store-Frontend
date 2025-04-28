@@ -1,0 +1,65 @@
+{
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^6.4.8",
+    "@react-oauth/google": "^0.12.1",
+    "@reduxjs/toolkit": "^2.6.1",
+    "axios": "^1.8.4",
+    "bootstrap": "^5.3.3",
+    "formik": "^2.4.6",
+    "framer-motion": "^12.5.0",
+    "google-map-react": "^2.2.1",
+    "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.483.0",
+    "multi-range-slider-react": "^2.0.7",
+    "node-modules": "^1.0.1",
+    "react-bootstrap": "^2.10.9",
+    "react-form-stepper": "^2.0.3",
+    "react-icons": "^5.5.0",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.3.0",
+    "react-scripts": "^5.0.1",
+    "react-slick": "^0.30.3",
+    "react-toastify": "^11.0.5",
+    "recharts": "^2.15.1",
+    "redux": "^5.0.1",
+    "redux-persist": "^6.0.0",
+    "redux-thunk": "^3.1.0",
+    "slick-carousel": "^1.8.1",
+    "swiper": "^11.2.5",
+    "toolkit": "^1.5.4",
+    "yup": "^1.6.1"
+  },
+  "name": "vegi_store",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000v\u0000e\u0000g\u0000i\u0000_\u0000s\u0000t\u0000o\u0000r\u0000e\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "browserify-zlib": "^0.2.0",
+    "https-browserify": "^1.0.0",
+    "react-app-rewired": "^2.2.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "util": "^0.12.5"
+  }
+}
