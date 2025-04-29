@@ -41,7 +41,7 @@ const currencySymbol = useSelector(selectCurrencySymbol);
   }, [dropdownOpen]);
 
   return (
-    <nav className="navbar a_fastkart_header a_header_container" style={{ backgroundColor: '#0F7542' }}>
+    <nav className="navbar a_fastkart_header a_header_container" style={{ backgroundColor: '#27391C' }}>
       <div className="container-fluid py-1 d-flex justify-content-between align-items-center">
         <div className="d-flex">
           <Link className="text-white me-3 text-decoration-none" to={"/seller/seller-register"}>Sell on FastKart</Link>

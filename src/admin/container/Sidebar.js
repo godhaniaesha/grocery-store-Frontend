@@ -20,7 +20,7 @@ function Sidebar({ isOpen, onClose }) {
             <section className='sp_sidebar_main'>
                 {isOpen ?
                     <Offcanvas show={isOpen} onHide={onClose} responsive="lg" className='d-lg-none sp_off_canvas'>
-                        <Offcanvas.Header closeButton style={{ backgroundColor: '#0F7542' }}>
+                        <Offcanvas.Header closeButton style={{ backgroundColor: '#27391C' }}>
                             <Offcanvas.Title><h2 className='sp_logo'>LOGO</h2>
                             </Offcanvas.Title>
                         </Offcanvas.Header>

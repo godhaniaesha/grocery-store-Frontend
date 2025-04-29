@@ -137,7 +137,7 @@
 .x_category-title {
   font-size: 24px;
   font-weight: bold;
-  background: linear-gradient(90deg, #0c6c44 0%, #6b7b3e 100%);
+  background: linear-gradient(90deg,  #23985a, #2c6145);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
@@ -185,7 +185,7 @@
   font-size: 18px;
   font-weight: 600;
   margin-top: 10px;
-  background: linear-gradient(90deg, #0c6c44 0%, #6b7b3e 100%);
+  background: linear-gradient(90deg,  #23985a, #2c6145);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-left: -36px;
@@ -402,7 +402,7 @@
 }
 
 .x_custom-checkbox:checked + .x_checkbox-mark {
-  background: linear-gradient(135deg, #0c6c44 0%, #6b7b3e 100%);
+  background: linear-gradient(135deg,  #23985a, #2c6145);
   border: none;
 }
 

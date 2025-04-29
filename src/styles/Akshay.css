@@ -257,7 +257,7 @@ background-color: #EFEFEF !important ;
 .x_radio-input:checked+.x_radio-custom {
     border: 2px solid transparent;
     background: linear-gradient(white, white) padding-box,
-        linear-gradient(180deg, #0C6C44 0%, #479529 100%) border-box;
+        linear-gradient(180deg,  #23985a, #2c6145) border-box;
 }
 
 .x_radio-input:checked+.x_radio-custom::after {
@@ -265,7 +265,7 @@ background-color: #EFEFEF !important ;
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background: linear-gradient(180deg, #0C6C44 0%, #479529 100%);
+    background: linear-gradient(180deg,  #23985a, #2c6145);
 }
 
 .x_radio-label {
@@ -372,7 +372,7 @@ background-color: #EFEFEF !important ;
 .g_radio-input:checked+.g_radio-custom {
  border: 2px solid transparent;
  background: linear-gradient(white, white) padding-box,
-   linear-gradient(180deg, #0C6C44 0%, #479529 100%) border-box;
+   linear-gradient(180deg,  #23985a, #2c6145) border-box;
 }
 
 .g_radio-input:checked+.g_radio-custom::after {
@@ -380,7 +380,7 @@ background-color: #EFEFEF !important ;
  width: 8px;
  height: 8px;
  border-radius: 50%;
- background: linear-gradient(180deg, #0C6C44 0%, #479529 100%);
+ background: linear-gradient(180deg,  #23985a, #2c6145);
 }
 .g_radio-custom {
  width: 16px;

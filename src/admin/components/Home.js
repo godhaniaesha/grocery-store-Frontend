@@ -492,8 +492,8 @@ const Home = () => {
 
                 <Area
                   type="monotone"
-                  dataKey="revenue"
-                  stroke="#166534"
+                  dataKey="Revenue"
+                  stroke="#2c6145"
                   strokeWidth={2}
                   fill="url(#colorGradient)"
                 />
@@ -513,15 +513,16 @@ const Home = () => {
           >
             Recent Order
           </h4>
-          <table>
+          <div className="sp_table d-flex justify-content-between flex-column" >
+          <table >
             <thead>
               <tr>
-                <th style={{ backgroundColor: "#F3F9FB" }}>Order ID</th>
-                <th style={{ backgroundColor: "#F3F9FB" }}>Customer name</th>
-                <th style={{ backgroundColor: "#F3F9FB" }}>Date & Time</th>
-                <th style={{ backgroundColor: "#F3F9FB" }}>Payment Method</th>
-                <th style={{ backgroundColor: "#F3F9FB" }}>Amount</th>
-                <th style={{ backgroundColor: "#F3F9FB" }}>Order Status</th>
+                <th style={{ backgroundColor: "#eaf0ea" }}>Order ID</th>
+                <th style={{ backgroundColor: "#eaf0ea" }}>Customer name</th>
+                <th style={{ backgroundColor: "#eaf0ea" }}>Date & Time</th>
+                <th style={{ backgroundColor: "#eaf0ea" }}>Payment Method</th>
+                <th style={{ backgroundColor: "#eaf0ea" }}>Amount</th>
+                <th style={{ backgroundColor: "#eaf0ea" }}>Order Status</th>
               </tr>
             </thead>
             <tbody>
@@ -565,6 +566,7 @@ const Home = () => {
               })}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </>
