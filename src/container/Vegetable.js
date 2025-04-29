@@ -4,10 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { fetchProducts } from '../redux/slices/product.Slice';
 import { fetchProductVariants } from '../redux/slices/productVeriant.Slice';
 import { selectCurrency, selectCurrencySymbol, convertPrice } from '../redux/slices/currency.Slice';
-
-import '../styles/x_app.css';
 import GardenFresh from './GardenFresh';
 import Category from './Category';
+import '../styles/Home.css'
 import "../styles/x_app.css"
 import "../styles/denisha.css"
 import vegetables from "../img/x_img/vegetables.png";
@@ -27,9 +26,19 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { createCart, updateCart, getallMyCarts } from '../redux/slices/cart.Slice';
 import { clearSearch } from '../redux/slices/search.Slice';
+import { Col, Container, Row } from 'react-bootstrap';
+import { FaChevronRight, FaMinus, FaPlus, FaTimes } from 'react-icons/fa';
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
+import Card from 'react-bootstrap/Card';
+import Modal from 'react-bootstrap/Modal';
+import { FaShoppingCart, FaHeart, FaEye } from 'react-icons/fa';
+import Accordion from 'react-bootstrap/Accordion';
 
 function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetablePage }) {
     const [selectedCategory, setSelectedCategory] = useState(localStorage.getItem('selectedCategoryId') || '');
+    const [showModal, setShowModal] = useState(false);
+    const [showFilter, setShowFilter] = useState(false);
 
     useEffect(() => {
         const savedCategory = localStorage.getItem('selectedCategoryId');
@@ -76,12 +85,12 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
     // Format price with appropriate currency symbol
     const formatPrice = (amount) => {
         if (!amount || isNaN(amount)) return `${currencySymbol}0`;
-        
+
         const convertedAmount = convertPriceValue(amount);
         return `${currencySymbol}${Math.round(convertedAmount)}`;
     };
     // Add logging for category selection
-    // Update handleCategorySelect function to work as a toggle
+    // Update handleCategorySelect function to work with both slider and offcanvas
     const handleCategorySelect = (categoryId) => {
         // If clicking the same category, clear the selection (toggle off)
         if (compareCategoryIds(selectedCategory, categoryId)) {
@@ -92,6 +101,8 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
             setSelectedCategory(categoryId);
             localStorage.setItem('selectedCategoryId', categoryId);
         }
+        // Close the filter offcanvas when a category is selected
+        setShowFilter(false);
     };
 
     const handleProductClick = (productId) => {
@@ -106,6 +117,11 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
     const { products, loading: productLoading, error: productError } = useSelector((state) => state.product || {});
     const { variants, loading: variantLoading, error: variantError } = useSelector((state) => state.productveriant || {});
     const { categories, isLoading, error } = useSelector(state => state.category);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [quantity, setQuantity] = useState(1);
+    const [modalShow, setModalShow] = useState(false);
+    console.log(selectedProduct, "aaaaaa");
+
 
     const { cartItems } = useSelector(state => state.addcart); // Add this line
 
@@ -126,7 +142,8 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
             console.log("Product details:", categoryProducts.map(p => ({
                 id: p._id,
                 name: p.productName,
-                categoryId: p.categoryId
+                categoryId: p.categoryId,
+                description: p.description
             })));
         }
     }, [selectedCategory, products]);
@@ -164,6 +181,23 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
             dispatch(fetchProducts({}));
         }
     }, [selectedCategory, dispatch]);
+
+    const handleClose = () => {
+        setModalShow(false);
+        setTimeout(() => {
+            setShowModal(false);
+            setQuantity(1);
+        }, 200);
+    };
+
+    const handleShow = (product) => {
+        setSelectedProduct(product);
+        console.log(product, "product");
+
+        setShowModal(true);
+        setQuantity(1);
+        setTimeout(() => setModalShow(true), 100);
+    };
 
     const priceOptions = [
         { label: '--Default--' },
@@ -235,7 +269,8 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                     discount: discountPercentage,
                     stockStatus: variant?.stockStatus ?? true,
                     numericPrice: parseFloat(currentPrice),
-                    quantity: cartItem?.quantity || 0
+                    quantity: cartItem?.quantity || 0,
+                    description: product.description
                 };
             }) : [];
 
@@ -268,6 +303,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
 
         return true;
     });
+    console.log("filteredProducts", filteredProducts)
 
     const sortedProducts = [...filteredProducts].sort((a, b) => {
         switch (selectedSort) {
@@ -293,6 +329,9 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
         setactiveButton("next");
         setTimeout(() => setactiveButton(null), 200);
     };
+
+    const handleFilterOpen = () => setShowFilter(true);
+    const handleFilterClose = () => setShowFilter(false);
 
     if (isLoading) {
         return <div>Loading categories...</div>;
@@ -372,196 +411,187 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
             }
         }
     };
+
+    const handleModalQuantityChange = (change) => {
+        setQuantity((prev) => {
+            const newQty = prev + change;
+            if (newQty < 1) return 1;
+            if (newQty > 10) return 10;
+            return newQty;
+        });
+    };
+
     return (
         <>
             <div className='a_header_container'>
-                <div className="x_category-container">
-                    <div
-                        className={`x_swiper-button-prev ${activeButton === "prev" ? "active" : ""}`}
-                        onClick={handlePrevClick}
-                    >
-                        <MdKeyboardArrowLeft />
-                    </div>
-                    <div
-                        className={`x_swiper-button-next ${activeButton === "next" ? "active" : ""}`}
-                        onClick={handleNextClick}
-                    >
-                        <MdKeyboardArrowRight />
-                    </div>
-
-                    <Swiper
-                        modules={[Navigation]}
-                        spaceBetween={20}
-                        slidesPerView={5}
-                        navigation={{
-                            prevEl: '.x_swiper-button-prev',
-                            nextEl: '.x_swiper-button-next',
-                        }}
-                        breakpoints={{
-                            320: { slidesPerView: 2, spaceBetween: 15 },
-                            375: { slidesPerView: 2, spaceBetween: 15 },
-                            425: { slidesPerView: 3, spaceBetween: 15 },
-                            768: { slidesPerView: 4, spaceBetween: 15 },
-                            1024: { slidesPerView: 4, spaceBetween: 20 },
-                            1200: { slidesPerView: 4, spaceBetween: 20 },
-                            1400: { slidesPerView: 5, spaceBetween: 20 },
-                            1600: { slidesPerView: 6, spaceBetween: 20 },
-                        }}
-                        className="x_category-swiper ps-0 ps-md-5"
-                    >
-                        {categories.map((category, index) => (
-                            <SwiperSlide key={index} className='me-0 d-flex justify-content-center'>
-                                <div
-                                    className="x_category-item"
-                                    onClick={() => handleCategorySelect(category._id)}
-                                    style={{
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    <div className="x_category-image-wrapper" style={{
-                                        border: selectedCategory === category._id ? '1px solid var(--greencolor)' : 'none'
-                                    }}>
-                                        <img
-                                            src={`http://localhost:4000/${category.categoryImage}`}
-                                            alt={category.categoryName}
-                                            className="x_category-image"
-                                        />
-                                    </div>
-                                    <p className="x_category-name">{category.categoryName}</p>
+                {/* Banner Section */}
+                <section className="Z_banner">
+                    <Container>
+                        <Row className="justify-content-end">
+                            <Col md={6} className="d-flex align-items-center">
+                                <div className="Z_banner_content text-end">
+                                    <h2>Premium Grocery Store</h2>
+                                    <p>Discover our selection of high-quality nuts, dried fruits, seeds, spices, and grains</p>
+                                    <button className="order-now-btn">
+                                        Order Now
+                                        <span>
+                                            <FaChevronRight />
+                                        </span>
+                                    </button>
                                 </div>
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
-                </div>
+                            </Col>
+                        </Row>
+                    </Container>
+                </section>
 
-                {/* {selectedCategoryName && (
-                    <div className="mt-4 mb-3">
-                        <h2 className="x_category-title">{selectedCategoryName} Products</h2>
-                        <span className="line"></span>
-                    </div>
-                )} */}
-
-                <div className="x_filter-section">
-                    {/* Price Dropdown */}
-                    <div className="x_filter-group">
-                        <label>Price</label>
-                        <div className="x_custom-dropdown">
-                            <div
-                                className="x_dropdown-header"
-                                onClick={() => setIsPriceOpen(!isPriceOpen)}
-                            >
-                                <span className='x_selected'>
-                                    {selectedPrice === ''
-                                        ? 'Price'
-                                        : priceOptions.find(opt => opt.value === selectedPrice)?.label}
-                                </span>
-                                <span className={`x_arrow ${isPriceOpen ? 'x_open' : ''}`}>▼</span>
-                            </div>
-                            {isPriceOpen && (
-                                <div className="x_dropdown-options">
-                                    {priceOptions.map((option) => (
-                                        <label
-                                            key={option.value}
-                                            className="x_checkbox-wrapper"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                setSelectedPrice(option.value);
-                                                setIsPriceOpen(false);
-                                            }}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedPrice === option.value}
-                                                onChange={() => { }}
-                                                className="x_custom-checkbox"
-                                            />
-                                            <span className="x_checkbox-mark"></span>
-                                            <span className="x_checkbox-label">{option.label}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            )}
+                {/* Modify category slider */}
+                <section className="z_category-slider-section">
+                    <div>
+                        <div className="z_section-header mb-4">
+                            <h3 className="z_section-title">Category</h3>
                         </div>
-                    </div>
-
-                    {/* Discount Dropdown */}
-                    <div className="x_filter-group">
-                        <label>Discount</label>
-                        <div className="x_custom-dropdown">
-                            <div
-                                className="x_dropdown-header"
-                                onClick={() => setIsDiscountOpen(!isDiscountOpen)}
-                            >
-                                <span className='x_selected'>
-                                    {selectedDiscount === ''
-                                        ? 'Discount'
-                                        : discountOptions.find(opt => opt.value === selectedDiscount)?.label}
-                                </span>
-                                <span className={`x_arrow ${isDiscountOpen ? 'x_open' : ''}`}>▼</span>
-                            </div>
-                            {isDiscountOpen && (
-                                <div className="x_dropdown-options">
-                                    {discountOptions.map((option) => (
-                                        <label key={option.value} className="x_radio-wrapper">
-                                            <input
-                                                type="radio"
-                                                name="discount"
-                                                value={option.value}
-                                                checked={selectedDiscount === option.value}
-                                                onChange={() => {
-                                                    setSelectedDiscount(option.value);
-                                                    setIsDiscountOpen(false);
-                                                }}
-                                                className="x_radio-input"
-                                            />
-                                            <span className="x_radio-custom"></span>
-                                            <span className="x_radio-label">{option.label}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Sort Dropdown */}
-                    <div className="x_filter-group">
-                        <label>Sort by</label>
-                        <div className="x_custom-dropdown">
-                            <div
-                                className="x_dropdown-header"
-                                onClick={() => setIsSortOpen(!isSortOpen)}
-                            >
-                                <span className='x_selected'>
-                                    {selectedSort === ''
-                                        ? 'Sort by'
-                                        : sortOptions.find(opt => opt.value === selectedSort)?.label}
-                                </span>
-                                <span className={`x_arrow ${isSortOpen ? 'x_open' : ''}`}>▼</span>
-                            </div>
-                            {isSortOpen && (
-                                <div className="x_dropdown-options">
-                                    {sortOptions.map((option) => (
+                        <Swiper
+                            modules={[Navigation]}
+                            spaceBetween={20}
+                            slidesPerView={6}
+                            loop={true}
+                            breakpoints={{
+                                320: { slidesPerView: 2, spaceBetween: 10 },
+                                480: { slidesPerView: 3, spaceBetween: 15 },
+                                768: { slidesPerView: 4, spaceBetween: 15 },
+                                1024: { slidesPerView: 5, spaceBetween: 20 },
+                                1200: { slidesPerView: 6, spaceBetween: 20 },
+                            }}
+                            className="z_category-swiper"
+                        >
+                            {categories.map((category, index) => (
+                                <>
+                                    <SwiperSlide key={index} className='me-0 d-flex justify-content-center'>
                                         <div
-                                            key={option.value}
-                                            className="x_sort-item"
-                                            style={{ padding: '6px 15px' }}
-                                            onClick={() => {
-                                                setSelectedSort(option.value);
-                                                setIsSortOpen(false);
+                                            className="z_category-card"
+                                            onClick={() => handleCategorySelect(category._id)}
+                                            style={{
+                                                cursor: 'pointer'
                                             }}
                                         >
-                                            {option.label}
+                                            <div className="z_category-image-wrapper" style={{
+                                                border: selectedCategory === category._id ? '1px solid var(--greencolor)' : 'none'
+                                            }}>
+                                                <img
+                                                    src={`http://localhost:4000/${category.categoryImage}`}
+                                                    alt={category.categoryName}
+                                                    className="z_category-image"
+                                                />
+                                            </div>
+                                            <p className="x_category-name">{category.categoryName}</p>
                                         </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
+                                    </SwiperSlide>
+                                </>
+                            ))}
+                        </Swiper>
+                    </div>
+                </section>
+
+                {/* Filter and Sort Bar */}
+                <div className="z_filter-sort-bar">
+                    <button className="z_filter-btn" onClick={handleFilterOpen}>
+                        <span className="z_filter-icon"><HiOutlineAdjustmentsHorizontal /></span> Filter
+                    </button>
+                    <div className="z_sort-dropdown">
+                        <select className="z_sort-select">
+                            <option value="">Sort by</option>
+                            <option value="popular">Popular</option>
+                            <option value="recent">Most Recent</option>
+                            <option value="high">Price - High</option>
+                            <option value="low">Price - Low</option>
+                        </select>
                     </div>
                 </div>
 
-                {/* product */}
-                <div className="a_garden-fresh">
-                    {searchQuery && (
+                {/* Offcanvas for Filter */}
+                <Offcanvas show={showFilter} onHide={handleFilterClose} placement="start" className="z_filter-offcanvas">
+                    <Offcanvas.Header closeButton>
+                        <Offcanvas.Title className="z_filter-title">Filter Products</Offcanvas.Title>
+                    </Offcanvas.Header>
+                    <Offcanvas.Body>
+                        <div className="z_filter-body">
+                            <Accordion defaultActiveKey={['0']} alwaysOpen className="z_filter-accordion">
+                                {/* Price Filter */}
+                                <Accordion.Item eventKey="0" className="z_filter-group">
+                                    <Accordion.Header className="z_filter-group-header">
+                                        <h4 className="mb-0">Price Range</h4>
+                                    </Accordion.Header>
+                                    <Accordion.Body className="z_filter-group-content">
+                                        <div className="z_price-inputs">
+                                            <input type="number" placeholder="Min" className="z_price-input" />
+                                            <span className="z_price-separator">-</span>
+                                            <input type="number" placeholder="Max" className="z_price-input" />
+                                        </div>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+
+                                {/* Category Filter */}
+                                <Accordion.Item eventKey="1" className="z_filter-group">
+                                    <Accordion.Header className="z_filter-group-header">
+                                        <h4 className="mb-0">Categories</h4>
+                                    </Accordion.Header>
+                                    <Accordion.Body className="z_filter-group-content">
+                                        <div className="z_checkbox-group">
+                                            {categories.map((category, index) => (
+                                                <label
+                                                    className="z_checkbox-label"
+                                                    key={category._id || index}
+                                                    onClick={() => handleCategorySelect(category._id)}
+                                                    style={{ cursor: 'pointer' }}
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        className="z_checkbox-input"
+                                                        checked={compareCategoryIds(selectedCategory, category._id)}
+                                                        readOnly
+                                                    />
+                                                    <span className="z_checkbox-custom"></span>
+                                                    {category.categoryName}
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+
+                                {/* Discount Filter */}
+                                <Accordion.Item eventKey="2" className="z_filter-group">
+                                    <Accordion.Header className="z_filter-group-header">
+                                        <h4 className="mb-0">Discount</h4>
+                                    </Accordion.Header>
+                                    <Accordion.Body className="z_filter-group-content">
+                                        <div className="z_radio-group">
+                                            <label className="z_radio-label">
+                                                <input type="radio" name="discount" className="z_radio-input" />
+                                                <span className="z_radio-custom"></span>
+                                                10% and above
+                                            </label>
+                                            <label className="z_radio-label">
+                                                <input type="radio" name="discount" className="z_radio-input" />
+                                                <span className="z_radio-custom"></span>
+                                                20% and above
+                                            </label>
+                                            <label className="z_radio-label">
+                                                <input type="radio" name="discount" className="z_radio-input" />
+                                                <span className="z_radio-custom"></span>
+                                                30% and above
+                                            </label>
+                                        </div>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            </Accordion>
+                        </div>
+                    </Offcanvas.Body>
+                </Offcanvas>
+
+                {/* Modify cards  */}
+                {/* <h2>modify cards</h2> */}
+                <div className="">
+                    {/* {searchQuery && (
                         <div className="d-flex justify-content-between align-items-center mb-3">
                             <h4>Search Results for "{searchQuery}"</h4>
                             <button
@@ -571,68 +601,79 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                 Clear Search
                             </button>
                         </div>
-                    )}
-                    <div className="a_garden-fresh-grid mt-3">
+                    )} */}
+                    <div className="row">
                         {sortedProducts.length > 0 ? (
                             sortedProducts.map((product, index) => (
-                                <div key={index} className="a_product-card" style={{ cursor: 'pointer' }}>
-                                    <div className='a_image_container'>
-                                        <div className="a_discount-badge">
-                                            {product.discount}% <p className='mb-0'>OFF</p>
-                                        </div>
-                                        <div className="a_image_slider">
-                                            {Array.isArray(product.image) ?
-                                                product.image.map((img, imgIndex) => (
-                                                    <img
-                                                        key={imgIndex}
-                                                        src={`http://localhost:4000/${img}`}
-                                                        alt={`${product.name} ${imgIndex + 1}`}
-                                                        className="a_product-image"
-                                                    />
-                                                ))
-                                                :
-                                                <img
-                                                    src={`http://localhost:4000/${product.image}`}
-                                                    alt={product.name}
-                                                    className="a_product-image"
-                                                />
-                                            }
-                                        </div>
-                                    </div>
-                                    <div className='a_card_content'>
-                                        <h3 className="a_product-name" onClick={() => handleProductClick(product._id)}  >{product.name}</h3>
-                                        <p className="a_product-weight mb-1">{product.size}</p>
-                                        <div className="d-flex align-items-center justify-content-between">
-                                            <div className="a_price-container mb-0 me-2">
-                                                <span className="a_current-price">
-                                                    {product.price}
-                                                </span>
-                                                <span className="a_original-price">
-                                                    {product.discountPrice}
-                                                </span>
-                                            </div>
-                                            {productQuantities[product.name] ? (
-                                                <div className="a_add-button added">
-                                                    <button onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleQuantityChange(product, -1);  // Pass product instead of product.name
-                                                    }}>-</button>
-                                                    <span>{productQuantities[product.name]}</span>
-                                                    <button onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleQuantityChange(product, 1);  // Pass product instead of product.name
-                                                    }}>+</button>
+                                <div key={index} className="col-xxl-2 col-xl-3 col-lg-4 col-md-4 col-sm-6 mb-4">
+                                    <Card className="z_product-card">
+                                        <div className="z_product-image-container">
+                                            <Card.Img
+                                                variant="top"
+                                                src={Array.isArray(product.image) ? `http://localhost:4000/${product.image[0]}` : `http://localhost:4000/${product.image}`}
+                                                alt={product.name}
+                                                className="z_product-image"
+                                            />
+                                            <div className="z_hover-overlay">
+                                                <div className="z_hover-icons">
+                                                    <button className="z_hover-icon-btn">
+                                                        <FaShoppingCart />
+                                                    </button>
+                                                    <button className="z_hover-icon-btn">
+                                                        <FaHeart />
+                                                    </button>
+                                                    <button
+                                                        className="z_hover-icon-btn"
+                                                        onClick={() => handleShow(product)}
+                                                    >
+                                                        <FaEye />
+                                                    </button>
                                                 </div>
-                                            ) : (
-                                                <button
-                                                    className="a_add-button"
-                                                    onClick={(e) => { e.stopPropagation(); handleQuantityChange(product, 1); }}
-                                                >
-                                                    ADD
-                                                </button>
+                                            </div>
+                                            {product.discount > 0 && (
+                                                <div className="a_discount-badge">
+                                                    {product.discount}% <p className='mb-0'>OFF</p>
+                                                </div>
                                             )}
                                         </div>
-                                    </div>
+                                        <Card.Body className="z_card-body">
+                                            {/* If you have a rating, render it here */}
+                                            {/* <div className="z_rating-container">
+                                                {renderStars(product.rating)}
+                                                <span className="z_rating-text">({product.rating})</span>
+                                            </div> */}
+                                            <Card.Title className="z_product-title text-nowrap">{product.name}</Card.Title>
+                                            <Card.Text className="z_product-subtitle">
+                                                {product.size}
+                                            </Card.Text>
+                                            <div className="z_price-container">
+                                                <span className="z_current-price">{product.price}</span>
+                                                <span className="z_original-price">{product.discountPrice}</span>
+                                            </div>
+                                            {/* <div className="z_add-to-cart-container">
+                                                {productQuantities[product.name] ? (
+                                                    <div className="z_add-button added">
+                                                        <button onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleQuantityChange(product, -1);
+                                                        }}>-</button>
+                                                        <span>{productQuantities[product.name]}</span>
+                                                        <button onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleQuantityChange(product, 1);
+                                                        }}>+</button>
+                                                    </div>
+                                                ) : (
+                                                    <button
+                                                        className="z_add-button"
+                                                        onClick={(e) => { e.stopPropagation(); handleQuantityChange(product, 1); }}
+                                                    >
+                                                        ADD
+                                                    </button>
+                                                )}
+                                            </div> */}
+                                        </Card.Body>
+                                    </Card>
                                 </div>
                             ))
                         ) : (
@@ -642,15 +683,103 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                             </div>
                         )}
                     </div>
+                    <Modal show={showModal} onHide={handleClose} size="lg" centered>
+                        <Modal.Body className="p-0 position-relative">
+                            {selectedProduct && (
+                                //    console.log(selectedProduct)
+                                <>
+                                    <button onClick={handleClose} className="z_modal-close-btn">
+                                        <FaTimes className="z_modal-close-icon" />
+                                    </button>
+                                    <div className="row g-0">
+                                        <div className="col-md-6 position-relative">
+                                            <div className="modal-img-wrapper">
+                                                <img
+                                                    src={
+                                                        Array.isArray(selectedProduct.image)
+                                                            ? `http://localhost:4000/${selectedProduct.image[0]}`
+                                                            : `http://localhost:4000/${selectedProduct.image}`
+                                                    }
+                                                    alt={selectedProduct.name}
+                                                    className="z_modal-product-img"
+                                                />
+                                                {selectedProduct.discount > 0 && (
+                                                    <span className="z_modal-discount-badge">
+                                                        -{selectedProduct.discount}%
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="z_modal-content">
+                                                <h3 className="mb-3">{selectedProduct.name}</h3>
+                                                {/* <div className="z_rating-container mb-4">
+                                             {renderStars(selectedProduct.rating)}
+                                            <span className="z_rating-text ms-2">({selectedProduct.rating} customer review)</span>
+                                        </div> */}
+                                                <div className="mb-4">
+                                                    <div className="d-flex align-items-center gap-2">
+                                                        <span className="h3 mb-0">{selectedProduct.price}</span>
+                                                        <span className="text-decoration-line-through text-muted">
+                                                            {selectedProduct.discountPrice}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <p className="text-muted mb-4">{selectedProduct.description}</p>
+                                                <div className="z_modal-quantity-container">
+                                                    <div className="z_modal-quantity-selector">
+                                                        <button
+                                                            className="z_modal-quantity-btn"
+                                                            onClick={() => handleModalQuantityChange(-1)}
+                                                            disabled={quantity === 1}
+                                                        >
+                                                            <FaMinus size={12} />
+                                                        </button>
+
+                                                        <span className="z_modal-quantity-number">
+                                                            {quantity}
+                                                        </span>
+
+                                                        <button
+                                                            className="z_modal-quantity-btn"
+                                                            onClick={() => handleModalQuantityChange(1)}
+                                                            disabled={quantity === 10}
+                                                        >
+                                                            <FaPlus size={12} />
+                                                        </button>
+                                                    </div>
+
+                                                    <button className="z_modal-add-cart-btn">
+                                                        Add to cart
+                                                        <FaShoppingCart className="z_cart-icon" />
+                                                    </button>
+                                                </div>
+
+                                                <div className="z_modal-details">
+                                                    <div className="z_modal-details-item">
+                                                        <span className="z_modal-details-label">SKU:</span>
+                                                        <span className="z_modal-details-value">{selectedProduct.id || '9852434'}</span>
+                                                    </div>
+                                                    <div className="z_modal-details-item">
+                                                        <span className="z_modal-details-label">Category:</span>
+                                                        <span className="z_modal-details-value">Body & Bath</span>
+                                                    </div>
+                                                    <div className="z_modal-details-item">
+                                                        <span className="z_modal-details-label">Brand:</span>
+                                                        <span className="z_modal-details-value">Premium Collection</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                        </Modal.Body>
+                    </Modal>
                 </div>
-
-            </div>
-
+            </div >
         </>
     );
 }
 
 export default Vegetable;
-
-
-

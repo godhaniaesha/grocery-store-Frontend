@@ -61,48 +61,46 @@ button:focus,
 
 /* gardenFResh  */
 .a_garden-fresh {
-    padding: 2rem;
-  }
-  
-  .a_garden-fresh-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .a_garden-fresh-title {
-  
-    font-size: 24px;
-    font-weight: bold;
-    background: linear-gradient(90deg, var(--greencolor) 0%, #6B7B3E 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
-    position: relative;
-  }
-  
-  .a_view-all {
-    color: #666;
-    cursor: pointer;
-    text-decoration: none;
-  }
-  
-  .a_garden-fresh-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
-  }
-  
-  
-  .a_product-card {
-    background: #fff;
-    border-radius: 12px;
-    /* padding: 1rem; */
-    position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease;
-    overflow: hidden;
-    border:1px solid #e5e5e5 ;
+  padding: 2rem;
+}
+
+.a_garden-fresh-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.a_garden-fresh-title {
+  font-size: 24px;
+  font-weight: bold;
+  background: linear-gradient(90deg, var(--greencolor) 0%, #6b7b3e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  position: relative;
+}
+
+.a_view-all {
+  color: #666;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.a_garden-fresh-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.a_product-card {
+  background: #fff;
+  border-radius: 12px;
+  /* padding: 1rem; */
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+  overflow: hidden;
+  border: 1px solid #e5e5e5;
 }
 
 .a_garden-fresh-header {

@@ -15,6 +15,7 @@ export const fetchProducts = createAsyncThunk(
         }
       };
       const response = await axios.get(`${API_URL}/allProducts`, config);
+      console.log(response.data,"cds");
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response ? error.response.data : error.message);
