@@ -1,207 +1,116 @@
-import React, { useEffect, useState } from 'react';
-import '../styles/x_app.css';
-import '../styles/denisha.css';
-import googlePlay from '../img/x_img/google-play.png';
-import appStore from '../img/x_img/app-store.png';
-import { Link } from 'react-router-dom'; // Add this import at the top
-// import logo from '../img/x_img/logo.png';
-import facebook from '../img/facebook.png';
-import twiter from '../img/twiter.png';
-import instagram from '../img/instagram.png';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCategories } from '../redux/slices/categorySlice';
+import React from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
+import { FaFacebook, FaTwitter, FaInstagram, FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
+import { FiClock } from 'react-icons/fi';
+import { AiFillHeart } from 'react-icons/ai';
+import '../styles/footer.css';
+// import '../styles/x_app.css';
 
-function Footer({setIsVegetablePage,setIsCartPage,setIsCheckoutPage,setIsProductDetailPage,setIsFaqPage,setIsTermsPage,setIsContactUsPage,setIsAboutUsPage}) {
+import { Link } from 'react-router-dom';
 
-    const dispatch = useDispatch();
-    const { categories, isLoading, error } = useSelector(state => state.category);
-    const [activeButton, setActiveButton] = useState(null);
-  
-    useEffect(() => {
-      dispatch(fetchCategories({ page: 1, pageSize: 10 }));
-    }, [dispatch]);
-
-    return (
-        <footer className="footer">
-            <div className='a_header_container'>
-                <div className="footer-content">
-                    {/* Logo and Description Section */}
-                    <div className="footer-section">
-                        <h2 className='x_category-title'>Logo</h2>
-                        {/* <img src={logo} alt="Logo" className="footer-logo" /> */}
-                        <p className="footer-description">
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the
-                        </p>
-                        <div className="social-links">
-                            <h4>Follow us for updates</h4>
-                            <div className="social-icons">
-                                <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon facebook">
-                                    <img src={facebook} alt="Logo" className="footer-logo" />
-                                </a>
-                                <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" className="social-icon twitter">
-                                    <img src={twiter} alt="Logo" className="footer-logo" />
-                                </a>
-                                <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon instagram">
-                                    <img src={instagram} alt="Logo" className="footer-logo" />
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Category Links */}
-                    <div className="footer-section">
-                        <h3>Category</h3>
-                        <ul className="footer-links">
-                        {/* // This part is correct - storing categoryId in localStorage */}
-                        {categories.map((category, index) => (
-                            <li key={index}>
-                                <Link
-                                    to="#"
-                                    onClick={() => {
-                                        localStorage.setItem('activePage', 'Vegetables');
-                                        localStorage.setItem('selectedCategoryId', category._id);
-                                        setIsVegetablePage(true);
-                                        setIsCartPage(false);
-                                        setIsCheckoutPage(false);
-                                        setIsProductDetailPage(false);
-                                        setIsFaqPage(false);
-                                        setIsTermsPage(false);
-                                        setIsContactUsPage(false);
-                                        setIsAboutUsPage(false);
-                                       
-                                    }}
-                                >
-                                   {category.categoryName}
-                                </Link>
-                            </li>
-                        ))}
-                            
-                        </ul>
-                    </div>
-
-                    {/* Quick Links */}
-                    <div className="footer-section">
-                        <h3>Quick Links</h3>
-                        <ul className="footer-links">
-                            <li><a href="#">Sell on FastKart</a></li>
-                            <li>
-                                <Link
-                                    to="#"
-                                    onClick={() => {
-                                        localStorage.removeItem('activePage');
-                                        window.location.reload();
-                                    }}
-                                >
-                                    Home
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="#"
-                                    onClick={() => {
-                                        localStorage.setItem('activePage', 'Vegetables');
-                                        window.location.reload();
-                                    }}
-                                >
-                                    Vegetables
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="#"
-                                    onClick={() => {
-                                        localStorage.setItem('activePage', 'Today deals');
-                                        window.location.reload();
-                                    }}
-                                >
-                                    Today Deals
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="#"
-                                    onClick={() => {
-                                        localStorage.setItem('activePage', 'About us');
-                                        window.location.reload();
-                                    }}
-                                >
-                                    About Us
-                                </Link>
-                            </li>
-                            <li> <Link
-                                to="#"
-                                onClick={() => {
-                                    localStorage.setItem('activePage', 'Contact us');
-                                    window.location.reload();
-                                }}
-                            >
-                                Contact Us
-                            </Link>
-                            </li>
-                            <li> <Link
-                                to="#"
-                                onClick={() => {
-                                    localStorage.setItem('activePage', 'Terms');
-                                    window.location.reload();
-                                }}
-                            >
-                                Terms & Condition
-                            </Link>
-                            </li>
-                            <li> <Link
-                                to="#"
-                                onClick={() => {
-                                    localStorage.setItem('activePage', 'Faq');
-                                    window.location.reload();
-                                }}
-                            >
-                                FAQs
-                            </Link>
-                            </li>
-                        </ul>
-                    </div>
-
-                    {/* Experience App Section */}
-                    <div className="footer-section">
-                        <h3>Experience App On Mobile</h3>
-                        {/* <div className="app-downloads">
-                        <a href="#" className="app-link">
-                            <img src={googlePlay} alt="Google Play" />
-                        </a>
-                        <a href="#" className="app-link">
-                            <img src={appStore} alt="App Store" />
-                        </a>
-                    </div> */}
-                        <div className="d-flex align-items-center flex-sm-row flex-lg-column flex-row gap-4 x_cres">
-                            <div className="a_appUI_btns w-md-auto w-100 d-flex justify-content-center align-items-center gap-2">
-                                <div>
-                                    <img src={googlePlay} alt="Google Play" />
-                                </div>
-                                <div>
-                                    <p className="mb-0">GET IN ON</p>
-                                    <h5 >Google Play</h5>
-                                </div>
-                            </div>
-                            <div className="a_appUI_btns w-md-auto w-100 d-flex justify-content-center align-items-center gap-2">
-                                <div>
-                                    <img src={appStore} alt="App Store" />
-                                </div>
-                                <div>
-                                    <p className="mb-0">GET IN ON</p>
-                                    <h5>Google Play</h5>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+const Footer = () => {
+  return (
+    <footer className="db_footer footer bg-dark text-white py-5">
+      <div className='a_header_container'>
+        <Row className="mb-4">
+          <Col lg={3} md={6} className="mb-4 mb-md-0">
+            <h5 className="text-uppercase mb-4">Fresh Market</h5>
+            <p>
+              Your one-stop destination for fresh produce, pantry essentials, and specialty foods.
+              We bring quality groceries directly to your doorstep.
+            </p>
+            <div className="social-icons">
+              <a href="#" className="me-3 text-white"><FaFacebook size={24} /></a>
+              <a href="#" className="me-3 text-white"><FaTwitter size={24} /></a>
+              <a href="#" className="me-3 text-white"><FaInstagram size={24} /></a>
             </div>
-            {/* Copyright */}
-            <div className="footer-bottom">
-                <p>©2025 All rights reserved.</p>
-            </div>
-        </footer>
-    );
-}
+          </Col>
+
+          <Col lg={3} md={6} className="mb-4 mb-md-0">
+            <h5 className="text-uppercase mb-4">Quick Links</h5>
+            <ul className="list-unstyled">
+              <li className="mb-2">
+                <Link to="/" className="text-white text-decoration-none">Home</Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/Shop" className="text-white text-decoration-none">Shop</Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/PopularCategories" className="text-white text-decoration-none">Categories</Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/Bestsellers" className="text-white text-decoration-none">Special Offers</Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/AboutUs" className="text-white text-decoration-none">About Us</Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/FAQ" className="text-white text-decoration-none">Contact</Link>
+              </li>
+            </ul>
+          </Col>
+
+          <Col lg={3} md={6} className="mb-4 mb-md-0">
+            <h5 className="text-uppercase mb-4">Customer Service</h5>
+            <ul className="list-unstyled">
+              <li className="mb-2">
+                <Link to="/MyAccount" className="text-white text-decoration-none">My Account</Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/Order" className="text-white text-decoration-none">Order Tracking</Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/wishlist" className="text-white text-decoration-none">Wishlist</Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/PrivacyPolicy" className="text-white text-decoration-none">Shipping Policy</Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/PrivacyPolicy" className="text-white text-decoration-none">Return Policy</Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/FAQ" className="text-white text-decoration-none">FAQs</Link>
+              </li>
+            </ul>
+          </Col>
+
+          <Col lg={3} md={6} className="mb-4 mb-md-0">
+            <h5 className="text-uppercase mb-4">Contact Info</h5>
+            <ul className="list-unstyled contact-info">
+              <li className="mb-3 d-flex align-items-center">
+                <FaMapMarkerAlt className="me-2" />
+                <span>123 Market Street, City Center, State 12345</span>
+              </li>
+              <li className="mb-3 d-flex align-items-center">
+                <FaPhoneAlt className="me-2" />
+                <span>+1 234 567 8900</span>
+              </li>
+              <li className="mb-3 d-flex align-items-center">
+                <FaEnvelope className="me-2" />
+                <span>info@freshmarket.com</span>
+              </li>
+              <li className="d-flex align-items-center">
+                <FiClock className="me-2" />
+                <span>Mon-Sat: 8:00 AM - 9:00 PM<br />Sunday: 10:00 AM - 6:00 PM</span>
+              </li>
+            </ul>
+          </Col>
+        </Row>
+
+<hr />
+        <Row>
+          <Col className="text-center pt-3">
+            <p className="mb-0">
+              © {new Date().getFullYear()} Fresh Market. All Rights Reserved.
+            </p>
+            <p className="mb-0 text-white-50 small mt-2">
+              Made with <AiFillHeart className="text-danger" /> for our valued customers
+            </p>
+          </Col>
+        </Row>
+      </div>
+    </footer>
+  );
+};
 
 export default Footer;

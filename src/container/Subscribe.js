@@ -1,29 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../styles/x_app.css';
 import '../styles/denisha.css';
+import deliveryMan from '../img/x_img/topsubscribe.png';
 
 function Subscribe() {
+    const [email, setEmail] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setEmail('');
+    };
     return (
-        <div className='a_header_container'>
-        <div className="subscribe-section">
-            <div className="subscribe-content">
-                <h2>In store or online your health & safety <br className='x_br_n'></br> is our top priority</h2>
-                <p>The only supermarket that makes your life easier, <br className='x_br_n'></br> makes you enjoy life and makes it better</p>
-                
-                <div className="subscribe-form">
-                        <input 
-                            type="email" 
-                            placeholder="Enter your email" 
-                            className="email-input"
-                        />
-                        <button className="subscribe-btn">Subscribe</button>
+        <div className="a_header_container">
+        <div className="x_subscribe_section">
+                <div className="x_subscribe_container">
+                    <div className="x_subscribe_content">
+                        <h2 className="x_subscribe_title">
+                            Stay home & get your daily<br />
+                            needs from our shop
+                        </h2>
+                        <p className="x_subscribe_subtitle">
+                            Start Your Daily Shopping with Nest Mart
+                        </p>
+                        <div className="x_subscribe_form_wrapper">
+                            <form onSubmit={handleSubmit} className="x_subscribe_form">
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="Your email address"
+                                    required
+                                    className="x_subscribe_input"
+                                />
+                                <button type="submit" className="x_subscribe_button">
+                                    Subscribe
+                                </button>
+                            </form>
+                        </div>
                     </div>
+                    <div className="x_subscribe_images">
+                        <img src={deliveryMan} alt="Delivery Man" className="x_delivery_man" />
+                    </div>
+                </div>
             </div>
-            
-            <div className="subscribe-illustration">
-                {/* Illustration will be added via CSS */}
-            </div>
-        </div>
         </div>
     );
 }
