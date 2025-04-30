@@ -148,6 +148,8 @@ export default function GardenFresh({ setSelectedProductId, setIsProductDetailPa
     }).filter(Boolean).slice(0, 6) : [];
 
   if (!formattedProducts || formattedProducts.length === 0) {
+    console.log("formattedProducts", formattedProducts.length);
+    
     return (
       <div className="a_header_container">
         <div className="a_garden-fresh">
@@ -197,6 +199,8 @@ export default function GardenFresh({ setSelectedProductId, setIsProductDetailPa
           <span className="line"></span>
           <div className="a_garden-fresh-grid mt-3">
             {formattedProducts.map((product, index) => {
+              console.log(product,"ppppppp");
+              
               const isInCart = cartItems?.some(
                 (item) => item.productId === product.id && item.quantity > 0
               );
