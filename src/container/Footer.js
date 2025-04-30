@@ -42,7 +42,7 @@ const Footer = () => {
                 <Link to="/Bestsellers" className="text-white text-decoration-none">Special Offers</Link>
               </li>
               <li className="mb-2">
-                <Link to="/AboutUs" className="text-white text-decoration-none">About Us</Link>
+                <Link to="/Aboutus" className="text-white text-decoration-none">About Us</Link>
               </li>
               <li className="mb-2">
                 <Link to="/FAQ" className="text-white text-decoration-none">Contact</Link>
@@ -97,7 +97,7 @@ const Footer = () => {
           </Col>
         </Row>
 
-<hr />
+        <hr />
         <Row>
           <Col className="text-center pt-3">
             <p className="mb-0">

@@ -26,6 +26,14 @@ import Faqs from '../container/Faqs'
 import Termsandcondition from '../container/Termsandcondition'
 import ProductDetails from '../container/ProductDetails'
 import { useDispatch } from 'react-redux'
+import AdvertiseCards from '../container/AdvertiseCards'
+import FirstSlider from '../container/FirstSlider'
+import SearchHeader from '../container/SearchHeader'
+import PopularCategories from '../container/PopularCategories'
+import Recommended from '../container/Recommended'
+import WhyUs from '../container/WhyUs'
+import Testimonial from '../container/Testimonial'
+import Bestseller from '../container/Bestseller'
 
 export default function HomeMain() {
   const location = useLocation();
@@ -109,8 +117,9 @@ export default function HomeMain() {
 
   return (
     <>
-      <FastKartHeader />
-      <LogoHeader
+      {/* <FastKartHeader /> */}
+      <SearchHeader></SearchHeader>
+      {/* <LogoHeader
         setIsVegetablePage={setIsVegetablePage}
         setIsAboutUsPage={setIsAboutUsPage}
         setIsContactUsPage={setIsContactUsPage}
@@ -121,7 +130,7 @@ export default function HomeMain() {
         setIsFaqPage={setIsFaqPage}
         setIsTermsPage={setIsTermsPage}
         setIsProductDetailPage={setIsProductDetailPage}
-      />
+      /> */}
       {isCheckoutPage ? (
         <Checkout setIsCheckoutPage={setIsCheckoutPage} />
       ) : isProfilePage ? (
@@ -154,27 +163,36 @@ export default function HomeMain() {
         <Termsandcondition />
       ) : (
         <>
-          <Home setIsTodayDealsPage={setIsTodayDealsPage}></Home>
-          <Category onCategoryClick={handleCategoryNavigation}></Category>
+          {/* <Home setIsTodayDealsPage={setIsTodayDealsPage}></Home> */}
+          <FirstSlider></FirstSlider>
+          {/* <Category onCategoryClick={handleCategoryNavigation}></Category> */}
+          <PopularCategories></PopularCategories>
           <GardenFresh
             setIsVegetablePage={setIsVegetablePage}
             setIsProductDetailPage={setIsProductDetailPage}
             setSelectedProductId={setSelectedProductId}
           ></GardenFresh>
-          <Slide2 setIsVegetablePage={setIsVegetablePage}></Slide2>
+         
+          {/* <Slide2 setIsVegetablePage={setIsVegetablePage}></Slide2> */}
           <Seasonal
             setIsVegetablePage={setIsVegetablePage}
             setIsProductDetailPage={setIsProductDetailPage}
             setSelectedProductId={setSelectedProductId}
           ></Seasonal>
-          <SpecialOffer
+          <AdvertiseCards></AdvertiseCards>
+          {/* <SpecialOffer
             setIsVegetablePage={setIsVegetablePage}
             setIsProductDetailPage={setIsProductDetailPage}
             setSelectedProductId={setSelectedProductId}
-          ></SpecialOffer>
+          ></SpecialOffer> */}
+          <Bestseller></Bestseller>
           <Subscribe></Subscribe>
-          <HomeMethod></HomeMethod>
-          <AppUI></AppUI>
+          <Recommended></Recommended>
+
+          {/* <HomeMethod></HomeMethod> */}
+          <WhyUs></WhyUs>
+          <Testimonial></Testimonial>
+          {/* <AppUI></AppUI> */}
         </>
       )}
       <Footer

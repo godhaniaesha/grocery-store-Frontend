@@ -1,0 +1,145 @@
+.db_popular .swiper {
+    padding: 20px 10px;
+  }
+  
+  .db_popular .swiper-button-next,
+  .db_popular .swiper-button-prev {
+    color: #213448;
+    width: 35px;
+    height: 35px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .db_popular .swiper-button-next:after,
+  .db_popular .swiper-button-prev:after {
+    font-size: 18px;
+  }
+  
+  /* --- ATTRACTIVE CARD STYLE --- */
+  .db_card {
+    border: 1px solid #e0e0e0;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: all 0.3s ease-in-out;
+    padding: 20px 15px;
+    cursor: pointer;
+  }
+  
+  .db_card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 128, 0, 0.15);
+    border-color: #8a989e;
+  }
+  
+  .db_card_body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .db_icon {
+    width: 70px;
+    height: 70px;
+    background: #e9f1f6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .db_icon::before {
+    content: '';
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border: 1px dashed #213448;
+    border-radius: 50%;
+    animation: rotate 15s linear infinite;
+  }
+  
+  .db_icon svg {
+    color: #213448;
+    transition: all 0.3s ease;
+  }
+  
+  .db_card:hover .db_icon {
+    background: #213448;
+  }
+  
+  .db_card:hover .db_icon svg {
+    color: white;
+    transform: scale(1.1);
+  }
+  
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .db_card {
+    padding: 1.5rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .db_card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+
+  
+  .db_card_title {
+    font-weight: 600;
+    color: #2d3436;
+    margin: 0.5rem 0;
+  }
+  
+  .db_card_subtitle {
+    color: #636e72;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+  
+  .db_card_subtitle {
+    font-size: 13px;
+    color: #888;
+  }
+  
+  .db_border_active {
+    border-color: #213448 !important;
+    box-shadow: 0 0 10px rgba(40,167,69,0.3);
+  }
+  
+  .db_popular .slider-nav button {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid #213448;
+    color: #213448;
+  }
+  
+  .db_popular .slider-nav button:hover {
+    background-color: #213448;
+    color: white;
+  }
+  
+  .db_popular .slider-nav i {
+    font-size: 12px;
+  }
+  
