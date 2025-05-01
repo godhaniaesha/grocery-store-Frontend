@@ -91,18 +91,16 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
     };
     // Add logging for category selection
     // Update handleCategorySelect function to work with both slider and offcanvas
+    // handleCategorySelect ફંક્શન અપડેટ કરો
     const handleCategorySelect = (categoryId) => {
-        // If clicking the same category, clear the selection (toggle off)
-        if (compareCategoryIds(selectedCategory, categoryId)) {
-            setSelectedCategory('');
-            localStorage.removeItem('selectedCategoryId');
-        } else {
-            // If clicking a different category, select it (toggle on)
-            setSelectedCategory(categoryId);
-            localStorage.setItem('selectedCategoryId', categoryId);
-        }
-        // Close the filter offcanvas when a category is selected
-        setShowFilter(false);
+        // કેટેગરી સિલેક્ટ કરો
+        setSelectedCategory(categoryId);
+        // localStorage માં કેટેગરી ID સેવ કરો
+        localStorage.setItem('selectedCategoryId', categoryId);
+        // સિલેક્ટેડ કેટેગરી ના પ્રોડક્ટ્સ ફેચ કરો
+        dispatch(fetchProducts({ categoryId }));
+        // offcanvas બંધ કરો
+        handleFilterClose();
     };
 
     const handleProductClick = (productId) => {
@@ -120,6 +118,10 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [modalShow, setModalShow] = useState(false);
+
+    // Inside your function component, add these state variables
+    const [minPrice, setMinPrice] = useState('');
+    const [maxPrice, setMaxPrice] = useState('');
     console.log(selectedProduct, "aaaaaa");
 
 
@@ -251,6 +253,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
             .map(product => {
                 const variant = variants.find(v => v.productId === product._id);
                 const cartItem = cartItems?.find(item => item.productId === product._id);
+                const category = categories?.find(cat => cat._id === product.categoryId);
 
                 // Calculate prices
                 const currentPrice = variant?.price || product.currentPrice || 0;
@@ -270,7 +273,8 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                     stockStatus: variant?.stockStatus ?? true,
                     numericPrice: parseFloat(currentPrice),
                     quantity: cartItem?.quantity || 0,
-                    description: product.description
+                    description: product.description,
+                    categoryName: category?.categoryName || 'Uncategorized'  // Add this line
                 };
             }) : [];
 
@@ -421,6 +425,35 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
         });
     };
 
+    // Add this function to your component
+    const handleApplyPriceFilter = () => {
+        // Convert inputs to numbers
+        const min = minPrice ? parseFloat(minPrice) : 0;
+        const max = maxPrice ? parseFloat(maxPrice) : 0;
+
+        // Validate that max is greater than min if both are provided
+        if (maxPrice && min > max) {
+            alert("Maximum price should be greater than minimum price");
+            return;
+        }
+
+        // Create a price range string for filtering
+        let priceRange = '';
+        if (minPrice && maxPrice) {
+            priceRange = `${min}-${max}`;
+        } else if (minPrice) {
+            priceRange = `${min}-999999`; // Some large number as upper limit
+        } else if (maxPrice) {
+            priceRange = `0-${max}`;
+        }
+
+        // Update the selected price state
+        setSelectedPrice(priceRange);
+
+        // Close the offcanvas after applying filter
+        handleFilterClose();
+    };
+
     return (
         <>
             <div className='a_header_container'>
@@ -469,7 +502,22 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                     <SwiperSlide key={index} className='me-0 d-flex justify-content-center'>
                                         <div
                                             className="z_category-card"
-                                            onClick={() => handleCategorySelect(category._id)}
+                                            onClick={() => {
+                                                // જો એજ કેટેગરી પર ક્લિક થાય તો
+                                                if (selectedCategory === category._id) {
+                                                    // localStorage માંથી ID દૂર કરો
+                                                    localStorage.removeItem('selectedCategoryId');
+                                                    // selectedCategory ને ખાલી કરો
+                                                    setSelectedCategory('');
+                                                    // બધા પ્રોડક્ટ્સ ફેચ કરો
+                                                    dispatch(fetchProducts({}));
+                                                } else {
+                                                    // નવી કેટેગરી સિલેક્ટ કરો
+                                                    setSelectedCategory(category._id);
+                                                    localStorage.setItem('selectedCategoryId', category._id);
+                                                    dispatch(fetchProducts({ categoryId: category._id }));
+                                                }
+                                            }}
                                             style={{
                                                 cursor: 'pointer'
                                             }}
@@ -498,7 +546,11 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                         <span className="z_filter-icon"><HiOutlineAdjustmentsHorizontal /></span> Filter
                     </button>
                     <div className="z_sort-dropdown">
-                        <select className="z_sort-select">
+                        <select
+                            className="z_sort-select"
+                            value={selectedSort}
+                            onChange={(e) => setSelectedSort(e.target.value)}
+                        >
                             <option value="">Sort by</option>
                             <option value="popular">Popular</option>
                             <option value="recent">Most Recent</option>
@@ -517,15 +569,46 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                         <div className="z_filter-body">
                             <Accordion defaultActiveKey={['0']} alwaysOpen className="z_filter-accordion">
                                 {/* Price Filter */}
+                                {/* // Update the price filter Accordion.Item */}
                                 <Accordion.Item eventKey="0" className="z_filter-group">
                                     <Accordion.Header className="z_filter-group-header">
                                         <h4 className="mb-0">Price Range</h4>
                                     </Accordion.Header>
                                     <Accordion.Body className="z_filter-group-content">
                                         <div className="z_price-inputs">
-                                            <input type="number" placeholder="Min" className="z_price-input" />
+                                            <input
+                                                type="number"
+                                                placeholder="Min"
+                                                className="z_price-input"
+                                                value={minPrice}
+                                                onChange={(e) => setMinPrice(e.target.value)}
+                                            />
                                             <span className="z_price-separator">-</span>
-                                            <input type="number" placeholder="Max" className="z_price-input" />
+                                            <input
+                                                type="number"
+                                                placeholder="Max"
+                                                className="z_price-input"
+                                                value={maxPrice}
+                                                onChange={(e) => setMaxPrice(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="z_filter-buttons d-flex justify-content-between">
+                                            <button
+                                                className="z_apply-filter-btn"
+                                                onClick={handleApplyPriceFilter}
+                                            >
+                                                Apply
+                                            </button>
+                                            <button
+                                                className="z_apply-filter-btn"
+                                                onClick={() => {
+                                                    setMinPrice('');
+                                                    setMaxPrice('');
+                                                    setSelectedPrice('');
+                                                }}
+                                            >
+                                                Clear
+                                            </button>
                                         </div>
                                     </Accordion.Body>
                                 </Accordion.Item>
@@ -537,6 +620,30 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                     </Accordion.Header>
                                     <Accordion.Body className="z_filter-group-content">
                                         <div className="z_checkbox-group">
+                                            <label
+                                                className="z_checkbox-label"
+                                                onClick={() => {
+                                                    // localStorage માંથી selectedCategoryId દૂર કરો
+                                                    localStorage.removeItem('selectedCategoryId');
+                                                    // selectedCategory ને ખાલી કરો
+                                                    setSelectedCategory('');
+                                                    // બધા પ્રોડક્ટ્સ ફેચ કરો
+                                                    dispatch(fetchProducts({}));
+                                                    // ફિલ્ટર મેનુ બંધ કરો
+                                                    handleFilterClose();
+                                                }}
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    className="z_checkbox-input"
+                                                    checked={!selectedCategory}
+                                                    readOnly
+                                                />
+                                                <span className="z_checkbox-custom"></span>
+                                                All Categories
+                                            </label>
+
                                             {categories.map((category, index) => (
                                                 <label
                                                     className="z_checkbox-label"
@@ -591,20 +698,11 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                 {/* Modify cards  */}
                 {/* <h2>modify cards</h2> */}
                 <div className="">
-                    {/* {searchQuery && (
-                        <div className="d-flex justify-content-between align-items-center mb-3">
-                            <h4>Search Results for "{searchQuery}"</h4>
-                            <button
-                                className="btn btn-outline-success"
-                                onClick={() => dispatch(clearSearch())}
-                            >
-                                Clear Search
-                            </button>
-                        </div>
-                    )} */}
                     <div className="row">
                         {sortedProducts.length > 0 ? (
                             sortedProducts.map((product, index) => (
+                                // console.log("product", product, product.discount)
+                                
                                 <div key={index} className="col-xxl-2 col-xl-3 col-lg-4 col-md-4 col-sm-6 mb-4">
                                     <Card className="z_product-card">
                                         <div className="z_product-image-container">
@@ -630,11 +728,14 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                     </button>
                                                 </div>
                                             </div>
-                                            {product.discount > 0 && (
-                                                <div className="a_discount-badge">
-                                                    {product.discount}% <p className='mb-0'>OFF</p>
-                                                </div>
-                                            )}
+                                            {/* Add HOT badge */}
+                                            <div className="Z_black-ribbon">
+                                            {product.discount}
+                                            </div>
+                                            
+                                            {/* {product.discount > 0 && (
+                                               
+                                            )} */}
                                         </div>
                                         <Card.Body className="z_card-body">
                                             {/* If you have a rating, render it here */}
@@ -713,10 +814,9 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                         <div className="col-md-6">
                                             <div className="z_modal-content">
                                                 <h3 className="mb-3">{selectedProduct.name}</h3>
-                                                {/* <div className="z_rating-container mb-4">
-                                             {renderStars(selectedProduct.rating)}
-                                            <span className="z_rating-text ms-2">({selectedProduct.rating} customer review)</span>
-                                        </div> */}
+                                                <div className="z_rating-container mb-4">
+                                                    <span className="z_rating-text ms-2">{selectedProduct.discount}</span>
+                                                </div>
                                                 <div className="mb-4">
                                                     <div className="d-flex align-items-center gap-2">
                                                         <span className="h3 mb-0">{selectedProduct.price}</span>
@@ -761,8 +861,11 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                         <span className="z_modal-details-value">{selectedProduct.id || '9852434'}</span>
                                                     </div>
                                                     <div className="z_modal-details-item">
-                                                        <span className="z_modal-details-label">Category:</span>
-                                                        <span className="z_modal-details-value">Body & Bath</span>
+                                                        {/* <span className="z_modal-details-label">Category:</span>
+                                                        <span className="z_modal-details-value">Body & Bath</span> */}
+                                                        <div className="product-category mb-2">
+                                                            <strong>Category:</strong> {selectedProduct?.categoryName}
+                                                        </div>
                                                     </div>
                                                     <div className="z_modal-details-item">
                                                         <span className="z_modal-details-label">Brand:</span>
