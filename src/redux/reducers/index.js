@@ -4,6 +4,7 @@ import productReducer from '../slices/product.Slice';
 import productVariantReducer from '../slices/productVeriant.Slice';
 import userReducer from '../slices/userSlice';
 import categoryReducer from '../slices/categorySlice';
+import subcategoryReducer from '../slices/Subcategory.slice';
 import contactReducer from '../slices/contactSlice';
 import emailVerificationReducer from '../slices/emailVerificationSlice';
 import addressReducer from '../slices/address.Slice';
@@ -23,6 +24,7 @@ export const rootReducer = combineReducers({
   product: productReducer,
   productveriant: productVariantReducer,
   category: categoryReducer,
+  subcategory: subcategoryReducer,
   contact: contactReducer,
   user: userReducer,
   emailVerification: emailVerificationReducer,

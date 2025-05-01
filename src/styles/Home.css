@@ -1378,7 +1378,7 @@
 }
 
 .order-now-btn {
-  background-color: #213448;
+  background-color: #2c6145;
   color: white;
   border: none;
   padding: 12px 20px;
@@ -1461,7 +1461,7 @@
 .z_section-title {
   font-size: 24px;
   font-weight: 600;
-  color: #213448;
+  color: #2c6145;
   margin-bottom: 0;
 }
 
@@ -1517,7 +1517,7 @@
 .z_category-card h4 {
   font-size: 16px;
   font-weight: 600;
-  color: #213448;
+  color: #2c6145;
   margin: 10px 0 5px;
 }
 
@@ -1575,7 +1575,7 @@
 .z_filter-title {
   font-size: 18px;
   font-weight: 600;
-  color: #213448;
+  color: #2c6145;
   margin: 0;
 }
 
@@ -1615,7 +1615,7 @@
 .z_filter-group-header h4 {
   font-size: 16px;
   font-weight: 500;
-  color: #213448;
+  color: #2c6145;
   margin: 0;
 }
 
@@ -1817,7 +1817,7 @@
   border-radius: 6px;
   border: 1px solid #ddd;
   font-size: 15px;
-  color: #213448;
+  color: #2c6145;
   background: #fff;
   font-weight: 500;
   outline: none;
@@ -1835,7 +1835,7 @@
 .z_filter-offcanvas .offcanvas-title {
   font-size: 18px;
   font-weight: 600;
-  color: #213448;
+  color: #2c6145;
 }
 
 .z_filter-offcanvas .offcanvas-body {
@@ -1973,7 +1973,7 @@
 }
 
 .z_hover-icon-btn:hover {
-  background: #213448;
+  background: #2c6145;
   color: white;
   transform: translateY(-5px) scale(1.1);
   box-shadow: 0 8px 16px rgba(44, 97, 69, 0.3);
@@ -2078,7 +2078,7 @@
 }
 
 .z_product-card:hover .z_product-title {
-  color: #213448;
+  color: #2c6145;
 }
 
 /* Modal Styles */
@@ -2144,7 +2144,7 @@
 }
 
 .z_modal-quantity-btn:not(:disabled):hover {
-  background: #213448;
+  background: #2c6145;
 }
 
 .z_modal-quantity-btn:not(:disabled):hover svg {
@@ -2165,7 +2165,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background-color: #213448;
+  background-color: #2c6145;
   border: none;
   border-radius: 30px;
   padding: 12px 25px;

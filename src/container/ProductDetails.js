@@ -134,34 +134,28 @@ const ProductDetails = ({setIsVegetablePage,setIsProductDetailPage,productId}) =
   };
 
   const getCurrentVariant = () => {
-    console.log("Product data:", product);
-    console.log("Selected size:", selectedSize);
-
-    if (!product) {
-      console.log("Product is undefined");
+    if (!product || !product.productVarientData || !Array.isArray(product.productVarientData)) {
       return null;
     }
-
-    if (!product.productVarientData) {
-      console.log("productVarientData is undefined");
-      return null;
+  
+    const variant = product.productVarientData.find(v => v.size === selectedSize) || product.productVarientData[0];
+  
+    if (variant) {
+      // Ensure price values are numbers
+      const originalPrice = parseFloat(variant.price) || 0;
+      const discountPercentage = parseFloat(variant.discount) || 0;
+      
+      // Calculate discounted price based on discount percentage
+      const calculatedDiscountPrice = originalPrice - (originalPrice * (discountPercentage / 100));
+      
+      return {
+        ...variant,
+        price: originalPrice,
+        discountPrice: calculatedDiscountPrice
+      };
     }
-
-    if (!Array.isArray(product.productVarientData)) {
-      console.log(
-        "productVarientData is not an array:",
-        product.productVarientData
-      );
-      return null;
-    }
-
-    const variant = product.productVarientData.find(
-      (v) => v.size === selectedSize
-    );
-    console.log("Found variant:", variant);
-    console.log("All variants:", product.productVarientData);
-
-    return variant || product.productVarientData[0];
+    
+    return null;
   };
 
   const handleQuantityChange = (change) => {
@@ -287,15 +281,17 @@ const ProductDetails = ({setIsVegetablePage,setIsProductDetailPage,productId}) =
               <div className="a_price-section mt-3">
                 <span>Price :</span>
                 <span className="a_current-price">
-                {formatPrice( `${getCurrentVariant()?.price}`)}
+                  {getCurrentVariant() ? formatPrice(getCurrentVariant().price) : `${currencySymbol}0`}
                 </span>
                 <span className="a_original-price">
-                {formatPrice( `${getCurrentVariant()?.discountPrice}`)}
+                  {getCurrentVariant() ? formatPrice(getCurrentVariant().discountPrice) : `${currencySymbol}0`}
                 </span>
               </div>
-              <small className="a_small_txt">Save up to 15% OFF</small>
+              <small className="a_small_txt">
+                {getCurrentVariant()?.discount ? `Save up to ${getCurrentVariant().discount}` : ''}
+              </small>
               <div className="size-selection mt-sm-4 mt-2">
-                <p className="mb-2">Pack Size</p>
+                <p className="mb-2">Pack Size: {getCurrentVariant()?.size || product?.productVarientData?.[0]?.size || 'N/A'}</p>
                 <div className="d-flex gap-2">
                   {product?.productVarientData?.map((variant) => (
                     <button
@@ -344,12 +340,25 @@ const ProductDetails = ({setIsVegetablePage,setIsProductDetailPage,productId}) =
                   <p>{product?.description}</p>
                 </div>
                 <div className="a_section">
-                  <h3>Health Benefits</h3>
-                  <p>{product?.healthBenefits}</p>
-                </div>
-                <div className="a_section">
-                  <h3>Storage and Uses</h3>
-                  <p>{product?.storageAndUses}</p>
+                  <h3>Product Tags</h3>
+                  <div className="a_tags-container d-flex flex-wrap gap-2 mt-2">
+                    {product?.tags?.map((tag, index) => (
+                      <span 
+                        key={index} 
+                        className="a_tag-item px-3 py-2 rounded-pill bg-light text-dark d-inline-flex align-items-center transition-all hover:bg-primary hover:text-white" 
+                        style={{
+                          fontSize: '0.9rem',
+                          border: '1px solid #e0e0e0',
+                          transition: 'all 0.3s ease',
+                          cursor: 'pointer',
+                          backgroundColor: '#f8f9fa',
+                          boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                        }}
+                      >
+                        {tag}
+                      </span>
+                    )) || <span className="text-muted">No tags available</span>}
+                  </div>
                 </div>
               </div>
             </div>

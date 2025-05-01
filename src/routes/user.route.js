@@ -33,6 +33,8 @@ import Thankspopup from '../container/Thankspopup';
 import HomeMain from '../components/HomeMain';
 import SimilarPro from '../container/SimilarPro';
 import VerifyForgot from '../components/VerifyForgot';
+import Main from '../container/Main';
+// import MainRoutes from '../container/MainRoutes';
 
 const UserRoutes = [
     // denisha
@@ -43,13 +45,15 @@ const UserRoutes = [
     <Route path="/FastKartHeader" element={<FastKartHeader />} />,
     <Route path="/MyProfile" element={<MyProfile />} />,
     <Route path="/HomeMain" element={<HomeMain />} />,
+    <Route path="/Main" element={<Main />} />,
+    // <Route path="/MainRoutes" element={<MainRoutes />} />,
 
     // aesha
     <Route path="/Menuheader" element={<Menuheader />} />,
     <Route path="/Category" element={<Category />} />,
     <Route path="/Subscribe" element={<Subscribe />} />,
     <Route path="/Footer" element={<Footer />} />,
-    <Route path="/Vegetable" element={<Vegetable />} />,
+    // <Route path="/Vegetable" element={<Vegetable />} />,
     <Route path="/RoleSelection" element={<RoleSelection />} />,
     <Route path="/MyProfile" element={<MyProfile />} />,
     <Route path="/SimilarPro" element={<SimilarPro />} />,

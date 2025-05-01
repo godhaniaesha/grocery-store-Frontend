@@ -30,7 +30,8 @@ export const getAllSubcategories = createAsyncThunk(
 
       const response = await axios.get('http://localhost:4000/api/AllSubCategory', {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       });
       
@@ -122,12 +123,8 @@ const subcategorySlice = createSlice({
       })
       .addCase(getAllSubcategories.fulfilled, (state, action) => {
         state.loading = false;
-        if (action.payload.success) {
-          state.subcategories = action.payload.data || [];
-          state.totalSubcategories = action.payload.totalSubCategory || 0;
-        } else {
-          state.error = action.payload.message || 'Failed to fetch subcategories';
-        }
+        state.subcategories = action.payload || [];
+        state.totalSubcategories = action.payload?.length || 0;
       })
       .addCase(getAllSubcategories.rejected, (state, action) => {
         state.loading = false;

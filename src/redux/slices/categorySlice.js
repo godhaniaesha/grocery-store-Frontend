@@ -3,8 +3,9 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 // Create async thunk for fetching all categories
 export const fetchCategories = createAsyncThunk(
   'category/fetchAll',
-  async ( { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
+      // alert("fetching")
       const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:4000/api/allCategory`, {
         headers: {
@@ -14,6 +15,8 @@ export const fetchCategories = createAsyncThunk(
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
+      console.log(data,"data");
+      
       return data;
     } catch (error) {
       return rejectWithValue(error.message);

@@ -188,7 +188,7 @@ function Recommended(props) {
 
     return (
         <>
-            <div className="a_header_container py-5">
+            <div className="a_header_container mt-5">
                 <div className="d-flex flex-lg-row flex-column justify-content-between align-items-center x_filter_btn mb-4">
                     <h2 className="z_section-title mb-4">
                         <span className="z_title-highlight">Recommended</span>

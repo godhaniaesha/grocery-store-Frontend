@@ -6,8 +6,7 @@ import { BsShop } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import { fetchCategories } from '../redux/slices/categorySlice';
 import { getAllSubcategories } from '../redux/slices/Subcategory.slice';
-import { fetchAllProducts } from '../redux/slices/product.Slice';
-
+import { fetchProducts } from '../redux/slices/product.Slice.js';
 import '../styles/x_app.css'
 import { GrFormClose } from 'react-icons/gr';
 import { HiMenuAlt2 } from 'react-icons/hi';
@@ -15,13 +14,22 @@ import { IoIosArrowDown, IoIosEye, IoIosEyeOff, IoIosLogIn, IoMdLogIn } from 're
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { FiShoppingBag } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SearchHeader() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading, error, otpSent, otpVerified } = useSelector(state => state.auth);
+  const { products, loading: productsLoading } = useSelector(state => state.product);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState([]);
+
+  useEffect(() => {
+    if (products?.length > 0) {
+      console.log('All products:', products);
+    }
+  }, [products]);
 
   const toggleMobileSearch = () => {
     setShowMobileSearch(!showMobileSearch);
@@ -45,17 +53,26 @@ export default function SearchHeader() {
   // Fetch data when component mounts
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
+    if (!token) {
+      console.log('User not logged in');
+      return;
+    }
+
+    const fetchData = async () => {
       try {
         console.log('=== FETCHING DATA ===');
-        dispatch(fetchCategories());
-        dispatch(getAllSubcategories());
+        await Promise.all([
+          dispatch(fetchCategories()).unwrap(),
+          dispatch(getAllSubcategories()).unwrap(),
+          dispatch(fetchProducts()).unwrap()
+        ]);
       } catch (error) {
         console.error('Error fetching data:', error);
+        toast.error('Failed to load categories. Please try again.');
       }
-    } else {
-      console.log('User not logged in');
-    }
+    };
+
+    fetchData();
   }, [dispatch]);
 
   // Combine categories with their subcategories
@@ -66,9 +83,12 @@ export default function SearchHeader() {
     }
 
     return storeCategories.map(category => {
-      const categorySubcategories = subcategories.filter(sub => sub.categoryId === category.id);
-      console.log(`Category ${category.categoryName} subcategories:`, categorySubcategories);
-      
+      const categorySubcategories = subcategories.filter(sub => sub.categoryId === category._id);
+      console.log(`Category ${category.categoryName} subcategories:`);
+      categorySubcategories.forEach(sub => {
+        console.log(`- ${sub.subCategoryName}`);
+      });
+
       return {
         ...category,
         subcategories: categorySubcategories
@@ -78,7 +98,6 @@ export default function SearchHeader() {
 
   // Add loading state handling
   const isLoading = categoriesLoading || subcategoriesLoading;
-
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -216,9 +235,19 @@ export default function SearchHeader() {
                   e.stopPropagation();
                   setActive("All Categories");
                   setShowDropdown(null);
+                  const filteredProducts = products.filter(product => product.subCategoryId === subcat._id);
+                  setFilteredProducts(filteredProducts);
+                  console.log('Filtered products:', filteredProducts);
                 }}
               >
-                {subcat.subcategoryName}
+                {subcat.subCategoryName}
+                {products
+                  .filter(product => product.subCategoryId === subcat._id)
+                  .map((product, idx) => (
+                    <div key={idx} className="x_product_item">
+                      {product.productName}
+                    </div>
+                  ))}
               </li>
             ))}
           </ul>
@@ -290,8 +319,8 @@ export default function SearchHeader() {
     try {
       await dispatch(login(values)).unwrap();
       console.log('Login successful');
-   
-         
+
+
       setShowLoginModal(false);
       toast.success('લૉગિન સફળ રહ્યું!');
     } catch (err) {
@@ -353,7 +382,7 @@ export default function SearchHeader() {
 
   return (
     <>
-      <header className="sticky-top shadow-sm" style={{ "backgroundColor": "#213448" }}>
+      <header className="sticky-top shadow-sm" style={{ "backgroundColor": "#2c6145" }}>
         <div className="container-sm text-white">
           <nav className="navbar navbar-expand-lg navbar-dark py-2 d-flex justify-content-between align-items-center">
             {/* ==== LEFT: LOGO & MENU ==== */}
@@ -371,7 +400,7 @@ export default function SearchHeader() {
                 </button>
               </button>
 
-              <a className="navbar-brand d-flex align-items-center" href="/">
+              <a className="navbar-brand d-flex align-items-center" href="/Main">
                 <BsShop className="me-2" size={28} />
                 <span className="fw-bold fs-4">FreshMart</span>
               </a>
@@ -420,10 +449,10 @@ export default function SearchHeader() {
                   </button>
                   {showUserDropdown && (
                     <div className="user-dropdown-menu text-center">
-                      <div className="dropdown-item gap-2 d-flex align-items-center" onClick={handleLoginClick}> <span><FaSignInAlt size={20}/></span> Login</div>
-                      <div className="dropdown-item gap-2 d-flex align-items-center"><FaUserAlt size={20}/>My Account</div>
-                      <div className="dropdown-item gap-2 d-flex align-items-center"><FiShoppingBag size={20}/>Orders</div>
-                      <div className="dropdown-item gap-2 d-flex align-items-center"><FaSignOutAlt size={20}/>Logout</div>
+                      <div className="dropdown-item gap-2 d-flex align-items-center" onClick={handleLoginClick}> <span><FaSignInAlt size={20} /></span> Login</div>
+                      <div className="dropdown-item gap-2 d-flex align-items-center"><FaUserAlt size={20} />My Account</div>
+                      <div className="dropdown-item gap-2 d-flex align-items-center"><FiShoppingBag size={20} />Orders</div>
+                      <div className="dropdown-item gap-2 d-flex align-items-center"><FaSignOutAlt size={20} />Logout</div>
                     </div>
                   )}
                 </div>
@@ -524,24 +553,53 @@ export default function SearchHeader() {
                       {active === category.categoryName && (
                         <div className="x_mega_dropdown">
                           <div className="x_dropdown_section">
-                            <h3 className="x_dropdown_title">{category.categoryName}</h3>
-                            <ul className="x_dropdown_list">
-                              {category.subcategories.map((subcat, index) => {
-                                console.log('Rendering subcategory:', subcat.subcategoryName);
-                                return (
-                                  <li
-                                    key={index}
-                                    className="x_dropdown_item"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setActive("All Categories");
-                                      setShowDropdown(null);
-                                    }}
-                                  >
-                                    {subcat.subcategoryName}
-                                  </li>
-                                );
-                              })}
+
+                            <ul className="x_dropdown_list d-flex gap-4">
+                              {subcategories
+                                .filter(sub => sub.categoryId === category._id)
+                                .map((subcat, index) => {
+                                  console.log('Rendering subcategory:', subcat.subCategoryName);
+                                  return (
+                                    <li
+                                      key={index}
+                                      className="x_dropdown_item"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setActive("All Categories");
+                                        setShowDropdown(null);
+                                        const filteredProducts = products.filter(product => product.subCategoryId === subcat._id);
+                                        setFilteredProducts(filteredProducts);
+                                        console.log('Filtered products:', filteredProducts);
+                                      }}
+                                    >
+                                      <div
+                                        role="button"
+                                        tabIndex={0}
+                                        onClick={(e) => {
+                                          localStorage.setItem('selectedSubCategoryId', subcat._id);
+                                          localStorage.setItem('activePage', 'Vegetables');
+                                          // alert(`Selected Sub Category: ${subcat.subCategoryName}`);
+                                          navigate('/Vegetable');
+                                        }}
+                                      >
+                                        {subcat.subCategoryName}
+                                      </div>
+
+                                      <hr></hr>
+                                      {products
+                                        .filter(product => product.subCategoryId === subcat._id)
+                                        .map((product, idx) => (
+                                          <div key={idx} className="x_product_item db_product_name my-1" onClick={() => {
+                                            localStorage.setItem('selectedProductId', product._id);
+                                            navigate(`/product-details/${product._id}`);
+                                          }}>
+                                            {product.productName}
+                                          </div>
+                                        ))}
+                                    </li>
+                                  );
+                                })
+                              }
                             </ul>
                           </div>
                         </div>
@@ -590,14 +648,25 @@ export default function SearchHeader() {
                           {category.subcategories.map((subcat, index) => (
                             <li
                               key={index}
-                              className="x_mobile_subitem"
+                              className="x_dropdown_item"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setActive("All Categories");
-                                setOpen(false);
+                                setShowDropdown(null);
+                                const filteredProducts = products.filter(product => product.subCategoryId === subcat._id);
+                                setFilteredProducts(filteredProducts);
+                                console.log('Filtered products:', filteredProducts);
                               }}
                             >
-                              {subcat.subcategoryName}
+                              {subcat.subCategoryName}
+                              <hr />
+                              {products
+                                .filter(product => product.subCategoryId === subcat._id)
+                                .map((product, idx) => (
+                                  <div key={idx} className="x_product_item db_product_name my-1">
+                                    {product.productName}
+                                  </div>
+                                ))}
                             </li>
                           ))}
                         </ul>
@@ -1053,7 +1122,7 @@ export default function SearchHeader() {
         }
 
         .dropdown-item:hover {
-          background-color: #213448;
+          background-color: #2c6145;
           color: white;
         }
 
@@ -1152,7 +1221,7 @@ export default function SearchHeader() {
         }
 
         .close-btn:hover svg {
-          color: #213448;
+          color: #2c6145;
         }
 
         .view-content {
@@ -1203,7 +1272,7 @@ export default function SearchHeader() {
         }
 
         .form-input:focus {
-          border-color: #213448;
+          border-color: #2c6145;
           outline: none;
         }
 
@@ -1269,7 +1338,7 @@ export default function SearchHeader() {
           font-size: 14px;
           cursor: pointer;
           transition: background-color 0.3s;
-          background-color: #213448;
+          background-color: #2c6145;
           color: white;
         }
 
@@ -1308,14 +1377,14 @@ export default function SearchHeader() {
           font-size: 14px;
           cursor: pointer;
           transition: background-color 0.3s;
-          background-color: #213448;
+          background-color: #2c6145;
           color: white;
         }
 
         .submit-btn:hover {
-          background-color: #e9f1f6;
+          background-color: #e9f6eb;
           color: #000;
-          border: 1px solid #213448;
+          border: 1px solid #2c6145;
         }
 
         .password-guidelines {
@@ -1336,7 +1405,7 @@ export default function SearchHeader() {
           content: "•";
           position: absolute;
           left: 0;
-          color: #213448;
+          color: #2c6145;
         }
 
         @media only screen and (max-width: 320px) {
