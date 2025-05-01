@@ -24,12 +24,10 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent);
   transition: all 0.5s ease;
 }
 
@@ -64,15 +62,18 @@
   /* padding: 50px 0; */
   padding-bottom: 50px;
 }
+
 .Z_mySwiper .slider-item {
   position: relative;
   height: 700px;
 }
+
 .Z_mySwiper .slider-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .Z_slider-content {
   position: absolute;
   top: 50%;
@@ -81,6 +82,7 @@
   color: white;
   max-width: 500px;
 }
+
 .Z_slider-content .Z_subtitle {
   font-size: 54px;
   /* color: #000; */
@@ -97,6 +99,7 @@
   font-weight: 700;
   color: rgba(33, 37, 41, 1);
 }
+
 .Z_lorem_txt {
   color: rgba(33, 37, 41, 1);
   font-size: 15px;
@@ -121,12 +124,15 @@
   .Z_mySwiper .slider-item img {
     height: 85%;
   }
+
   .swiper-pagination {
     top: 78% !important;
   }
+
   .Z_slider-content .Z_subtitle {
     font-size: 47px !important;
   }
+
   .Z_slider-content {
     top: 42%;
   }
@@ -142,12 +148,15 @@
   .Z_slider-content {
     top: 48%;
   }
+
   .Z_slider-content .Z_subtitle {
     font-size: 36px !important;
   }
+
   .swiper-pagination {
     top: 80% !important;
   }
+
   .Z_mySwiper .slider-item {
     height: 400px;
   }
@@ -163,9 +172,11 @@
     top: 50%;
     left: 6%;
   }
+
   .Z_mySwiper .slider-item img {
     height: 100%;
   }
+
   .swiper-pagination {
     top: 90% !important;
   }
@@ -175,6 +186,7 @@
   .Z_organic_txt {
     font-size: 18px;
   }
+
   .Z_slider-content .Z_subtitle {
     font-size: 32px !important;
   }
@@ -193,6 +205,7 @@
   background-image: url("../img/Kassets/01.png");
   background-size: cover;
 }
+
 .Z_delivery-card1 {
   display: flex;
   align-items: center;
@@ -204,6 +217,7 @@
   background-image: url("../img/Kassets/02.png");
   background-size: cover;
 }
+
 .Z_delivery-card2 {
   display: flex;
   align-items: center;
@@ -232,6 +246,7 @@
   font-size: 22px;
   font-weight: 700;
 }
+
 .Z_delivery-text2 h2 {
   font-size: 22px;
   background: linear-gradient(180deg, #67a080 0%, #4b5b19 100%);
@@ -240,6 +255,7 @@
   font-weight: 700;
   margin-bottom: 10px;
 }
+
 .Z_delivery-text3 h2 {
   font-size: 22px;
   background: linear-gradient(180deg, #032d1b 0%, #6a8123 100%);
@@ -267,6 +283,7 @@
   max-width: 150px;
   border-radius: 10px;
 }
+
 .slider-container {
   width: 100%;
   max-width: 80%;
@@ -632,6 +649,7 @@
   background: linear-gradient(180deg, #479529 0%, #0c6c44 100%);
   border: 1px solid green;
 }
+
 /* Table css */
 
 .Z_cart-table {
@@ -649,6 +667,7 @@
   padding: 10px 15px;
   text-align: left;
 }
+
 .z_tbl_radius {
   border-radius: 10px;
   border: 1px solid #dee2e6;
@@ -730,6 +749,7 @@
   border-radius: 5px 5px 0 0;
   border-bottom: none;
 }
+
 .Z_price_details {
   padding: 12px;
 }
@@ -812,13 +832,17 @@
 }
 
 .custom-modal-animation .modal-dialog {
-  transform: scale(0.8) !important; /* Initial scale */
-  transition: transform 0.3s ease-in-out !important; /* Smooth transition */
+  transform: scale(0.8) !important;
+  /* Initial scale */
+  transition: transform 0.3s ease-in-out !important;
+  /* Smooth transition */
 }
 
 .custom-modal-animation.show .modal-dialog {
-  transform: scale(1) !important; /* Final scale */
+  transform: scale(1) !important;
+  /* Final scale */
 }
+
 /* Apply Coupon */
 .Z_coupon_modal .modal-content {
   padding: 12px 20px !important;
@@ -897,6 +921,7 @@
 .Z_Add_address .modal-content {
   padding: 12px 20px !important;
 }
+
 .Z_form_label {
   font-size: 16px !important;
   font-weight: 400;
@@ -947,34 +972,42 @@
   .Z_address_box button {
     font-size: 12px;
   }
+
   .Z_address_box span {
     font-size: 14px;
   }
+
   .z_options_resp {
     overflow-y: scroll;
     max-width: 286px;
   }
+
   .x_radio-custom {
     width: 33px;
   }
+
   .z_cancel_address {
-    padding: 8px 43px !important ;
+    padding: 8px 43px !important;
   }
 
   .z_slider_conta1 {
     max-width: 100% !important;
   }
 }
+
 @media only screen and (max-width: 320px) {
   .z_options_resp {
     max-width: 230px;
   }
+
   .x_radio-custom {
     width: 42px;
   }
+
   .z_cancel_address {
-    padding: 5px 17px !important ;
+    padding: 5px 17px !important;
   }
+
   .z_address_footer .z_button {
     padding: 5px 27px !important;
     min-width: auto;
@@ -1224,13 +1257,13 @@
   cursor: pointer;
 }
 
-.z_radio-input:checked + .z_radio-custom {
+.z_radio-input:checked+.z_radio-custom {
   border: 2px solid transparent;
   background: linear-gradient(white, white) padding-box,
     linear-gradient(180deg, #0c6c44 0%, #479529 100%) border-box;
 }
 
-.z_radio-input:checked + .z_radio-custom::after {
+.z_radio-input:checked+.z_radio-custom::after {
   content: "";
   width: 14px;
   height: 14px;
@@ -1238,6 +1271,7 @@
   background: linear-gradient(180deg, #0c6c44 0%, #479529 100%);
   transition: opacity 0.3s ease;
 }
+
 .z_radio-custom {
   width: 24px;
   height: 24px;
@@ -1310,6 +1344,7 @@
   cursor: pointer;
   font-weight: 500;
 }
+
 @media only screen and (max-width: 1440px) {
   .z_uploadbox {
     height: 326px;
@@ -1318,6 +1353,7 @@
     margin-bottom: 10px !important;
   }
 }
+
 @media only screen and (max-width: 991px) {
   .z_uploadbox {
     height: 326px;
@@ -1689,12 +1725,12 @@
   transition: all 0.3s ease;
 }
 
-.z_checkbox-input:checked + .z_checkbox-custom {
+.z_checkbox-input:checked+.z_checkbox-custom {
   background: #479529;
   border-color: #479529;
 }
 
-.z_checkbox-input:checked + .z_checkbox-custom::after {
+.z_checkbox-input:checked+.z_checkbox-custom::after {
   content: "";
   position: absolute;
   left: 5px;
@@ -1736,11 +1772,11 @@
   transition: all 0.3s ease;
 }
 
-.z_radio-input:checked + .z_radio-custom {
+.z_radio-input:checked+.z_radio-custom {
   border-color: #479529;
 }
 
-.z_radio-input:checked + .z_radio-custom::after {
+.z_radio-input:checked+.z_radio-custom::after {
   content: "";
   position: absolute;
   left: 3px;
@@ -1789,7 +1825,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(90deg, #479529, #0c6c44);
+  background: linear-gradient(180deg, #23985a, #2c6145);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -1801,7 +1837,7 @@
 }
 
 .z_filter-btn:hover {
-  background: linear-gradient(90deg, #0c6c44, #479529);
+  background: linear-gradient(90deg, #23985a, #2c6145);
 }
 
 .z_filter-icon {
@@ -1864,6 +1900,7 @@
   margin-bottom: 12px;
   position: relative;
 }
+
 .z_modal-product-img,
 .z_product-image-container img {
   width: 100%;
@@ -1878,11 +1915,9 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.2),
-    rgba(0, 0, 0, 0.8)
-  );
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.8));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1905,9 +1940,11 @@
   0% {
     transform: translateY(0) scale(1);
   }
+
   50% {
     transform: translateY(-10px) scale(1.1);
   }
+
   100% {
     transform: translateY(0) scale(1);
   }
@@ -2271,12 +2308,81 @@
   color: #fff;
   border: none;
   border-radius: 6px;
-  padding: 10px 0;
+  padding: 7px 30px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
+  margin-top: 15px;
 }
+
 .z_apply-filter-btn:hover {
   background: linear-gradient(90deg, #0c6c44, #479529);
+}
+
+.z_apply-btn {
+  margin-top: 15px;
+  width: 100%;
+  padding: 8px;
+  background-color: var(--greencolor);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.z_apply-btn:hover {
+  background-color: var(--darkgreencolor);
+}
+
+/* Discount Badge Styling */
+.z_product-image-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.z_discount-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--greencolor, #4CAF50);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-weight: 700;
+  z-index: 2;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 5px;
+}
+
+.z_discount-badge .discount-text {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.z_discount-badge .discount-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Modal discount badge */
+.z_modal-discount-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: var(--greencolor, #4CAF50);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
 }
