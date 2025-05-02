@@ -7,7 +7,14 @@ import Vegetable from '../container/Vegetable';
 import Aboutus from '../container/Aboutus';
 import Footer from '../container/Footer';
 import ProductDetails from '../container/ProductDetails';
-import Faqs from '../container/Faqs';
+import FAQ from '../container/FAQ';
+import PrivacyPolicy from '../container/PrivacyPolicy';
+import Addcart from '../container/Addcart';
+import Wishlist from '../container/Wishlist';
+import MyAccount from '../container/MyAccount';
+import Contactus from '../container/Contactus';
+import PopularCategories from '../container/PopularCategories';
+import Bestseller from '../container/Bestseller';
 
 const MainRoutes = () => {
   return (
@@ -18,8 +25,14 @@ const MainRoutes = () => {
         <Route path="/Vegetable" element={<Vegetable />} />
         <Route path="/Aboutus" element={<Aboutus />} />
         <Route path="/product-details/:id" element={<ProductDetails />} />
-        <Route path="/FAQ" element={<Faqs />} />
-        {/* <Route path="/wishlist" element={<whish />} /> */}
+        <Route path="/FAQ" element={<FAQ />} />
+        <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
+        <Route path="/Addcart" element={<Addcart />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/MyAccount" element={<MyAccount />} />
+        <Route path="/contactus" element={<Contactus />} />
+        <Route path="/PopularCategories" element={<PopularCategories />} />
+        <Route path="/Bestsellers" element={<Bestseller />} />
       </Routes>
       <Footer />
     </>

@@ -66,9 +66,9 @@ export const mobileNoLogin = createAsyncThunk(
 // Verify OTP
 export const verifyOtp = createAsyncThunk(
   'auth/verifyOtp',
-  async ({ mobileNumber, otp }) => {
+  async ({ email, otp }) => {
     try {
-      const response = await axios.post('http://localhost:4000/api/verifyOtp', { mobileNumber, otp });
+      const response = await axios.post('http://localhost:4000/api/emailOtpVerify', { email, otp });
       return response.data;
     } catch (error) {
       throw error.response.data;
@@ -79,12 +79,12 @@ export const verifyOtp = createAsyncThunk(
 // Generate OTP
 export const generateOtp = createAsyncThunk(
   'auth/generateOtp',
-  async (mobileNumber) => {
+  async (email, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:4000/api/generateOtp', { mobileNumber });
+      const response = await axios.post('http://localhost:4000/api/forgotPassword', { email });
       return response.data;
     } catch (error) {
-      throw error.response.data;
+      return rejectWithValue(error.response.data);
     }
   }
 );
@@ -222,18 +222,31 @@ const authSlice = createSlice({
       })
 
       // Generate OTP
+      // .addCase(generateOtp.pending, (state) => {
+      //   state.loading = true;
+      // })
+      // .addCase(generateOtp.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.otpSent = true;
+      // })
+      // .addCase(generateOtp.rejected, (state, action) => {
+      //   state.loading = false;
+      //   state.error = action.error.message;
+      // })
+
       .addCase(generateOtp.pending, (state) => {
         state.loading = true;
+        state.error = null;
+        state.otpSent = false;
       })
-      .addCase(generateOtp.fulfilled, (state, action) => {
+      .addCase(generateOtp.fulfilled, (state) => {
         state.loading = false;
         state.otpSent = true;
       })
       .addCase(generateOtp.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload?.message || 'An error occurred during OTP generation.';
       })
-
       // Verify Generated OTP
       .addCase(verifyGeneratedOtp.pending, (state) => {
         state.loading = true;

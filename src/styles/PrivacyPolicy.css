@@ -1,0 +1,236 @@
+.db_privacy {
+    padding: 2rem 0;
+}
+
+.db_privacy_header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.db_privacy_icon {
+    font-size: 3rem;
+    color: #213448;
+    margin-bottom: 0.5rem;
+}
+
+.db_privacy_header h1 {
+    color: #213448;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.db_header_description {
+    max-width: 700px;
+    margin: 1rem auto;
+}
+
+.db_header_description p {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.db_privacy_content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.db_privacy_section {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e8e8e8;
+}
+
+.db_section_header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e9f1f6;
+}
+
+.db_section_icon {
+    color: #213448;
+    font-size: 1.5rem;
+}
+
+.db_section_header h2 {
+    color: #333;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.db_info_grid {
+    margin-top: 1rem;
+}
+
+.db_info_card {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    height: 100%;
+}
+
+.db_info_card h3 {
+    color: #213448;
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+}
+
+.db_info_card ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.db_info_card ul li {
+    color: #666;
+    padding: 0.3rem 0;
+    font-size: 0.9rem;
+}
+
+.db_protection_content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.db_protection_item {
+    text-align: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.db_item_icon {
+    color: #213448;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.db_protection_item h3 {
+    color: #333;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.db_protection_item p {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.db_cookie_info ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.db_cookie_info ul li {
+    color: #666;
+    padding: 0.3rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.db_cookie_info ul li:before {
+    content: "•";
+    color: #213448;
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+.db_cookie_notice {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: #fff3cd;
+    padding: 0.8rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.db_notice_icon {
+    color: #856404;
+    font-size: 1.2rem;
+}
+
+.db_cookie_notice p {
+    color: #856404;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.db_contact_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.db_contact_card {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.db_contact_card h3 {
+    color: #213448;
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+}
+
+.db_contact_card p {
+    color: #666;
+    margin: 0.3rem 0;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .db_privacy {
+        padding: 1.5rem;
+    }
+
+    .db_privacy_header h1 {
+        font-size: 1.8rem;
+    }
+
+    .db_section_header h2 {
+        font-size: 1.2rem;
+    }
+
+    .db_protection_content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .db_privacy ,.db_privacy_section {
+        padding: 0.7rem;
+    }
+    
+
+    .db_privacy_icon {
+        font-size: 2.5rem;
+    }
+
+    .db_privacy_header h1 {
+        font-size: 1.6rem;
+    }
+
+    .db_contact_grid {
+        grid-template-columns: 1fr;
+    }
+
+    .db_info_grid > div {
+        margin-bottom: 1rem;
+    }
+}

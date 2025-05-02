@@ -157,6 +157,7 @@ export default function SearchHeader() {
     e.preventDefault();
     try {
       await dispatch(generateOtp(email)).unwrap();
+      setEmail(email);
       setCurrentView('otp');
     } catch (err) {
       console.error('OTP generation failed:', err);
@@ -347,6 +348,7 @@ export default function SearchHeader() {
   const handleForgotSubmit = async (values, { setSubmitting }) => {
     try {
       await dispatch(generateOtp(values.email)).unwrap();
+      setEmail(values.email);
       setCurrentView('otp');
       toast.success('OTP મોકલવામાં આવ્યો છે');
     } catch (err) {
@@ -358,9 +360,15 @@ export default function SearchHeader() {
 
   const handleOtpVerification = async (values, { setSubmitting }) => {
     try {
-      await dispatch(verifyOtp({ email, otp: values.otp })).unwrap();
-      setCurrentView('new-password');
-      toast.success('OTP ચકાસણી સફળ રહી');
+      const result = await dispatch(verifyOtp({ email, otp: values.otp })).unwrap();
+      
+      // Check if verification was successful
+      if (result.success) {
+        setCurrentView('new-password');
+        toast.success('OTP ચકાસણી સફળ રહી');
+      } else {
+        toast.error(result.message || 'OTP ચકાસણી નિષ્ફળ રહી');
+      }
     } catch (err) {
       console.error('OTP verification failed:', err);
       toast.error(err.message || 'OTP ચકાસણી નિષ્ફળ રહી');
@@ -449,10 +457,18 @@ export default function SearchHeader() {
                   </button>
                   {showUserDropdown && (
                     <div className="user-dropdown-menu text-center">
-                      <div className="dropdown-item gap-2 d-flex align-items-center" onClick={handleLoginClick}> <span><FaSignInAlt size={20} /></span> Login</div>
-                      <div className="dropdown-item gap-2 d-flex align-items-center"><FaUserAlt size={20} />My Account</div>
-                      <div className="dropdown-item gap-2 d-flex align-items-center"><FiShoppingBag size={20} />Orders</div>
-                      <div className="dropdown-item gap-2 d-flex align-items-center"><FaSignOutAlt size={20} />Logout</div>
+                      <div className="dropdown-item gap-2 d-flex align-items-center" onClick={handleLoginClick}> 
+                        <span><FaSignInAlt size={20} /></span> Login
+                      </div>
+                      <Link to="/MyAccount" className="dropdown-item gap-2 d-flex align-items-center">
+                        <FaUserAlt size={20} />My Account
+                      </Link>
+                      <Link to="/orders" className="dropdown-item gap-2 d-flex align-items-center">
+                        <FiShoppingBag size={20} />Orders
+                      </Link>
+                      <Link to="/logout" className="dropdown-item gap-2 d-flex align-items-center">
+                        <FaSignOutAlt size={20} />Logout
+                      </Link>
                     </div>
                   )}
                 </div>
@@ -472,7 +488,7 @@ export default function SearchHeader() {
 
                 {/* Cart */}
                 <div className="text-center position-relative">
-                  <Link to="/cart" className="btn bg-transparent p-0 border-0 d-flex justify-content-center w-100 position-relative">
+                  <Link to="/Addcart" className="btn bg-transparent p-0 border-0 d-flex justify-content-center w-100 position-relative">
                     <FaShoppingCart size={22} className="text-white" />
                     <span
                       className="badge bg-dark text-white position-absolute top-0 start-100 translate-middle rounded-circle"
