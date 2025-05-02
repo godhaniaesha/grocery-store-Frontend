@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchProducts } from '../redux/slices/product.Slice';
 import { fetchProductVariants } from '../redux/slices/productVeriant.Slice';
 import { selectCurrency, selectCurrencySymbol, convertPrice } from '../redux/slices/currency.Slice';
+import { getAllSubcategories } from '../redux/slices/Subcategory.slice';
 import GardenFresh from './GardenFresh';
 import Category from './Category';
 import '../styles/Home.css'
@@ -37,8 +38,22 @@ import Accordion from 'react-bootstrap/Accordion';
 
 function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetablePage }) {
     const [selectedCategory, setSelectedCategory] = useState(localStorage.getItem('selectedCategoryId') || '');
+    const [selectedSubcategory, setSelectedSubcategory] = useState(localStorage.getItem('selectedSubcategoryId') || '');
     const [showModal, setShowModal] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
+
+    // Helper function for subcategory ID comparison
+    const compareSubcategoryIds = (id1, id2) => {
+        return String(id1).trim() === String(id2).trim();
+    };
+
+    // Handler for subcategory selection
+    const handleSubcategorySelect = (subcategoryId) => {
+        setSelectedSubcategory(subcategoryId);
+        localStorage.setItem('selectedSubcategoryId', subcategoryId);
+        dispatch(fetchProducts({ subcategoryId }));
+        handleFilterClose();
+    };
 
     useEffect(() => {
         const savedCategory = localStorage.getItem('selectedCategoryId');
@@ -115,6 +130,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
     const { products, loading: productLoading, error: productError } = useSelector((state) => state.product || {});
     const { variants, loading: variantLoading, error: variantError } = useSelector((state) => state.productveriant || {});
     const { categories, isLoading, error } = useSelector(state => state.category);
+    const { subcategories } = useSelector(state => state.subcategory);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [modalShow, setModalShow] = useState(false);
@@ -156,7 +172,8 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
         dispatch(fetchProducts({}));
         dispatch(fetchProductVariants({ page: 1, pageSize: 10 }));
         dispatch(fetchCategories({ page: 1, pageSize: 10 }));
-        dispatch(getallMyCarts());  // Changed from getallMyCarts to getallMyCarts
+        dispatch(getAllSubcategories());
+        dispatch(getallMyCarts());
     }, [dispatch]);
 
     // Add new useEffect to sync cartItems with productQuantities
@@ -241,14 +258,23 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
 
                 // Then check category filter
                 const selectedCategoryFromStorage = localStorage.getItem('selectedCategoryId');
+                const selectedSubcategoryFromStorage = localStorage.getItem('selectedSubcategoryId');
+                
                 const matchesCategory = !selectedCategoryFromStorage ||
                     (product.categoryId && compareCategoryIds(product.categoryId, selectedCategoryFromStorage));
+                
+                const matchesSubcategory = !selectedSubcategoryFromStorage ||
+                    (product.subCategoryId && compareSubcategoryIds(product.subCategoryId, selectedSubcategoryFromStorage));
 
                 if (selectedCategoryFromStorage && !matchesCategory) {
                     console.log("Product filtered out:", product.productName, "Category ID:", product.categoryId, "Selected Category:", selectedCategoryFromStorage);
                 }
 
-                return matchesCategory;
+                if (selectedSubcategoryFromStorage && !matchesSubcategory) {
+                    console.log("Product filtered out:", product.productName, "Subcategory ID:", product.subCategoryId, "Selected Subcategory:", selectedSubcategoryFromStorage);
+                }
+
+                return matchesCategory && matchesSubcategory;
             })
             .map(product => {
                 const variant = variants.find(v => v.productId === product._id);
@@ -665,8 +691,62 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                     </Accordion.Body>
                                 </Accordion.Item>
 
+                                {/* Subcategory Filter */}
+                                <Accordion.Item eventKey="subcategory" className="z_filter-group">
+                                    <Accordion.Header className="z_filter-group-header">
+                                        <h4 className="mb-0">Subcategories</h4>
+                                    </Accordion.Header>
+                                    <Accordion.Body className="z_filter-group-content">
+                                        <div className="z_checkbox-group">
+                                            <label
+                                                className="z_checkbox-label"
+                                                onClick={() => {
+                                                    // localStorage માંથી selectedSubcategoryId દૂર કરો
+                                                    localStorage.removeItem('selectedSubcategoryId');
+                                                    // selectedSubcategory ને ખાલી કરો
+                                                    setSelectedSubcategory('');
+                                                    // બધા પ્રોડક્ટ્સ ફેચ કરો
+                                                    dispatch(fetchProducts({}));
+                                                    // ફિલ્ટર મેનુ બંધ કરો
+                                                    handleFilterClose();
+                                                }}
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    className="z_checkbox-input"
+                                                    checked={!selectedSubcategory}
+                                                    readOnly
+                                                />
+                                                <span className="z_checkbox-custom"></span>
+                                                All Subcategories
+                                            </label>
+
+                                            {subcategories
+                                                .filter(subcategory => !selectedCategory || subcategory.categoryId === selectedCategory)
+                                                .map((subcategory, index) => (
+                                                <label
+                                                    className="z_checkbox-label"
+                                                    key={subcategory._id || index}
+                                                    onClick={() => handleSubcategorySelect(subcategory._id)}
+                                                    style={{ cursor: 'pointer' }}
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        className="z_checkbox-input"
+                                                        checked={compareSubcategoryIds(selectedSubcategory, subcategory._id)}
+                                                        readOnly
+                                                    />
+                                                    <span className="z_checkbox-custom"></span>
+                                                    {subcategory.subCategoryName}
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+
                                 {/* Discount Filter */}
-                                <Accordion.Item eventKey="2" className="z_filter-group">
+                                <Accordion.Item eventKey="discount" className="z_filter-group">
                                     <Accordion.Header className="z_filter-group-header">
                                         <h4 className="mb-0">Discount</h4>
                                     </Accordion.Header>
