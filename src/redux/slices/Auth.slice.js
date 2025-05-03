@@ -82,6 +82,7 @@ export const generateOtp = createAsyncThunk(
   async (email, { rejectWithValue }) => {
     try {
       const response = await axios.post('http://localhost:4000/api/forgotPassword', { email });
+      localStorage.setItem("resetUserId", response.data.userId);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -128,6 +129,63 @@ export const staticResendOtp = createAsyncThunk(
   }
 );
 
+// Reset Password
+export const resetPassword = createAsyncThunk(
+  'auth/resetPassword',
+  async ({ email, password, confirmPassword }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/api/resetPassword/`,
+        {
+          email: email,
+          newPassword: password,
+          confirmPassword: confirmPassword,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Unable to reset password');
+    }
+  }
+);
+
+// Logout User
+export const userLogout = createAsyncThunk(
+  'auth/userLogout',
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post('http://localhost:4000/api/userLogout', {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      localStorage.removeItem('token'); 
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Logout failed');
+    }
+  }
+);
+
+// Get User
+export const getUser = createAsyncThunk(
+  'auth/getUser',
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:4000/api/getUser', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch user data');
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
@@ -137,6 +195,7 @@ const authSlice = createSlice({
     error: null,
     otpSent: false,
     otpVerified: false,
+    passwordResetSuccess: false,
   },
   reducers: {
     clearError: (state) => {
@@ -284,8 +343,53 @@ const authSlice = createSlice({
       .addCase(staticResendOtp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      // Reset Password
+      .addCase(resetPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+        state.passwordResetSuccess = true;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.passwordResetSuccess = false;
+      })
+      // Logout
+      .addCase(userLogout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(userLogout.fulfilled, (state) => {
+        state.loading = false;
+        state.user = null;
+        state.token = null;
+        state.error = null;
+        state.otpSent = false;
+        state.otpVerified = false;
+      })
+      .addCase(userLogout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Get User
+      .addCase(getUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.data;
+      })
+      .addCase(getUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
-  },
+  }
 });
 
 export const { clearError, logout } = authSlice.actions;

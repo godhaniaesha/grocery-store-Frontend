@@ -129,7 +129,13 @@ function Seasonal({ setIsProductDetailPage, setIsVegetablePage, setSelectedProdu
         dispatch(getallMyCarts({}));
     }, [dispatch]);
 
-    if (productLoading || variantLoading) return <div>Loading...</div>;
+    if (productLoading || variantLoading) return (
+        <div className="d-flex justify-content-center align-items-center" style={{minHeight: '200px'}}>
+            <div className="spinner-border text-success" role="status">
+                <span className="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    );
     if (productError || variantError) return <div>Error: {productError || variantError}</div>;
 
     const formattedProducts = products && variants ? products

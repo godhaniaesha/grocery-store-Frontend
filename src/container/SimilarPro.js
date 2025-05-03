@@ -9,11 +9,75 @@ import '../styles/x_app.css';
 import { LiaAngleRightSolid } from 'react-icons/lia';
 import { createCart, getallMyCarts, updateCart } from '../redux/slices/cart.Slice';
 import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 function SimilarPro({setIsProductDetailPage,setIsVegetablePage}) {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [productQuantities, setProductQuantities] = useState({});
     const { cartItems } = useSelector((state) => state.addcart);
+    const selectedProductId = localStorage.getItem('selectedProductId');
+    const selectedCurrency = useSelector(selectCurrency);
+    const currencySymbol = useSelector(selectCurrencySymbol);
+    const { conversionRates } = useSelector((state) => state.currency);
+    const { products, loading: productLoading, error: productError } = useSelector((state) => state.product || {});
+    const { variants, loading: variantLoading, error: variantError } = useSelector((state) => state.productveriant || {});
+
+    // Function to convert prices based on selected currency
+    const convertPriceValue = (amount) => {
+        if (!amount || isNaN(amount)) return 0;
+        const numAmount = parseFloat(amount);
+        return (numAmount * conversionRates[selectedCurrency]).toFixed(2);
+    };
+
+    // Format price with appropriate currency symbol
+    const formatPrice = (amount) => {
+        if (!amount || isNaN(amount)) return `${currencySymbol}0`;
+        const convertedAmount = convertPriceValue(amount);
+        return `${currencySymbol}${Math.round(convertedAmount)}`;
+    };
+
+    // નવો ફંક્શન જે સિમિલર પ્રોડક્ટ્સ ફિલ્ટર કરશે
+    const getSimilarProducts = (products, variants, selectedId) => {
+        if (!products || !variants || !selectedId) return [];
+
+        // સિલેક્ટેડ પ્રોડક્ટ શોધો
+        const selectedProduct = products.find(p => p._id === selectedId);
+        if (!selectedProduct) return [];
+
+        // એજ કેટેગરીની પ્રોડક્ટ્સ ફિલ્ટર કરો
+        const categoryProducts = products
+            .filter(product => 
+                product.categoryId === selectedProduct.categoryId && 
+                product._id !== selectedId && 
+                variants.some(v => v.productId === product._id)
+            );
+
+        // રેન્ડમ રીતે પ્રોડક્ટ્સ શફલ કરો
+        const shuffledProducts = [...categoryProducts].sort(() => Math.random() - 0.5);
+
+        // પ્રથમ 6 પ્રોડક્ટ્સ લો
+        return shuffledProducts
+            .slice(0, 6)
+            .map(product => {
+                const variant = variants.find(v => v.productId === product._id);
+                if (!product) return null;
+
+                return {
+                    id: product._id,
+                    name: product.productName || 'Product Name Not Available',
+                    currentPrice: product.currentPrice ? `$${product.currentPrice}` : '$0',
+                    originalPrice: product.originalPrice ? `$${product.originalPrice}` : '$0',
+                    image: product.images || [],
+                    size: variant?.size || 'Size not available',
+                    price: formatPrice(`${variant.price}`),
+                    discountPrice: formatPrice(`${variant.discountPrice}`),
+                    discount: variant?.discount || '0',
+                    stockStatus: variant?.stockStatus ?? true
+                };
+            })
+            .filter(Boolean);
+    };
 
     const handleProductClick = (productId) => {
         localStorage.setItem('selectedProductId', productId);
@@ -96,60 +160,25 @@ function SimilarPro({setIsProductDetailPage,setIsVegetablePage}) {
         }
     };
 
-    const dispatch = useDispatch();
-    const selectedCurrency = useSelector(selectCurrency);
-    const currencySymbol = useSelector(selectCurrencySymbol);
-    const { conversionRates } = useSelector((state) => state.currency);
-
-    const { products, loading: productLoading, error: productError } = useSelector((state) => state.product || {});
-    const { variants, loading: variantLoading, error: variantError } = useSelector((state) => state.productveriant || {});
-
-    // Function to convert prices based on selected currency
-    const convertPriceValue = (amount) => {
-        if (!amount || isNaN(amount)) return 0;
-        
-        // Parse the amount to ensure it's a number
-        const numAmount = parseFloat(amount);
-        
-        // Convert from USD to selected currency
-        return (numAmount * conversionRates[selectedCurrency]).toFixed(2);
+    const handleViewAllProducts = () => {
+        localStorage.setItem('activePage', 'Vegetable');
+        setIsVegetablePage(true);
+        setIsProductDetailPage(false);
     };
 
-    // Format price with appropriate currency symbol
-    const formatPrice = (amount) => {
-        if (!amount || isNaN(amount)) return `${currencySymbol}0`;
-        
-        const convertedAmount = convertPriceValue(amount);
-        return `${currencySymbol}${Math.round(convertedAmount)}`;
-    };
     useEffect(() => {
-        dispatch(fetchProducts({}));
-        dispatch(fetchProductVariants({ page: 1, pageSize: 10 }));
-        dispatch(getallMyCarts({}));
-    }, [dispatch]);
+        const fetchData = async () => {
+            await dispatch(fetchProducts({}));
+            await dispatch(fetchProductVariants({ page: 1, pageSize: 10 }));
+            await dispatch(getallMyCarts({}));
+        };
+        fetchData();
+    }, [dispatch, selectedProductId]); // selectedProductId ડિપેન્ડન્સી ઉમેરી
 
-    if (productLoading || variantLoading) return <div>Loading...</div>;
+    if (productLoading || variantLoading) return <LoadingSpinner></LoadingSpinner>;
     if (productError || variantError) return <div>Error: {productError || variantError}</div>;
 
-    const formattedProducts = products && variants ? products
-        .filter(product => variants.some(v => v.productId === product._id))
-        .map(product => {
-            const variant = variants.find(v => v.productId === product._id);
-            if (!product) return null;
-
-        return {
-            id: product._id,
-            name: product.productName || 'Product Name Not Available',
-            currentPrice: product.currentPrice ? `$${product.currentPrice}` : '$0',
-            originalPrice: product.originalPrice ? `$${product.originalPrice}` : '$0',
-            image: product.images || [],
-            size: variant?.size || 'Size not available',
-            price: formatPrice( `${variant.price}`),
-            discountPrice: formatPrice( `${variant.discountPrice}`),
-            discount: variant?.discount || '0',  // Add this line
-            stockStatus: variant?.stockStatus ?? true
-        };
-    }).filter(Boolean).slice(0, 6) : [];
+    const formattedProducts = getSimilarProducts(products, variants, selectedProductId);
 
     if (!formattedProducts || formattedProducts.length === 0) {
         return (
@@ -169,17 +198,12 @@ function SimilarPro({setIsProductDetailPage,setIsVegetablePage}) {
             </div>
         );
     }
-    const handleViewAllProducts = () => {
-        localStorage.setItem('activePage', 'Vegetable');
-        setIsVegetablePage(true);
-        setIsProductDetailPage(false);
-    };
     return (
         <>
             <div className="a_header_container">
                 <div className="a_garden-fresh">
                     <div className="a_garden-fresh-header">
-                        <h2 className="a_garden-fresh-title">Similar Products</h2>
+                        <h2 className="a_garden-fresh-title">You May Also Like</h2>
 
                         <a href="#" className="a_view-all" onClick={() => handleViewAllProducts()}>
                             View All <LiaAngleRightSolid />
