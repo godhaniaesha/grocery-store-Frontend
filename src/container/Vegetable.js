@@ -34,6 +34,7 @@ import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
 import { FaShoppingCart, FaHeart, FaEye } from 'react-icons/fa';
 import Accordion from 'react-bootstrap/Accordion';
+import { toast } from 'react-toastify';
 
 function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetablePage }) {
     const [selectedCategory, setSelectedCategory] = useState(localStorage.getItem('selectedCategoryId') || '');
@@ -338,7 +339,16 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
     const handleFilterClose = () => setShowFilter(false);
 
     if (isLoading) {
-        return <div>Loading categories...</div>;
+        return (
+            <div
+                className="d-flex justify-content-center align-items-center"
+                style={{ minHeight: "200px" }}
+            >
+                <div className="spinner-border text-success" role="status">
+                    <span className="visually-hidden">Loading Category...</span>
+                </div>
+            </div>
+        );
     }
 
     if (error) {
@@ -453,6 +463,35 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
         // Close the offcanvas after applying filter
         handleFilterClose();
     };
+
+    const handleAddToCart = async (product) => {
+        try {
+            const cartData = {
+                productId: product._id,
+                variantId: product.variantId,
+                quantity: 1
+            };
+
+            const response = await dispatch(createCart(cartData)).unwrap();
+
+            if (response.success) {
+                // Show success toast
+                toast.success('Product has been added to cart!', {
+                    position: "top-right",
+                    autoClose: 3000
+                });
+
+                // Refresh cart items
+                dispatch(getallMyCarts());
+            }
+        } catch (error) {
+            toast.error('Error adding to cart', {
+                position: "top-right",
+                autoClose: 3000
+            });
+        }
+    };
+
 
     return (
         <>
@@ -702,7 +741,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                         {sortedProducts.length > 0 ? (
                             sortedProducts.map((product, index) => (
                                 // console.log("product", product, product.discount)
-                                
+
                                 <div key={index} className="col-xxl-2 col-xl-3 col-lg-4 col-md-4 col-sm-6 mb-4">
                                     <Card className="z_product-card">
                                         <div className="z_product-image-container">
@@ -714,7 +753,8 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                             />
                                             <div className="z_hover-overlay">
                                                 <div className="z_hover-icons">
-                                                    <button className="z_hover-icon-btn">
+                                                    <button className="z_hover-icon-btn" onClick={() => handleAddToCart(product)}
+                                                        disabled={!product.stockStatus}>
                                                         <FaShoppingCart />
                                                     </button>
                                                     <button className="z_hover-icon-btn">
@@ -730,9 +770,9 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                             </div>
                                             {/* Add HOT badge */}
                                             <div className="Z_black-ribbon">
-                                            {product.discount}
+                                                {product.discount}
                                             </div>
-                                            
+
                                             {/* {product.discount > 0 && (
                                                
                                             )} */}
@@ -849,9 +889,13 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                         </button>
                                                     </div>
 
-                                                    <button className="z_modal-add-cart-btn">
-                                                        Add to cart
-                                                        <FaShoppingCart className="z_cart-icon" />
+                                                    <button
+                                                        className="add-to-cart-btn"
+                                                        onClick={() => handleAddToCart(product)}
+                                                        disabled={!product.stockStatus}
+                                                    >
+                                                        <FaShoppingCart className="me-2" />
+                                                        Add to Cart
                                                     </button>
                                                 </div>
 

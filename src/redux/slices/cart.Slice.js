@@ -35,6 +35,8 @@ export const getallMyCarts = createAsyncThunk(
         }
       };
       const response = await axios.get(`${API_URL}/allMyCarts`, config);
+      console.log(response.data, "response.data");
+      
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response ? error.response.data : error.message);

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { createUser, login, generateOtp, verifyOtp, verifyGeneratedOtp } from '../redux/slices/Auth.slice.js';
+import { createUser, login, generateOtp, verifyOtp, verifyGeneratedOtp, resetPassword, userLogout } from '../redux/slices/Auth.slice.js';
 import { FaSearch, FaShoppingCart, FaHeart, FaBars, FaTimes, FaUser, FaTimesCircle, FaUserAlt, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { BsShop } from 'react-icons/bs';
 import { toast } from 'react-toastify';
@@ -319,14 +319,25 @@ export default function SearchHeader() {
   const handleLoginSubmit = async (values, { setSubmitting }) => {
     try {
       await dispatch(login(values)).unwrap();
-      console.log('Login successful');
-
-
       setShowLoginModal(false);
-      toast.success('લૉગિન સફળ રહ્યું!');
+      
+      // Login પછી તરત જ data fetch કરવા માટે
+      try {
+        await Promise.all([
+          dispatch(fetchCategories()).unwrap(),
+          dispatch(getAllSubcategories()).unwrap(),
+          dispatch(fetchProducts()).unwrap()
+        ]);
+      } catch (error) {
+        console.error('Error fetching data after login:', error);
+        toast.error('Failed to load categories. Please try again.');
+      }
+      
+      toast.success('Login successful!');
+      navigate('/main');
     } catch (err) {
       console.error('Login failed:', err);
-      toast.error(err.message || 'લૉગિન નિષ્ફળ રહ્યું');
+      toast.error(err.message || 'Login failed');
     }
     setSubmitting(false);
   };
@@ -336,11 +347,11 @@ export default function SearchHeader() {
       await dispatch(createUser(values)).unwrap();
       alert('ddd');
       setShowLoginModal(false);
-      toast.success('રજિસ્ટ્રેશન સફળ રહ્યું!');
+      toast.success('Registration successful!');
     } catch (err) {
       alert('ddd');
       console.error('Registration failed:', err);
-      toast.error(err.message || 'રજિસ્ટ્રેશન નિષ્ફળ રહ્યું');
+      toast.error(err.message || 'Registration failed');
     }
     setSubmitting(false);
   };
@@ -350,10 +361,10 @@ export default function SearchHeader() {
       await dispatch(generateOtp(values.email)).unwrap();
       setEmail(values.email);
       setCurrentView('otp');
-      toast.success('OTP મોકલવામાં આવ્યો છે');
+      toast.success('OTP has been sent');
     } catch (err) {
       console.error('Forgot password failed:', err);
-      toast.error(err.message || 'OTP મોકલવામાં નિષ્ફળ રહ્યું');
+      toast.error(err.message || 'Failed to send OTP');
     }
     setSubmitting(false);
   };
@@ -361,29 +372,35 @@ export default function SearchHeader() {
   const handleOtpVerification = async (values, { setSubmitting }) => {
     try {
       const result = await dispatch(verifyOtp({ email, otp: values.otp })).unwrap();
-      
-      // Check if verification was successful
       if (result.success) {
         setCurrentView('new-password');
-        toast.success('OTP ચકાસણી સફળ રહી');
+        toast.success('OTP verification successful');
       } else {
-        toast.error(result.message || 'OTP ચકાસણી નિષ્ફળ રહી');
+        toast.error(result.message || 'OTP verification failed');
       }
     } catch (err) {
       console.error('OTP verification failed:', err);
-      toast.error(err.message || 'OTP ચકાસણી નિષ્ફળ રહી');
+      toast.error(err.message || 'OTP verification failed');
     }
     setSubmitting(false);
   };
 
   const handlePasswordUpdate = async (values, { setSubmitting }) => {
     try {
-      await dispatch(verifyGeneratedOtp({ email, otp, newPassword: values.password })).unwrap();
-      setCurrentView('login');
-      toast.success('પાસવર્ડ સફળતાપૂર્વક અપડેટ થયો');
+      const userId = localStorage.getItem('resetUserId');
+      const result = await dispatch(resetPassword({
+        email: userId,
+        password: values.password,
+        confirmPassword: values.confirmPassword
+      })).unwrap();
+      
+      if (result.success) {
+        setCurrentView('login');
+        toast.success('Password updated successfully');
+      }
     } catch (err) {
       console.error('Password update failed:', err);
-      toast.error(err.message || 'પાસવર્ડ અપડેટ નિષ્ફળ રહ્યું');
+      toast.error(err.message || 'Password update failed');
     }
     setSubmitting(false);
   };
@@ -457,16 +474,44 @@ export default function SearchHeader() {
                   </button>
                   {showUserDropdown && (
                     <div className="user-dropdown-menu text-center">
-                      <div className="dropdown-item gap-2 d-flex align-items-center" onClick={handleLoginClick}> 
+                      <div className="dropdown-item gap-2 d-flex align-items-center" 
+                        onClick={() => {
+                          setShowUserDropdown(false);
+                          handleLoginClick();
+                        }}
+                      > 
                         <span><FaSignInAlt size={20} /></span> Login
                       </div>
-                      <Link to="/MyAccount" className="dropdown-item gap-2 d-flex align-items-center">
+                      <Link 
+                        to="/MyAccount" 
+                        className="dropdown-item gap-2 d-flex align-items-center"
+                        onClick={() => setShowUserDropdown(false)}
+                      >
                         <FaUserAlt size={20} />My Account
                       </Link>
-                      <Link to="/orders" className="dropdown-item gap-2 d-flex align-items-center">
+                      <Link 
+                        to="/orders" 
+                        className="dropdown-item gap-2 d-flex align-items-center"
+                        onClick={() => setShowUserDropdown(false)}
+                      >
                         <FiShoppingBag size={20} />Orders
                       </Link>
-                      <Link to="/logout" className="dropdown-item gap-2 d-flex align-items-center">
+                      <Link 
+                        to="#"
+                        className="dropdown-item gap-2 d-flex align-items-center"
+                        onClick={async () => {
+                          try {
+                            await dispatch(userLogout()).unwrap();
+                            setShowUserDropdown(false);
+                            toast.success('Logged out successfully');
+                            setShowLoginModal(true);
+                            setCurrentView('login');
+                            navigate('/main');
+                          } catch (error) {
+                            toast.error(error || 'Logout failed');
+                          }
+                        }}
+                      >
                         <FaSignOutAlt size={20} />Logout
                       </Link>
                     </div>

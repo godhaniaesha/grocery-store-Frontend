@@ -1,5 +1,5 @@
 // main.route.js
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import SearchHeader from '../container/SearchHeader';
 import Main from '../container/Main';
@@ -15,8 +15,23 @@ import MyAccount from '../container/MyAccount';
 import Contactus from '../container/Contactus';
 import PopularCategories from '../container/PopularCategories';
 import Bestseller from '../container/Bestseller';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const MainRoutes = () => {
+  const [loading, setLoading] = useState(true);
+
+  // લોડિંગ સ્થિતિ સેટ કરવા માટે useEffect નો ઉપયોગ કરો
+  React.useEffect(() => {
+    // સાઇટ લોડ થયા પછી લોડિંગ બંધ કરો
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <>
       <SearchHeader />

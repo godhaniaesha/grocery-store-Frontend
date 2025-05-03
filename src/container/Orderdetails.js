@@ -65,9 +65,12 @@ function Orderdetails(props) {
 
     if (loading) {
         return (
-            <Container className="text-center my-5">
-                <h3>Loading order details...</h3>
-            </Container>
+            <div className="d-flex justify-content-center align-items-center" style={{minHeight: '200px'}}>
+                <div className="spinner-border text-success" role="status">
+                    <span className="visually-hidden">
+                    Loading order details...</span>
+                </div>
+            </div>
         );
     }
 
