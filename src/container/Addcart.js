@@ -42,10 +42,8 @@ function Addcart({ setIsCheckoutPage, setIsCartPage }) {
   const selectedCurrency = useSelector(selectCurrency);
   const currencySymbol = useSelector(selectCurrencySymbol);
   const { conversionRates } = useSelector((state) => state.currency);
-  // const cartItems = useSelector((state) => {
-  //
-  //   return state.addcart.cartItems.filter(item => item.userId === userId);
-  // });
+  const { cartItems = [] } = useSelector((state) => state.addcart);
+  console.log(cartItems,"cartItems");
   const convertPriceValue = (amount) => {
     if (!amount || isNaN(amount)) return 0;
 
@@ -65,8 +63,8 @@ function Addcart({ setIsCheckoutPage, setIsCartPage }) {
   };
 
   const userId = JSON.parse(localStorage.getItem("user"))?._id;
-  const cartItems = useSelector((state) =>
-    state.addcart.cartItems.filter((item) => item.userId === userId)
+  const userCartItems = useSelector((state) =>
+    (state.addcart.cartItems || []).filter((item) => item.userId === userId)
   );
 
   const [show, setShow] = useState(false);

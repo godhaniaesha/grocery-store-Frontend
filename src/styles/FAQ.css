@@ -22,12 +22,12 @@
     transform: translateX(-50%);
     width: 80px;
     height: 4px;
-    background: #213448;
+    background: #2c6145;
     border-radius: 2px;
 }
 
 .db_faq_header h1 {
-    color: #213448;
+    color: #2c6145;
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
@@ -54,7 +54,7 @@
     left: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: #213448;
+    color: #2c6145;
     font-size: 1.2rem;
 }
 
@@ -70,7 +70,7 @@
 
 .db_search_box input:focus {
     outline: none;
-    border-color: #213448;
+    border-color: #2c6145;
     box-shadow: 0 4px 12px rgba(1, 105, 58, 0.15);
 }
 
@@ -83,10 +83,10 @@
 
 .db_category_btn {
     padding: 0.8rem 1.5rem;
-    border: 2px solid #213448;
+    border: 2px solid #2c6145;
     border-radius: 25px;
     background: white;
-    color: #213448;
+    color: #2c6145;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
@@ -103,7 +103,7 @@
 
 .db_category_btn:hover,
 .db_category_btn.active {
-    background: #213448;
+    background: #2c6145;
     color: white;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(1, 105, 58, 0.2);
@@ -149,8 +149,8 @@
 }
 
 .db_category_tag {
-    background: #e9f1f6;
-    color: #213448;
+    background: #e9f6e9;
+    color: #2c6145;
     padding: 0.3rem 0.8rem;
     border-radius: 12px;
     font-size: 0.8rem;
@@ -162,7 +162,7 @@
 }
 
 .db_faq_question:hover {
-    background: #e9f1f6;
+    background: #e9f6e9;
 }
 
 .db_faq_item.active {
@@ -170,8 +170,8 @@
 }
 
 .db_faq_item.active .db_faq_question {
-    color: #213448;
-    background: #e9f1f6;
+    color: #2c6145;
+    background: #e9f6e9;
 }
 
 .db_faq_answer {
@@ -184,7 +184,7 @@
 .db_faq_item.active .db_faq_answer {
     max-height: 500px;
     padding: 1.5rem;
-    border-top: 1px solid #e9f1f6;
+    border-top: 1px solid #e9f6e9;
 }
 
 .db_faq_answer p {
@@ -205,7 +205,7 @@
 
 .db_no_results_icon {
     font-size: 3rem;
-    color: #213448;
+    color: #2c6145;
     margin-bottom: 1rem;
     opacity: 0.7;
 }

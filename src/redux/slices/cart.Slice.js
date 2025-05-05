@@ -35,9 +35,9 @@ export const getallMyCarts = createAsyncThunk(
         }
       };
       const response = await axios.get(`${API_URL}/allMyCarts`, config);
-      console.log(response.data, "response.data");
+      console.log(response.data.data, "response.data.data");
       
-      return response.data;
+      return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response ? error.response.data : error.message);
     }
@@ -147,10 +147,10 @@ const cartSlice = createSlice({
       })
       .addCase(getallMyCarts.fulfilled, (state, action) => {
         state.loading = false;
-        state.cartItems = action.payload.data;
-        state.totalCartItems = action.payload.totalMyCart;
-        state.success = action.payload.success;
-        state.message = action.payload.message;
+        state.cartItems = action.payload;
+        state.totalCartItems = action.payload ? action.payload.length : 0;
+        state.success = true;
+        state.message = "Cart items fetched successfully";
       })
       .addCase(getallMyCarts.rejected, (state, action) => {
         state.loading = false;

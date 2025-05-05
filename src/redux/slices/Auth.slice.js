@@ -33,7 +33,11 @@ export const login = createAsyncThunk(
   async (credentials) => {
     try {
       const response = await axios.post('http://localhost:4000/api/userLogin', credentials);
+      console.log(response.data.data,"response");
+      
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.data));
+
       return response.data;
     } catch (error) {
       if (error.response) {

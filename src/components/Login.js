@@ -88,6 +88,11 @@ const Login = () => {
         const token = response.data.token;
         
         try {
+          // Validate token format before decoding
+          if (typeof token !== 'string' || !token.split('.').length === 3) {
+            throw new Error('Invalid token format');
+          }
+
           const decoded = jwtDecode(token);
           const userId = decoded._id;
           if (!userId) {

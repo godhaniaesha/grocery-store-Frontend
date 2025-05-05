@@ -1,8 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCategories } from '../redux/slices/categorySlice';
 import {
   GiSaltShaker,
   GiCoffeeCup,
@@ -22,8 +24,16 @@ import '../styles/Popularcategory.css';
 export default function PopularCategories() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [swiper, setSwiper] = useState(null);
+  const dispatch = useDispatch();
+  const { categories, isLoading } = useSelector((state) => state.category);
+  console.log(categories,"categories");
+  
 
-  const categories = [
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  const defaultCategories = [
     { name: "Salt", count: 98, icon: <GiSaltShaker size={35} /> },
     { name: "Coffee & Tea", count: 120, icon: <GiCoffeeCup size={35} /> },
     { name: "Oil", count: 250, icon: <GiOilDrum size={35} /> },
@@ -35,6 +45,12 @@ export default function PopularCategories() {
     { name: "Meat & Poultry", count: 300, icon: <GiMeat size={30} /> },
     { name: "Fruits & Vegetables", count: 920, icon: <GiFruitBowl size={30} /> },
   ];
+
+  const displayCategories = categories.length > 0 ? categories : defaultCategories;
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="db_popular a_header_container py-5">
@@ -77,15 +93,15 @@ export default function PopularCategories() {
           1200: { slidesPerView: 6 },
         }}
       >
-        {categories.map((category) => (
-          <SwiperSlide key={category.name}>
+        {displayCategories.map((category) => (
+          <SwiperSlide key={category.categoryName}>
             <div 
-              className={`db_card text-center h-100 ${activeCategory === category.name ? 'db_border_active' : ''}`}
-              onClick={() => setActiveCategory(category.name)}
+              className={`db_card text-center h-100 ${activeCategory === category.categoryName ? 'db_border_active' : ''}`}
+              onClick={() => setActiveCategory(category.categoryName)}
             >
               <div className="db_card_body">
                 <div className="db_icon">{category.icon}</div>
-                <h6 className="db_card_title">{category.name}</h6>
+                <h6 className="db_card_title">{category.categoryName}</h6>
                 <p className="db_card_subtitle">
                   {category.count} Products
                 </p>

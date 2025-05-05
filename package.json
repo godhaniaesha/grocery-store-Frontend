@@ -27,6 +27,7 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^3.1.0",
     "slick-carousel": "^1.8.1",
+    "styled-components": "^6.1.17",
     "swiper": "^11.2.5",
     "toolkit": "^1.5.4",
     "yup": "^1.6.1"

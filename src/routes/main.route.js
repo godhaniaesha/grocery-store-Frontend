@@ -16,6 +16,7 @@ import Contactus from '../container/Contactus';
 import PopularCategories from '../container/PopularCategories';
 import Bestseller from '../container/Bestseller';
 import LoadingSpinner from '../components/LoadingSpinner';
+import Checkout from '../container/Checkout';
 
 const MainRoutes = () => {
   const [loading, setLoading] = useState(true);
@@ -48,6 +49,7 @@ const MainRoutes = () => {
         <Route path="/contactus" element={<Contactus />} />
         <Route path="/PopularCategories" element={<PopularCategories />} />
         <Route path="/Bestsellers" element={<Bestseller />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
       <Footer />
     </>
