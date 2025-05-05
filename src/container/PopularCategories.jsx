@@ -16,8 +16,6 @@ import {
   GiFruitBowl,
 } from "react-icons/gi";
 import { FaChevronLeft, FaChevronRight, FaWineBottle } from "react-icons/fa";
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCategories } from '../redux/slices/categorySlice';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import '../styles/Popularcategory.css';
@@ -77,12 +75,6 @@ export default function PopularCategories() {
 
   if (error) {
     return <div>Error: {error}</div>;
-  }
-
-  const displayCategories = categories.length > 0 ? categories : defaultCategories;
-
-  if (isLoading) {
-    return <div>Loading...</div>;
   }
 
   return (
