@@ -54,7 +54,7 @@ export const deleteFromWishlist = createAsyncThunk(
         try {
             const token = localStorage.getItem('token');
             const response = await axios.delete(
-                `http://localhost:4000/api/wishlist/${wishlistId}`,
+                `http://localhost:4000/api/deleteWishlist/${wishlistId}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`

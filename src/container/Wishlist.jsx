@@ -5,9 +5,12 @@ import { FaHeart, FaShoppingCart, FaTrash, FaStar } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { getWishlistItems, deleteFromWishlist } from '../redux/slices/wishlist.Slice';
 import '../styles/Wishlist.css';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Wishlist = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const { wishlistItems, loading, error } = useSelector(state => state.wishlist);
     console.log(wishlistItems, "wishlistItems");
 
@@ -34,7 +37,7 @@ const Wishlist = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner />;
     }
 
     if (error) {
@@ -51,7 +54,7 @@ const Wishlist = () => {
                         </div>
                         <h3>Your Wishlist is Empty</h3>
                         <p>Add items that you like to your wishlist and review them anytime</p>
-                        <Link to="/shop" className="db_shop_btn">
+                        <Link to="/vegetable" className="db_shop_btn">
                             <FaShoppingCart className="db_btn_icon" />
                             Start Shopping
                         </Link>
@@ -108,7 +111,11 @@ const Wishlist = () => {
                                         ({Number(product?.rating || 0).toFixed(1)})
                                     </span>
                                 </div>
-                                <Card.Title className="z_product-title">
+                                <Card.Title className="z_product-title"          onClick={() => {
+                          localStorage.setItem('selectedProductId', product._id);
+                          localStorage.setItem('activePage', 'ProductDetails');
+                          navigate(`/product-details/${product._id}`);
+                        }}>
                                     {product.productName}
                                 </Card.Title>
                                 <Card.Text className="z_product-subtitle">

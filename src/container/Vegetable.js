@@ -493,41 +493,40 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
 
     const handleAddToCart = async (product) => {
         try {
-            const cartData = {
-                productId: product._id,
-                variantId: product.variantId,
-                quantity: 1
-            };
-
-            const response = await dispatch(createCart(cartData)).unwrap();
-
-            if (response.success) {
-                // Show success toast
-                toast.success('Product has been added to cart!', {
-                    position: "top-right",
-                    autoClose: 3000
-                });
-
-                // Refresh cart items
-                dispatch(getallMyCarts());
-            }
+          const variant = variants?.find(v => v.productId === product._id);
+          if (!variant) {
+            toast.error("Product variant not found");
+            return;
+          }
+          console.log(variant._id, "variant._id");
+          
+    
+          await dispatch(createCart({
+            productId: product._id,
+            productVarientId: variant._id,
+            quantity: 1
+          })).unwrap();
+          toast.success("Item added to cart");
         } catch (error) {
-            toast.error('Error adding to cart', {
-                position: "top-right",
-                autoClose: 3000
-            });
+          console.error("Cart operation failed:", error);
+          // Check if error is for existing cart item
+          if (error?.message === 'Cart Already Exist') {
+            toast.info("Item quantity updated in cart"); // Changed message here
+          } else {
+            toast.error("Failed to add to cart");
+          }
         }
-    };
+      };
 
 
-    const handleAddToWishlist = async (productId) => {
+      const handleAddToWishlist = async (productId) => {
         try {
-            await dispatch(createWishlist(productId)).unwrap();
-            toast.success('Product added to wishlist successfully!');
+          await dispatch(createWishlist(productId)).unwrap();
+          toast.success('Item added to wishlist');
         } catch (error) {
-            toast.error(error.message || 'Failed to add to wishlist');
+          toast.error(error.message || 'Failed to add to wishlist');
         }
-    };
+      };
 
     return (
         <>
@@ -876,7 +875,11 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                 {renderStars(product.rating)}
                                                 <span className="z_rating-text">({product.rating})</span>
                                             </div> */}
-                                            <Card.Title className="z_product-title text-nowrap">{product.name}</Card.Title>
+                                            <Card.Title className="z_product-title text-nowrap"          onClick={() => {
+                          localStorage.setItem('selectedProductId', product._id);
+                          localStorage.setItem('activePage', 'ProductDetails');
+                          navigate(`/product-details/${product._id}`);
+                        }}>{product.name}</Card.Title>
                                             <Card.Text className="z_product-subtitle">
                                                 {product.size}
                                             </Card.Text>
