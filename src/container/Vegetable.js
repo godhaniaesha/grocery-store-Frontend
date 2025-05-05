@@ -36,6 +36,7 @@ import Modal from 'react-bootstrap/Modal';
 import { FaShoppingCart, FaHeart, FaEye } from 'react-icons/fa';
 import Accordion from 'react-bootstrap/Accordion';
 import { toast } from 'react-toastify';
+import { createWishlist } from '../redux/slices/wishlist.Slice';
 
 function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetablePage }) {
     const [selectedCategory, setSelectedCategory] = useState(localStorage.getItem('selectedCategoryId') || '');
@@ -260,10 +261,10 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                 // Then check category filter
                 const selectedCategoryFromStorage = localStorage.getItem('selectedCategoryId');
                 const selectedSubcategoryFromStorage = localStorage.getItem('selectedSubcategoryId');
-                
+
                 const matchesCategory = !selectedCategoryFromStorage ||
                     (product.categoryId && compareCategoryIds(product.categoryId, selectedCategoryFromStorage));
-                
+
                 const matchesSubcategory = !selectedSubcategoryFromStorage ||
                     (product.subCategoryId && compareSubcategoryIds(product.subCategoryId, selectedSubcategoryFromStorage));
 
@@ -519,6 +520,15 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
     };
 
 
+    const handleAddToWishlist = async (productId) => {
+        try {
+            await dispatch(createWishlist(productId)).unwrap();
+            toast.success('Product added to wishlist successfully!');
+        } catch (error) {
+            toast.error(error.message || 'Failed to add to wishlist');
+        }
+    };
+
     return (
         <>
             <div className='a_header_container'>
@@ -764,22 +774,22 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                             {subcategories
                                                 .filter(subcategory => !selectedCategory || subcategory.categoryId === selectedCategory)
                                                 .map((subcategory, index) => (
-                                                <label
-                                                    className="z_checkbox-label"
-                                                    key={subcategory._id || index}
-                                                    onClick={() => handleSubcategorySelect(subcategory._id)}
-                                                    style={{ cursor: 'pointer' }}
-                                                >
-                                                    <input
-                                                        type="checkbox"
-                                                        className="z_checkbox-input"
-                                                        checked={compareSubcategoryIds(selectedSubcategory, subcategory._id)}
-                                                        readOnly
-                                                    />
-                                                    <span className="z_checkbox-custom"></span>
-                                                    {subcategory.subCategoryName}
-                                                </label>
-                                            ))}
+                                                    <label
+                                                        className="z_checkbox-label"
+                                                        key={subcategory._id || index}
+                                                        onClick={() => handleSubcategorySelect(subcategory._id)}
+                                                        style={{ cursor: 'pointer' }}
+                                                    >
+                                                        <input
+                                                            type="checkbox"
+                                                            className="z_checkbox-input"
+                                                            checked={compareSubcategoryIds(selectedSubcategory, subcategory._id)}
+                                                            readOnly
+                                                        />
+                                                        <span className="z_checkbox-custom"></span>
+                                                        {subcategory.subCategoryName}
+                                                    </label>
+                                                ))}
                                         </div>
                                     </Accordion.Body>
                                 </Accordion.Item>
@@ -837,7 +847,10 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                         disabled={!product.stockStatus}>
                                                         <FaShoppingCart />
                                                     </button>
-                                                    <button className="z_hover-icon-btn">
+                                                    <button
+                                                        className="z_hover-icon-btn"
+                                                        onClick={() => handleAddToWishlist(product._id)}
+                                                    >
                                                         <FaHeart />
                                                     </button>
                                                     <button
