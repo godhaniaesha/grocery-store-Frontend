@@ -43,6 +43,25 @@ export const fetchProductById = createAsyncThunk(
   }
 );
 
+// Fetch products by category
+export const fetchProductsByCategory = createAsyncThunk(
+  "products/fetchProductsByCategory",
+  async (categoryId, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+      const response = await axios.get(`${API_URL}/getProductByCategory/${categoryId}`, config);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response ? error.response.data : error.message);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: 'product',
   initialState: {
@@ -50,7 +69,8 @@ const productSlice = createSlice({
     product: null,
     loading: false,
     error: null,
-    totalProducts: 0
+    totalProducts: 0,
+    productsByCategory: {}
   },
   reducers: {
     clearProductError: (state) => {
@@ -85,6 +105,20 @@ const productSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchProductById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Handle fetchProductsByCategory
+      .addCase(fetchProductsByCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchProductsByCategory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.productsByCategory[action.meta.arg] = action.payload.data;
+        state.error = null;
+      })
+      .addCase(fetchProductsByCategory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

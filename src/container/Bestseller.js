@@ -25,6 +25,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
  
 function Bestseller(props) {
   const dispatch = useDispatch();
@@ -168,9 +169,11 @@ function Bestseller(props) {
             <h2 className="z_section-title">
               <span className="z_title-dark">Bestsellers </span>
             </h2>
-            <a href="#" className="z_view-all-link">
+            <Link to="/Vegetable" className="z_view-all-link">
               View All <FaChevronRight className="z_view-all-icon" />
-            </a>
+            </Link>
+
+
           </div>
  
           <div className="position-relative">

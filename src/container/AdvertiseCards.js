@@ -5,6 +5,7 @@ import '../styles/Z_style.css';
 import GrainsImage from '../image/z_accets/banner.png';
 import VeggieImage from '../image/z_accets/banner-1.png';
 import FruitImage from '../image/z_accets/banner-2.png';
+import { Link } from 'react-router-dom';
 
 function AdvertiseCards() {
     return (
@@ -14,17 +15,17 @@ function AdvertiseCards() {
                     <div className="z_advertise-card z_large-card z_first-card h-100">
                         <div className="z_card-image">
                             <img src={GrainsImage} alt="Fresh Grains" />
-                            <div className="z_content-area">    
+                            <div className="z_content-area">
                                 <div className="z_advertise-content">
                                     <h2 className="z_advertise-title">
                                         <span>Don't miss our daily</span><br />
                                         <span>amazing deals.</span>
                                     </h2>
                                     <p className="z_advertise-text text-dark">Save up to 60% off on your first order</p>
-                                    <button className="z_advertise-btn">
+                                    <Link to="/Vegetable" className="z_advertise-btn">
                                         Order Now
                                         <span className="z_btn-arrow">→</span>
-                                    </button>
+                                    </Link >
                                 </div>
                             </div>
                         </div>
@@ -44,10 +45,10 @@ function AdvertiseCards() {
                                                 unbeatable prices.
                                             </h3>
                                             <p className="z_advertise-text small">Only this week. Don't miss...</p>
-                                            <button className="z_advertise-btn z_outline-btn">
+                                            <Link to="/Vegetable" className="z_advertise-btn z_outline-btn">
                                                 Shop Now
                                                 <span className="z_btn-arrow">→</span>
-                                            </button>
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>
@@ -65,10 +66,10 @@ function AdvertiseCards() {
                                                 unbeatable prices.
                                             </h3>
                                             <p className="z_advertise-text small">Only this week. Don't miss...</p>
-                                            <button className="z_advertise-btn z_outline-btn">
+                                            <Link to="/Vegetable" className="z_advertise-btn z_outline-btn">
                                                 Shop Now
                                                 <span className="z_btn-arrow">→</span>
-                                            </button>
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>
