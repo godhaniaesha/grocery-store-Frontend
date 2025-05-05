@@ -26,6 +26,7 @@ function Recommended(props) {
         const categoryId = category === 'All' ? 'All' : categories.find(cat => cat.categoryName === category)?._id;
         setSelectedCategory(category);
         localStorage.setItem('selectedCategoryR', categoryId);
+        localStorage.setItem('selectedCategoryNameR', category); // Store category name
     };
  
     useEffect(() => {
@@ -34,13 +35,12 @@ function Recommended(props) {
         dispatch(fetchProductVariants({}));
  
         // Load selected category from localStorage on component mount
-        const savedCategory = localStorage.getItem('selectedCategoryR');
-        if (savedCategory) {
-            setSelectedCategory(savedCategory);
+        const savedCategoryName = localStorage.getItem('selectedCategoryNameR');
+        if (savedCategoryName) {
+            setSelectedCategory(savedCategoryName);
         }
     }, [dispatch]);
- 
-    // Format products with their variants
+
     const formattedProducts = React.useMemo(() => {
         if (!products || !variants) return [];
  
@@ -73,16 +73,20 @@ function Recommended(props) {
             });
     }, [products, variants]);
  
-    // Filter products based on selected category ID from localStorage
+    // Filter products based on selected category
     const filteredProducts = React.useMemo(() => {
-        const selectedCategoryId = localStorage.getItem('selectedCategoryR');
- 
-        if (!selectedCategoryId || selectedCategoryId === 'All') {
+        if (selectedCategory === 'All') {
             return formattedProducts;
         }
+        
+        return formattedProducts.filter(product => 
+            product.category === selectedCategory || 
+            product.subtitle === selectedCategory
+        );
+    }, [formattedProducts, selectedCategory]);
  
-        return formattedProducts.filter(product => product.categoryId === selectedCategoryId);
-    }, [formattedProducts]);
+    // Format products with their variants
+
  
     const handleClose = () => {
         setModalShow(false);

@@ -615,7 +615,7 @@ export default function SearchHeader() {
                         <div className="x_mega_dropdown">
                           <div className="x_dropdown_section">
 
-                            <ul className="x_dropdown_list d-flex gap-4">
+                            <ul className="x_dropdown_list d-flex gap-5">
                               {subcategories
                                 .filter(sub => sub.categoryId === category._id)
                                 .map((subcat, index) => {
@@ -704,7 +704,7 @@ export default function SearchHeader() {
                   {showDropdown === category.categoryName && (
                     <div className="x_mobile_submenu">
                       <div className="x_mobile_section">
-                        <h3 className="x_mobile_title">{category.categoryName}</h3>
+                        {/* <h3 className="x_mobile_title">{category.categoryName}</h3> */}
                         <ul className="x_mobile_list">
                           {category.subcategories.map((subcat, index) => (
                             <li
@@ -720,11 +720,10 @@ export default function SearchHeader() {
                               }}
                             >
                               {subcat.subCategoryName}
-                              <hr />
                               {products
                                 .filter(product => product.subCategoryId === subcat._id)
                                 .map((product, idx) => (
-                                  <div key={idx} className="x_product_item db_product_name my-1">
+                                  <div key={idx} className="x_product_item db_product_name hover-underline my-1">
                                     {product.productName}
                                   </div>
                                 ))}

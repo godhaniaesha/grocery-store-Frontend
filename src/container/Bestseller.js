@@ -16,6 +16,7 @@ import {
   FaChevronRight,
   FaChevronLeft,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
  
 function Bestseller(props) {
   const dispatch = useDispatch();
@@ -126,9 +127,11 @@ function Bestseller(props) {
             <h2 className="z_section-title">
               <span className="z_title-dark">Bestsellers </span>
             </h2>
-            <a href="#" className="z_view-all-link">
+            <Link to="/Vegetable" className="z_view-all-link">
               View All <FaChevronRight className="z_view-all-icon" />
-            </a>
+            </Link>
+
+
           </div>
  
           <div className="position-relative z_product-carousel-container">

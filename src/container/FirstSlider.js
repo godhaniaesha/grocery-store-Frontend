@@ -6,6 +6,7 @@ import slide1 from '../image/z_accets/Slide1.png';
 import slide2 from '../image/z_accets/Tabpanel.png';
 import slide3 from '../image/z_accets/Slide3.png';
 import '../styles/Z_style.css';
+import { Link } from 'react-router-dom';
 
 function FirstSlider() {
     return (
@@ -21,7 +22,8 @@ function FirstSlider() {
                         <span className="z_discount-badge">Weekend Discount</span>
                         <h3>Don't miss our daily amazing deals</h3>
                         <p>Save up to 60% off on your first order</p>
-                        <a href="#shop" className="z_order-btn">Order Now →</a>
+                        {/* <a href="#Vegetable" className="z_order-btn">Order Now →</a> */}
+                        <Link to="/Vegetable" className="z_order-btn">Order Now →</Link>
                     </Carousel.Caption>
                 </Carousel.Item>
                 <Carousel.Item>
@@ -34,7 +36,7 @@ function FirstSlider() {
                         <span className="z_discount-badge">Weekend Discount</span>
                         <h3>Shopping with us for better quality and the best price</h3>
                         <p>We have prepared special discounts for you on grocery products.</p>
-                        <a href="#shop" className="z_order-btn">Shop Now →</a>
+                        <Link to="/Vegetable" className="z_order-btn">Order Now →</Link>
                     </Carousel.Caption>
                 </Carousel.Item>
                 <Carousel.Item>
@@ -47,7 +49,7 @@ function FirstSlider() {
                         <span className="z_discount-badge">Weekend Discount</span>
                         <h3>Get the best quality products at the lowest prices</h3>
                         <p>We have prepared special discounts for you on organic breakfast products.</p>
-                        <a href="#shop" className="z_order-btn">Shop Now →</a>
+                        <Link to="/Vegetable" className="z_order-btn">Order Now →</Link>
                     </Carousel.Caption>
                 </Carousel.Item>
             </Carousel>

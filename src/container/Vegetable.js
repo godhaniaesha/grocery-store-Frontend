@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { fetchProducts } from '../redux/slices/product.Slice';
 import { fetchProductVariants } from '../redux/slices/productVeriant.Slice';
 import { selectCurrency, selectCurrencySymbol, convertPrice } from '../redux/slices/currency.Slice';
@@ -540,12 +540,12 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                 <div className="Z_banner_content text-end">
                                     <h2>Premium Grocery Store</h2>
                                     <p>Discover our selection of high-quality nuts, dried fruits, seeds, spices, and grains</p>
-                                    <button className="order-now-btn">
+                                    <Link to="/Vegetable" className="order-now-btn">
                                         Order Now
                                         <span>
                                             <FaChevronRight />
                                         </span>
-                                    </button>
+                                    </Link>
                                 </div>
                             </Col>
                         </Row>
