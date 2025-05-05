@@ -233,6 +233,7 @@ function Recommended(props) {
  
                                         <div className="z_rating-container mb-4">
                                             {renderStars(selectedProduct.rating)}
+                                            <p></p>
                                             <span className="z_rating-text ms-2">({selectedProduct.rating} customer review)</span>
                                         </div>
  
