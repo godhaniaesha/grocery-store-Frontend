@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../redux/slices/product.Slice';
 import { fetchProductVariants } from '../redux/slices/productVeriant.Slice';
 import { fetchCategories } from '../redux/slices/categorySlice';
+import { createCart, updateCart, getallMyCarts } from '../redux/slices/cart.Slice';
 import {
   FaShoppingCart,
   FaHeart,
@@ -16,12 +17,22 @@ import {
   FaChevronRight,
   FaChevronLeft,
 } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { createWishlist } from "../redux/slices/wishlist.Slice";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
  
 function Bestseller(props) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { products, loading: productLoading } = useSelector((state) => state.product);
   const { variants, loading: variantLoading } = useSelector((state) => state.productveriant);
   const { categories, isLoading: categoryLoading } = useSelector((state) => state.category);
+  const { cartItems } = useSelector(state => state.addcart);
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalShow, setModalShow] = useState(false);
@@ -92,14 +103,12 @@ function Bestseller(props) {
   };
  
   // Function to get the current visible products (6 at a time)
+  // આ ફંક્શન્સ હટાવી શકાય છે કારણ કે હવે Swiper તેને મેનેજ કરશે
+  // handleNext, handlePrev, currentIndex અને auto slide functionality ને હટાવી દો
   const getVisibleProducts = () => {
     if (!products || products.length === 0) return [];
-   
-    // Create a circular array by duplicating products
-    const extendedProducts = [...products, ...products];
-   
-    // Filter products that have variants and map them with variant data
-    const productsWithVariants = extendedProducts
+    
+    return products
       .filter(product => variants?.some(v => v.productId === product._id))
       .map(product => {
         const variant = variants?.find(v => v.productId === product._id);
@@ -109,18 +118,51 @@ function Bestseller(props) {
           variantDiscount: variant?.discount || 0
         };
       });
- 
-    // Start from the current index and take 6 products
-    return productsWithVariants.slice(currentIndex, currentIndex + 6);
   };
  
   if (productLoading || variantLoading) {
     return <div>Loading...</div>;
   }
  
+  // Add cart handling functions
+  const handleAddToCart = async (product) => {
+    try {
+      const variant = variants?.find(v => v.productId === product._id);
+      if (!variant) {
+        toast.error("Product variant not found");
+        return;
+      }
+      console.log(variant._id, "variant._id");
+      
+
+      await dispatch(createCart({
+        productId: product._id,
+        productVarientId: variant._id,
+        quantity: 1
+      })).unwrap();
+      toast.success("Item added to cart");
+    } catch (error) {
+      console.error("Cart operation failed:", error);
+      // Check if error is for existing cart item
+      if (error?.message === 'Cart Already Exist') {
+        toast.info("Item quantity updated in cart"); // Changed message here
+      } else {
+        toast.error("Failed to add to cart");
+      }
+    }
+  };
+
+  const handleAddToWishlist = async (productId) => {
+    try {
+      await dispatch(createWishlist(productId)).unwrap();
+      toast.success('Item added to wishlist');
+    } catch (error) {
+      toast.error(error.message || 'Failed to add to wishlist');
+    }
+  };
   return (
     <>
-      <section>
+      <section className="">
         <div className="a_header_container my-5">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2 className="z_section-title">
@@ -131,87 +173,105 @@ function Bestseller(props) {
             </a>
           </div>
  
-          <div className="position-relative z_product-carousel-container">
-            <button
-              className="z_carousel-control z_carousel-prev"
-              onClick={handlePrev}
+          <div className="position-relative">
+            <Swiper
+              modules={[Navigation, Autoplay]}
+              spaceBetween={20}
+              slidesPerView={6}
+              navigation={{
+                nextEl: '.x_swiper-button-next',
+                prevEl: '.x_swiper-button-prev'
+              }}
+              autoplay={{
+                delay: 3000,
+                disableOnInteraction: false,
+              }}
+              breakpoints={{
+                320: {
+                  slidesPerView: 1,
+                },
+                576: {
+                  slidesPerView: 2,
+                },
+                768: {
+                  slidesPerView: 3,
+                },
+                992: {
+                  slidesPerView: 4,
+                },
+                1200: {
+                  slidesPerView: 6,
+                },
+              }}
             >
-              <FaChevronLeft className="z_carousel-icon" />
-            </button>
- 
-            <div className="z_product-slider-container">
-              <div
-                className="z_product-slider"
-                style={{
-                  transform: `translateX(0)`,
-                  transition: "transform 0.5s ease-in-out",
-                }}
-              >
-                <div className="row my-2">
-                  {getVisibleProducts().map((product, index) => (
-                    <div key={index} className="col-lg-2 col-md-4 col-sm-6">
-                      <Card className="z_product-card">
-                        <div className="z_product-image-container">
-                          <Card.Img
-                            variant="top"
-                            src={`http://localhost:4000/${product.images?.[0]}`}
-                            alt={product.productName}
-                          />
-                          <div className="z_hover-overlay">
-                            <div className="z_hover-icons">
-                              <button className="z_hover-icon-btn">
-                                <FaShoppingCart />
-                              </button>
-                              <button className="z_hover-icon-btn">
-                                <FaHeart />
-                              </button>
-                              <button
-                                className="z_hover-icon-btn"
-                                onClick={() => handleShow(product)}
-                              >
-                                <FaEye />
-                              </button>
-                            </div>
-                          </div>
-                          <div className="Z_black-ribbon">
-                                                -{product.variantDiscount}
-                                            </div>
+              <div className="x_swiper-button-prev"> <MdKeyboardArrowLeft /></div>
+              <div className="x_swiper-button-next"> <MdKeyboardArrowRight /></div>
+              {getVisibleProducts().map((product, index) => (
+                <SwiperSlide key={index}>
+                  <Card className="z_product-card">
+                    <div className="z_product-image-container">
+                      <Card.Img
+                        variant="top"
+                        src={`http://localhost:4000/${product.images?.[0]}`}
+                        alt={product.productName}
+                      />
+                      <div className="z_hover-overlay">
+                        <div className="z_hover-icons">
+                          <button 
+                            className="z_hover-icon-btn"
+                            onClick={() => handleAddToCart(product)}
+                          >
+                            <FaShoppingCart />
+                          </button>
+                          <button 
+                            className="z_hover-icon-btn"
+                            onClick={() => handleAddToWishlist(product._id)}
+                          >
+                            <FaHeart />
+                          </button>
+                          <button
+                            className="z_hover-icon-btn"
+                            onClick={() => handleShow(product)}
+                          >
+                            <FaEye />
+                          </button>
                         </div>
-                        <Card.Body className="z_card-body">
-                          <div className="z_rating-container">
-                            {renderStars(4.5)}
-                            <span className="z_rating-text">
-                              (4.5)
-                            </span>
-                          </div>
-                          <Card.Title className="z_product-title">
-                            {product.productName}
-                          </Card.Title>
-                          {/* <Card.Text className="z_product-subtitle">
-                            {product.description}
-                          </Card.Text> */}
-                          <div className="z_price-container">
-                            <span className="z_current-price">
-                              ${product.variantPrice || 0}
-                            </span>
-                            <span className="z_original-price">
-                              ${((product.variantPrice || 0) * 1.2).toFixed(2)}
-                            </span>
-                          </div>
-                        </Card.Body>
-                      </Card>
+                      </div>
+                      <div className="Z_black-ribbon">
+                        -{product.variantDiscount}
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </div>
- 
-            <button
-              className="z_carousel-control z_carousel-next"
-              onClick={handleNext}
-            >
-              <FaChevronRight className="z_carousel-icon" />
-            </button>
+                    <Card.Body className="z_card-body">
+                      <div className="z_rating-container">
+                        {renderStars(4.5)}
+                        <span className="z_rating-text">
+                          (4.5)
+                        </span>
+                      </div>
+                      <Card.Title 
+                        className="z_product-title"
+                        onClick={() => {
+                          localStorage.setItem('selectedProductId', product._id);
+                          localStorage.setItem('activePage', 'ProductDetails');
+                          navigate(`/product-details/${product._id}`);
+                        }}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {product.productName}
+                      </Card.Title>
+                      <div className="z_price-container">
+                        <span className="z_current-price">
+                          ${product.variantPrice || 0}
+                        </span>
+                        <span className="z_original-price">
+                          ${((product.variantPrice || 0) * 1.2).toFixed(2)}
+                        </span>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         </div>
  

@@ -992,7 +992,7 @@
 .x_swiper-button-prev:hover svg,
 .x_swiper-button-next:hover svg {
   color: #fff;
-  background: #0c6c44;
+  /* background: #0c6c44; */
 }
 
 .x_swiper-button-prev:active svg,

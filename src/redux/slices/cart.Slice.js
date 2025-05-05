@@ -95,6 +95,24 @@ export const deleteCart = createAsyncThunk(
   }
 );
 
+// Add this new action to check if product exists in cart
+export const getCartItem = createAsyncThunk(
+  "cart/getCartItem",
+  async ({ productId }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+      const response = await axios.get(`${API_URL}/getCart/${productId}`, config);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response ? error.response.data : error.message);
+    }
+  }
+);
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -104,7 +122,8 @@ const cartSlice = createSlice({
     error: null,
     success: false,
     message: '',
-    totalCartItems: 0
+    totalCartItems: 0,
+    existingCartItem: null
   },
   reducers: {
     clearCartState: (state) => {
@@ -209,8 +228,24 @@ const cartSlice = createSlice({
       .addCase(deleteCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
 
+      // Add case for getCartItem
+      .addCase(getCartItem.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCartItem.fulfilled, (state, action) => {
+        state.loading = false;
+        state.existingCartItem = action.payload.data;
+        state.success = action.payload.success;
+        state.message = action.payload.message;
+      })
+      .addCase(getCartItem.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.existingCartItem = null;
+      });
   }
 });
 
