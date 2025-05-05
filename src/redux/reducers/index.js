@@ -19,6 +19,7 @@ import SellerOrderReducer from '../slices/sellerOrderSlice';
 import currencyReducer from '../slices/currency.Slice';
 import deleteAccReducer  from '../slices/deleteAcc.Slice';
 import resendOtpReducer from '../slices/resendOtp.Slice';
+import wishlistReducer from '../slices/wishlist.Slice';
 export const rootReducer = combineReducers({
   auth: authReducer,
   product: productReducer,
@@ -42,4 +43,5 @@ export const rootReducer = combineReducers({
   currency: currencyReducer,
   deleteAcc: deleteAccReducer,
   resendOtpSlice: resendOtpReducer,
+  wishlist: wishlistReducer
 });
