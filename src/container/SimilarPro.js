@@ -222,9 +222,12 @@ function SimilarPro({setIsProductDetailPage,setIsVegetablePage}) {
                             return (
                                 <div key={index} className="a_product-card" onClick={() => handleProductClick(product.id)} style={{ cursor: 'pointer' }}>
                                     <div className='a_image_container'>
-                                        <div className="a_discount-badge">
+                                        {/* <div className="a_discount-badge">
                                             {product.discount}% <p className='mb-0'>OFF</p>
-                                        </div>
+                                        </div> */}
+                                         <div className="Z_black-ribbon">
+                                                -{product.discount}
+                                            </div>
                                         <div className="a_image_slider">
                                             {Array.isArray(product.image) ?
                                                 product.image.map((img, imgIndex) => (

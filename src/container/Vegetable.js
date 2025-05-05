@@ -850,7 +850,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                             </div>
                                             {/* Add HOT badge */}
                                             <div className="Z_black-ribbon">
-                                                {product.discount}
+                                                -{product.discount}
                                             </div>
 
                                             {/* {product.discount > 0 && (
@@ -935,7 +935,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                             <div className="z_modal-content">
                                                 <h3 className="mb-3">{selectedProduct.name}</h3>
                                                 <div className="z_rating-container mb-4">
-                                                    <span className="z_rating-text ms-2">{selectedProduct.discount}</span>
+                                                    <span className="z_rating-text ms-2 py-1 px-2" style={{border:"1px solid green",     borderRadius: "25px"}}>{selectedProduct.discount} Off</span>
                                                 </div>
                                                 <div className="mb-4">
                                                     <div className="d-flex align-items-center gap-2">
@@ -970,9 +970,9 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                     </div>
 
                                                     <button
-                                                        className="add-to-cart-btn"
-                                                        onClick={() => handleAddToCart(product)}
-                                                        disabled={!product.stockStatus}
+                                                        className="z_modal-add-cart-btn"
+                                                        onClick={() => handleAddToCart(selectedProduct)}
+                                                        disabled={!selectedProduct.stockStatus}
                                                     >
                                                         <FaShoppingCart className="me-2" />
                                                         Add to Cart

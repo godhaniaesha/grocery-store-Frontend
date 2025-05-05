@@ -13,7 +13,8 @@ import {
   GiMeat,
   GiFruitBowl,
 } from "react-icons/gi";
-import { FaWineBottle } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaWineBottle } from "react-icons/fa";
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import 'swiper/css';
 import 'swiper/css/navigation';
 import '../styles/Popularcategory.css';
@@ -46,16 +47,18 @@ export default function PopularCategories() {
                     </h2>
         <div className="slider-nav d-flex gap-2">
           <button 
-            className="btn btn-outline-success rounded-circle" 
+            className="btn btn-outline-success rounded-circle p-2" 
             onClick={() => swiper?.slidePrev()}
+            style={{ width: '35px', height: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
-            <i className="fa fa-chevron-left"></i>
+            <FaChevronLeft size={18} />
           </button>
           <button 
-            className="btn btn-outline-success rounded-circle" 
+            className="btn btn-outline-success rounded-circle p-2" 
             onClick={() => swiper?.slideNext()}
+            style={{ width: '35px', height: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
-            <i className="fa fa-chevron-right"></i>
+            <FaChevronRight size={18} />
           </button>
         </div>
       </div>
