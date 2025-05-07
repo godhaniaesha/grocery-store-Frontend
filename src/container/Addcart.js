@@ -947,8 +947,17 @@ function Addcart({ setIsCheckoutPage, setIsCartPage }) {
                         </div>
                         <div className="Z_cart-product-info">
                           <p>
-                            {item.productData?.[0]?.productName ||
-                              "Unknown Product"}
+                            <Link 
+                              to={`/product-details/${item.productId}`}
+                              onClick={() => {
+                                localStorage.setItem('selectedProductId', item.productId);
+                                localStorage.setItem('activePage', 'ProductDetails');
+                              }}
+                              style={{ textDecoration: 'none', color: 'inherit' }}
+                            >
+                              {item.productData?.[0]?.productName ||
+                                "Unknown Product"}
+                            </Link>
                           </p>
                           <small>
                             {item.productVarientData?.[0]?.size || "N/A"}

@@ -18,7 +18,7 @@ import {
   FaChevronLeft,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { createWishlist } from "../redux/slices/wishlist.Slice";
+import { createWishlist, deleteFromWishlist, getWishlistItems } from "../redux/slices/wishlist.Slice";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -34,6 +34,7 @@ function Bestseller(props) {
   const { variants, loading: variantLoading } = useSelector((state) => state.productveriant);
   const { categories, isLoading: categoryLoading } = useSelector((state) => state.category);
   const { cartItems } = useSelector(state => state.addcart);
+  const { wishlistItems } = useSelector(state => state.wishlist);
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalShow, setModalShow] = useState(false);
@@ -44,6 +45,7 @@ function Bestseller(props) {
     dispatch(fetchProducts());
     dispatch(fetchProductVariants({}));
     dispatch(fetchCategories());
+    dispatch(getWishlistItems());
   }, [dispatch]);
  
   const handleClose = () => {
@@ -121,6 +123,10 @@ function Bestseller(props) {
       });
   };
  
+  const isInWishlist = (productId) => {
+    return wishlistItems?.some(item => item.productId === productId);
+  };
+
   if (productLoading || variantLoading) {
     return <div>Loading...</div>;
   }
@@ -153,12 +159,23 @@ function Bestseller(props) {
     }
   };
 
+
+
   const handleAddToWishlist = async (productId) => {
     try {
-      await dispatch(createWishlist(productId)).unwrap();
-      toast.success('Item added to wishlist');
+      const isAlreadyInWishlist = isInWishlist(productId);
+      if (isAlreadyInWishlist) {
+        // If product is already in wishlist, remove it
+        const wishlistItem = wishlistItems.find(item => item.productId === productId);
+        await dispatch(deleteFromWishlist(wishlistItem._id)).unwrap();
+        toast.success('Item removed from wishlist');
+      } else {
+        // If product is not in wishlist, add it
+        await dispatch(createWishlist(productId)).unwrap();
+        toast.success('Item added to wishlist');
+      }
     } catch (error) {
-      toast.error(error.message || 'Failed to add to wishlist');
+      toast.error(error.message || 'Wishlist operation failed');
     }
   };
   return (
@@ -227,10 +244,10 @@ function Bestseller(props) {
                             <FaShoppingCart />
                           </button>
                           <button 
-                            className="z_hover-icon-btn"
+                            className={`z_hover-icon-btn ${isInWishlist(product._id) ? 'active' : ''}`}
                             onClick={() => handleAddToWishlist(product._id)}
                           >
-                            <FaHeart />
+                            <FaHeart style={{color: isInWishlist(product._id) ? 'red' : 'inherit'}} />
                           </button>
                           <button
                             className="z_hover-icon-btn"

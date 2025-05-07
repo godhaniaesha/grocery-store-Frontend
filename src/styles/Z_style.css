@@ -9,7 +9,9 @@
     position: relative;
     background-color: #f5f8f5;
   }
-  
+  .z_hover-icon-btn.active {
+    background-color: rgba(255, 255, 255, 0.9);
+}
   .z_first-slider .carousel {
     height: 700px;
   }

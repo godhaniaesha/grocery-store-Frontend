@@ -1,5 +1,15 @@
 /* Menuheader start */
+.z-index-dropdown {
+  z-index: 1050;
+}
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.hover-bg-light:hover {
+  background-color: #f8f9fa;
+}
 .x_navbar {
   display: flex;
   justify-content: center;

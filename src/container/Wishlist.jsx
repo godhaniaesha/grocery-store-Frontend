@@ -2,8 +2,11 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card } from 'react-bootstrap';
 import { FaHeart, FaShoppingCart, FaTrash, FaStar } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getWishlistItems, deleteFromWishlist } from '../redux/slices/wishlist.Slice';
+import { createCart, updateCart, getallMyCarts } from '../redux/slices/cart.Slice';
+import { fetchProductVariants } from '../redux/slices/productVeriant.Slice';
+import { toast } from "react-toastify";
 import '../styles/Wishlist.css';
 import LoadingSpinner from '../components/LoadingSpinner';
 
@@ -14,8 +17,11 @@ const Wishlist = () => {
     const { wishlistItems, loading, error } = useSelector(state => state.wishlist);
     console.log(wishlistItems, "wishlistItems");
 
+    const { variants } = useSelector(state => state.productveriant);
+
     useEffect(() => {
         dispatch(getWishlistItems());
+        dispatch(fetchProductVariants({}));
     }, [dispatch]);
 
     const renderStars = (rating) => {
@@ -32,8 +38,28 @@ const Wishlist = () => {
         dispatch(deleteFromWishlist(wishlistId));
     };
 
-    const addToCart = (item) => {
-        console.log('Added to cart:', item);
+    const addToCart = async (product) => {
+        try {
+            const variant = variants?.find(v => v.productId === product._id);
+            if (!variant) {
+                toast.error("Product variant not found");
+                return;
+            }
+
+            await dispatch(createCart({
+                productId: product._id,
+                productVarientId: variant._id,
+                quantity: 1
+            })).unwrap();
+            toast.success("Item added to cart");
+        } catch (error) {
+            console.error("Cart operation failed:", error);
+            if (error?.message === 'Cart Already Exist') {
+                toast.info("Item quantity updated in cart");
+            } else {
+                toast.error("Failed to add to cart");
+            }
+        }
     };
 
     if (loading) {

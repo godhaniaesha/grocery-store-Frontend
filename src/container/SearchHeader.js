@@ -15,6 +15,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { FiShoppingBag } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
+import Search from "../components/Search.js";
 
 export default function SearchHeader() {
   const navigate = useNavigate();
@@ -23,7 +24,8 @@ export default function SearchHeader() {
   const { products, loading: productsLoading } = useSelector(state => state.product);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  // const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     if (products?.length > 0) {
@@ -216,46 +218,7 @@ export default function SearchHeader() {
     }
   };
 
-  const renderDropdown = (category) => {
-    const categoryData = categoriesWithSubcategories.find(cat => cat.categoryName === category);
-    if (!categoryData) return null;
-
-    console.log('Rendering dropdown for category:', categoryData.categoryName);
-    console.log('Subcategories:', categoryData.subcategories);
-
-    return (
-      <div className="x_mega_dropdown">
-        <div className="x_dropdown_section">
-          <h3 className="x_dropdown_title">{categoryData.categoryName}</h3>
-          <ul className="x_dropdown_list">
-            {categoryData.subcategories.map((subcat, index) => (
-              <li
-                key={index}
-                className="x_dropdown_item"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActive("All Categories");
-                  setShowDropdown(null);
-                  const filteredProducts = products.filter(product => product.subCategoryId === subcat._id);
-                  setFilteredProducts(filteredProducts);
-                  console.log('Filtered products:', filteredProducts);
-                }}
-              >
-                {subcat.subCategoryName}
-                {products
-                  .filter(product => product.subCategoryId === subcat._id)
-                  .map((product, idx) => (
-                    <div key={idx} className="x_product_item">
-                      {product.productName}
-                    </div>
-                  ))}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    );
-  };
+ 
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -320,7 +283,7 @@ export default function SearchHeader() {
     try {
       await dispatch(login(values)).unwrap();
       setShowLoginModal(false);
-      
+
       // Login પછી તરત જ data fetch કરવા માટે
       try {
         await Promise.all([
@@ -332,7 +295,7 @@ export default function SearchHeader() {
         console.error('Error fetching data after login:', error);
         toast.error('Failed to load categories. Please try again.');
       }
-      
+
       toast.success('Login successful!');
       navigate('/main');
     } catch (err) {
@@ -393,7 +356,7 @@ export default function SearchHeader() {
         password: values.password,
         confirmPassword: values.confirmPassword
       })).unwrap();
-      
+
       if (result.success) {
         setCurrentView('login');
         toast.success('Password updated successfully');
@@ -404,7 +367,36 @@ export default function SearchHeader() {
     }
     setSubmitting(false);
   };
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    setShowSuggestions(value.length > 0);
+  };
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      localStorage.setItem('searchQuery', searchQuery);
+      navigate('/Vegetable');
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSearch = () => {
+    localStorage.setItem('searchQuery', searchQuery);
+    navigate('/Vegetable');
+    setShowSuggestions(false);
+  };
+
+  const filteredProducts = products?.filter(product =>
+    product?.productName?.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
+
+  useEffect(() => {
+    const savedQuery = localStorage.getItem('searchQuery');
+    if (savedQuery) {
+      setSearchQuery(savedQuery);
+    }
+  }, []);
   return (
     <>
       <header className="sticky-top shadow-sm" style={{ "backgroundColor": "#2c6145" }}>
@@ -434,33 +426,7 @@ export default function SearchHeader() {
             {/* ==== RIGHT SIDE: SEARCH + ICONS ==== */}
             <div className="d-flex align-items-center justify-content-end flex-grow-1">
               {/* Desktop Search */}
-              <div className="d-none d-md-flex mx-sm-3 mx-1 flex-grow-1 justify-content-center">
-                <div
-                  className="input-group rounded-pill overflow-hidden"
-                  style={{ maxWidth: "600px", width: "100%" }}
-                >
-                  {/* <input
-                    type="text"
-                    className="form-control border-0 py-2 px-sm-3 px-1"
-                    placeholder="Search for groceries..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  /> */}
-                  <input
-                    type="text"
-                    className="form-control border-0 py-2 px-sm-3 px-1 custom-input bg-white"
-                    placeholder="Search for groceries..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  <button
-                    className="btn btn-light d-flex align-items-center justify-content-center px-sm-3 px-1"
-                    type="button"
-                  >
-                    <FaSearch />
-                  </button>
-                </div>
-              </div>
+              <Search />
 
               {/* Icons Section */}
               <div className="db_icon_wrapper d-flex align-items-center gap-sm-4 gap-2 ms-sm-3 ms-1">
@@ -474,29 +440,29 @@ export default function SearchHeader() {
                   </button>
                   {showUserDropdown && (
                     <div className="user-dropdown-menu text-center">
-                      <div className="dropdown-item gap-2 d-flex align-items-center" 
+                      <div className="dropdown-item gap-2 d-flex align-items-center"
                         onClick={() => {
                           setShowUserDropdown(false);
                           handleLoginClick();
                         }}
-                      > 
+                      >
                         <span><FaSignInAlt size={20} /></span> Login
                       </div>
-                      <Link 
-                        to="/MyAccount" 
+                      <Link
+                        to="/MyAccount"
                         className="dropdown-item gap-2 d-flex align-items-center"
                         onClick={() => setShowUserDropdown(false)}
                       >
                         <FaUserAlt size={20} />My Account
                       </Link>
-                      <Link 
-                        to="/orders" 
+                      <Link
+                        to="/orders"
                         className="dropdown-item gap-2 d-flex align-items-center"
                         onClick={() => setShowUserDropdown(false)}
                       >
                         <FiShoppingBag size={20} />Orders
                       </Link>
-                      <Link 
+                      <Link
                         to="#"
                         className="dropdown-item gap-2 d-flex align-items-center"
                         onClick={async () => {
@@ -545,39 +511,77 @@ export default function SearchHeader() {
                 </div>
 
                 <div className="text-center d-md-none d-block position-relative">
-                  <button
-                    className="btn bg-transparent p-0 border-0 d-flex justify-content-center w-100 text-white"
-                    onClick={toggleMobileSearch}
-                  >
-                    {showMobileSearch ? (
-                      <FaTimes size={18} />
-                    ) : (
-                      <FaSearch size={18} />
-                    )}
-                  </button>
-                </div>
+        <button
+          className="btn bg-transparent p-0 border-0 d-flex justify-content-center w-100 text-white"
+          onClick={toggleMobileSearch}
+        >
+          {showMobileSearch ? (
+            <FaTimes size={18} />
+          ) : (
+            <FaSearch size={18} />
+          )}
+        </button>
+      </div>
               </div>
             </div>
             {showMobileSearch && (
-              <div className="d-md-none my-2 mb-2 animate-slide-down w-100">
-                <div className="input-group rounded-pill overflow-hidden">
-                  <input
-                    type="text"
-                    className="form-control border-0 py-2 px-3"
-                    placeholder="Search for groceries..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    autoFocus
-                  />
-                  <button
-                    className="btn btn-light d-flex align-items-center justify-content-center px-3"
-                    type="button"
-                  >
-                    <FaSearch />
-                  </button>
+        <div className="d-md-none my-2 mb-2 animate-slide-down w-100">
+          <div className="input-group rounded-pill overflow-hidden">
+            <input
+              type="text"
+              className="form-control border-0 py-2 px-3"
+              placeholder="Search for groceries..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onKeyPress={handleKeyPress}
+              autoFocus
+            />
+            <button
+              className="btn btn-light d-flex align-items-center justify-content-center px-3"
+              type="button"
+              onClick={handleSearch}
+            >
+              <FaSearch />
+            </button>
+          </div>
+
+          {showSuggestions && filteredProducts.length > 0 && (
+            <div 
+              className="suggestion-dropdown position-absolute start-0 w-100 bg-white border rounded mt-1 text-dark" 
+              style={{ 
+                zIndex: 9999,
+                maxHeight: '300px', 
+                overflowY: 'auto',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                top: 'calc(100% + 5px)'
+              }}
+            >
+              {filteredProducts.map((product) => (
+                <div 
+                  key={product._id}
+                  className="suggestion-item p-2 border-bottom hover:bg-gray-100"
+                  style={{
+                    cursor: 'pointer',
+                    backgroundColor: 'white'
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                  onClick={() => {
+                    setSearchQuery(product.productName);
+                    setShowSuggestions(false);
+                    handleSearch();
+                  }}
+                >
+                  <div className="d-flex align-items-center">
+                    <FaSearch className="me-2 text-muted" size={14} />
+                    <span>{product.productName}</span>
+                  </div>
                 </div>
-              </div>
-            )}
+              ))}
+            </div>
+          )}
+        </div>
+      )}
           </nav>
 
           {/* Mobile Search */}

@@ -36,13 +36,18 @@ import Modal from 'react-bootstrap/Modal';
 import { FaShoppingCart, FaHeart, FaEye } from 'react-icons/fa';
 import Accordion from 'react-bootstrap/Accordion';
 import { toast } from 'react-toastify';
-import { createWishlist } from '../redux/slices/wishlist.Slice';
+import { createWishlist, deleteFromWishlist, getWishlistItems } from '../redux/slices/wishlist.Slice';
 
 function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetablePage }) {
     const [selectedCategory, setSelectedCategory] = useState(localStorage.getItem('selectedCategoryId') || '');
     const [selectedSubcategory, setSelectedSubcategory] = useState(localStorage.getItem('selectedSubcategoryId') || '');
     const [showModal, setShowModal] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
+    const { wishlistItems } = useSelector(state => state.wishlist);
+    
+    const isInWishlist = (productId) => {
+        return wishlistItems?.some(item => item.productId === productId);
+    };
 
     // Helper function for subcategory ID comparison
     const compareSubcategoryIds = (id1, id2) => {
@@ -176,6 +181,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
         dispatch(fetchCategories({ page: 1, pageSize: 10 }));
         dispatch(getAllSubcategories());
         dispatch(getallMyCarts());
+        dispatch(getWishlistItems());
     }, [dispatch]);
 
     // Add new useEffect to sync cartItems with productQuantities
@@ -521,12 +527,21 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
 
       const handleAddToWishlist = async (productId) => {
         try {
-          await dispatch(createWishlist(productId)).unwrap();
-          toast.success('Item added to wishlist');
+            const isAlreadyInWishlist = isInWishlist(productId);
+            if (isAlreadyInWishlist) {
+                // If product is already in wishlist, remove it
+                const wishlistItem = wishlistItems.find(item => item.productId === productId);
+                await dispatch(deleteFromWishlist(wishlistItem._id)).unwrap();
+                toast.success('Item removed from wishlist');
+            } else {
+                // If product is not in wishlist, add it
+                await dispatch(createWishlist(productId)).unwrap();
+                toast.success('Item added to wishlist');
+            }
         } catch (error) {
-          toast.error(error.message || 'Failed to add to wishlist');
+            toast.error(error.message || 'Wishlist operation failed');
         }
-      };
+    };
 
     return (
         <>
@@ -847,10 +862,10 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                         <FaShoppingCart />
                                                     </button>
                                                     <button
-                                                        className="z_hover-icon-btn"
+                                                        className={`z_hover-icon-btn ${isInWishlist(product._id) ? 'active' : ''}`}
                                                         onClick={() => handleAddToWishlist(product._id)}
                                                     >
-                                                        <FaHeart />
+                                                        <FaHeart style={{color: isInWishlist(product._id) ? 'red' : 'inherit'}} />
                                                     </button>
                                                     <button
                                                         className="z_hover-icon-btn"

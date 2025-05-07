@@ -292,7 +292,7 @@ const ProductDetails = ({setIsVegetablePage,setIsProductDetailPage,productId}) =
               </small>
               <div className="size-selection mt-sm-4 mt-2">
                 <p className="mb-2">Pack Size: {getCurrentVariant()?.size || product?.productVarientData?.[0]?.size || 'N/A'}</p>
-                <div className="d-flex gap-2">
+                <div className="d-flex gap-2 flex-wrap">
                   {product?.productVarientData?.map((variant) => (
                     <button
                       key={variant.size}

@@ -7,6 +7,10 @@ import { FaShoppingCart, FaHeart, FaEye, FaStar, FaTimes, FaMinus, FaPlus } from
 import { fetchCategories } from '../redux/slices/categorySlice';
 import { fetchProducts } from '../redux/slices/product.Slice';
 import { fetchProductVariants } from '../redux/slices/productVeriant.Slice';
+import { createCart, updateCart, getallMyCarts } from '../redux/slices/cart.Slice';
+import { createWishlist, deleteFromWishlist } from "../redux/slices/wishlist.Slice";
+import { toast } from "react-toastify";
+import { getWishlistItems } from "../redux/slices/wishlist.Slice";
  
 function Recommended(props) {
     const [showModal, setShowModal] = useState(false);
@@ -33,6 +37,7 @@ function Recommended(props) {
         dispatch(fetchCategories());
         dispatch(fetchProducts());
         dispatch(fetchProductVariants({}));
+        dispatch(getWishlistItems());
  
         // Load selected category from localStorage on component mount
         const savedCategoryName = localStorage.getItem('selectedCategoryNameR');
@@ -134,6 +139,53 @@ function Recommended(props) {
     // Get categories from Redux state
     const availableCategories = ['All', ...categories.map(cat => cat.categoryName)];
  
+    const { wishlistItems } = useSelector(state => state.wishlist);
+
+    // Add isInWishlist function
+    const isInWishlist = (productId) => {
+        return wishlistItems?.some(item => item.productId === productId);
+    };
+const handleAddToCart = async (product) => {
+    try {
+        const variant = variants?.find(v => v.productId === product.id);
+        if (!variant) {
+            toast.error("Product variant not found");
+            return;
+        }
+
+        await dispatch(createCart({
+            productId: product.id,
+            productVarientId: variant._id,
+            quantity: 1
+        })).unwrap();
+        toast.success("Item added to cart");
+    } catch (error) {
+        console.error("Cart operation failed:", error);
+        if (error?.message === 'Cart Already Exist') {
+            toast.info("Item quantity updated in cart");
+        } else {
+            toast.error("Failed to add to cart");
+        }
+    }
+};
+
+const handleAddToWishlist = async (productId) => {
+    try {
+        const isAlreadyInWishlist = isInWishlist(productId);
+        if (isAlreadyInWishlist) {
+            // If product is already in wishlist, remove it
+            const wishlistItem = wishlistItems.find(item => item.productId === productId);
+            await dispatch(deleteFromWishlist(wishlistItem._id)).unwrap();
+            toast.success('Item removed from wishlist');
+        } else {
+            // If product is not in wishlist, add it
+            await dispatch(createWishlist(productId)).unwrap();
+            toast.success('Item added to wishlist');
+        }
+    } catch (error) {
+        toast.error(error.message || 'Wishlist operation failed');
+    }
+};
  
  
  return (
@@ -170,11 +222,17 @@ function Recommended(props) {
                                     />
                                     <div className="z_hover-overlay">
                                         <div className="z_hover-icons">
-                                            <button className="z_hover-icon-btn">
+                                            <button 
+                                                className="z_hover-icon-btn"
+                                                onClick={() => handleAddToCart(product)}
+                                            >
                                                 <FaShoppingCart />
                                             </button>
-                                            <button className="z_hover-icon-btn">
-                                                <FaHeart />
+                                            <button 
+                                                className={`z_hover-icon-btn ${isInWishlist(product.id) ? 'active' : ''}`}
+                                                onClick={() => handleAddToWishlist(product.id)}
+                                            >
+                                                <FaHeart style={{color: isInWishlist(product.id) ? 'red' : 'inherit'}} />
                                             </button>
                                             <button
                                                 className="z_hover-icon-btn"
@@ -274,7 +332,10 @@ function Recommended(props) {
                                                 </button>
                                             </div>
  
-                                            <button className="z_modal-add-cart-btn">
+                                            <button 
+                                                className="z_modal-add-cart-btn"
+                                                onClick={() => handleAddToCart(selectedProduct)}
+                                            >
                                                 Add to cart
                                                 <FaShoppingCart className="z_cart-icon" />
                                             </button>
@@ -306,4 +367,4 @@ function Recommended(props) {
 }
  
 export default Recommended;
- 
+
