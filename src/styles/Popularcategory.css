@@ -71,12 +71,19 @@
   .db_card:hover .db_icon {
     background: #2c6145;
   }
+  .db_card:active .db_icon {
+    background: #2c6145;
+  }
   
   .db_card:hover .db_icon svg {
     color: white;
     transform: scale(1.1);
   }
-  
+  .db_card:active .db_icon svg {
+    color: white;
+    transform: scale(1.1);
+  }
+
   @keyframes rotate {
     from {
       transform: rotate(0deg);

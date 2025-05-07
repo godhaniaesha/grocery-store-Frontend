@@ -209,8 +209,8 @@ function SimilarPro({ setIsProductDetailPage, setIsVegetablePage }) {
                     <div className="a_garden-fresh-header">
                         <h2 className="a_garden-fresh-title">Garden Fresh</h2>
                         <Link to="/Vegetable" className="a_view-all">
-  View All <LiaAngleRightSolid />
-</Link>
+                            View All <LiaAngleRightSolid />
+                        </Link>
                     </div>
                     <span className="line"></span>
                     <div className="a_garden-fresh-grid mt-3">
@@ -221,67 +221,67 @@ function SimilarPro({ setIsProductDetailPage, setIsVegetablePage }) {
         );
     }
 
-    
-const handleAddToCart = async (product) => {
-    try {
-        const variant = variants.find(v => v.productId === product.id);
-        if (!variant) {
-            toast.error("Product variant not found");
-            return;
-        }
 
-        const result = await dispatch(createCart({
-            productId: product.id,
-            productVarientId: variant._id,
-            quantity: 1
-        })).unwrap();
-
-        if (result.success) {
-            toast.success("Item added to cart");
-            // ફક્ત કાર્ટ આઇટમ્સ ફેચ કરો, આખો કમ્પોનન્ટ રિફ્રેશ નહીં
-            dispatch(getallMyCarts({}));
-        }
-    } catch (error) {
-        console.error("Cart operation failed:", error);
-        if (error?.message === 'Cart Already Exist') {
-            toast.info("Item quantity updated in cart");
-        } else {
-            toast.error("Failed to add to cart");
-        }
-    }
-};
-
-const handleAddToWishlist = async (productId) => {
-    try {
-        const isAlreadyInWishlist = isInWishlist(productId);
-        if (isAlreadyInWishlist) {
-            const wishlistItem = wishlistItems.find(item => item.productId === productId);
-            const result = await dispatch(deleteFromWishlist(wishlistItem._id)).unwrap();
-            if (result.success) {
-                toast.success('Item removed from wishlist');
-                // ફક્ત વિશલિસ્ટ આઇટમ્સ ફેચ કરો
-                dispatch(getWishlistItems());
+    const handleAddToCart = async (product) => {
+        try {
+            const variant = variants.find(v => v.productId === product.id);
+            if (!variant) {
+                toast.error("Product variant not found");
+                return;
             }
-        } else {
-            const result = await dispatch(createWishlist(productId)).unwrap();
+
+            const result = await dispatch(createCart({
+                productId: product.id,
+                productVarientId: variant._id,
+                quantity: 1
+            })).unwrap();
+
             if (result.success) {
-                toast.success('Item added to wishlist');
-                // ફક્ત વિશલિસ્ટ આઇટમ્સ ફેચ કરો
-                dispatch(getWishlistItems());
+                toast.success("Item added to cart");
+                // ફક્ત કાર્ટ આઇટમ્સ ફેચ કરો, આખો કમ્પોનન્ટ રિફ્રેશ નહીં
+                dispatch(getallMyCarts({}));
+            }
+        } catch (error) {
+            console.error("Cart operation failed:", error);
+            if (error?.message === 'Cart Already Exist') {
+                toast.info("Item quantity updated in cart");
+            } else {
+                toast.error("Failed to add to cart");
             }
         }
-    } catch (error) {
-        toast.error(error.message || 'Wishlist operation failed');
-    }
-};
+    };
 
-const handleShow = (product) => {
-    // Set product details in localStorage
-    localStorage.setItem('selectedProductId', product.id);
-    localStorage.setItem('activePage', 'ProductDetails');
-    // Navigate to product details page
-    navigate(`/HomeMain`);
-};
+    const handleAddToWishlist = async (productId) => {
+        try {
+            const isAlreadyInWishlist = isInWishlist(productId);
+            if (isAlreadyInWishlist) {
+                const wishlistItem = wishlistItems.find(item => item.productId === productId);
+                const result = await dispatch(deleteFromWishlist(wishlistItem._id)).unwrap();
+                if (result.success) {
+                    toast.success('Item removed from wishlist');
+                    // ફક્ત વિશલિસ્ટ આઇટમ્સ ફેચ કરો
+                    dispatch(getWishlistItems());
+                }
+            } else {
+                const result = await dispatch(createWishlist(productId)).unwrap();
+                if (result.success) {
+                    toast.success('Item added to wishlist');
+                    // ફક્ત વિશલિસ્ટ આઇટમ્સ ફેચ કરો
+                    dispatch(getWishlistItems());
+                }
+            }
+        } catch (error) {
+            toast.error(error.message || 'Wishlist operation failed');
+        }
+    };
+
+    const handleShow = (product) => {
+        // Set product details in localStorage
+        localStorage.setItem('selectedProductId', product.id);
+        localStorage.setItem('activePage', 'ProductDetails');
+        // Navigate to product details page
+        navigate(`/HomeMain`);
+    };
 
     return (
         <>
@@ -290,49 +290,45 @@ const handleShow = (product) => {
                     <div className="a_garden-fresh-header">
                         <h2 className="a_garden-fresh-title">You May Also Like</h2>
                         <Link to="/Vegetable" className="a_view-all">
-  View All <LiaAngleRightSolid />
-</Link>
+                            View All <LiaAngleRightSolid />
+                        </Link>
                     </div>
                     <span className="line"></span>
                     <div className="a_garden-fresh-grid mt-3">
-                        {formattedProducts.map((product, index) => (
-                            <div key={index} className="z_product-card" onClick={() => handleProductClick(product.id)} style={{ cursor: 'pointer' }}>
-                                <div className="z_product-image-container">
-                                    <Card.Img
-                                        variant="top"
-                                        src={`http://localhost:4000/${product.image[0]}`}
-                                        alt={product.name}
-                                        className="z_product-image"
-                                    />
-                                    <div className="z_hover-overlay">
-                                        <div className="z_hover-icons">
-                                            <button
-                                                className="z_hover-icon-btn"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleAddToCart(product);
-                                                }}
-                                            >
-                                                <FaShoppingCart />
-                                            </button>
-                                            <button
-                                                className={`z_hover-icon-btn ${isInWishlist(product.id) ? 'active' : ''}`}
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleAddToWishlist(product.id);
-                                                }}
-                                            >
-                                                <FaHeart style={{ color: isInWishlist(product.id) ? 'red' : 'inherit' }} />
-                                            </button>
-                                            <button
-                                                className="z_hover-icon-btn"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleShow(product);
-                                                }}
-                                            >
-                                                <FaEye />
-                                            </button>
+                        {formattedProducts.map((product, index) => {
+                            const isInCart = cartItems?.some(item =>
+                                item.productId === product.id && item.quantity > 0
+                            );
+                            const cartItem = cartItems?.find(item =>
+                                item.productId === product.id
+                            );
+
+                            return (<>
+                                <div key={index} className="a_product-card" onClick={() => handleProductClick(product.id)} style={{ cursor: 'pointer' }}>
+                                    <div className='a_image_container'>
+                                        {/* <div className="a_discount-badge">
+                                            {product.discount}% <p className='mb-0'>OFF</p>
+                                        </div> */}
+                                        <div className="Z_black-ribbon">
+                                            {product.discount}
+                                        </div>
+                                        <div className="a_image_slider">
+                                            {Array.isArray(product.image) ?
+                                                product.image.map((img, imgIndex) => (
+                                                    <img
+                                                        key={imgIndex}
+                                                        src={`http://localhost:4000/${img}`}
+                                                        alt={`${product.name} ${imgIndex + 1}`}
+                                                        className="a_product-image"
+                                                    />
+                                                ))
+                                                :
+                                                <img
+                                                    src={`http://localhost:4000/${product.image}`}
+                                                    alt={product.name}
+                                                    className="a_product-image"
+                                                />
+                                            }
                                         </div>
                                     </div>
                                     <div className="Z_black-ribbon">
@@ -355,8 +351,9 @@ const handleShow = (product) => {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            </>
+                            )
+                        })}
                     </div>
                 </div>
             </div>

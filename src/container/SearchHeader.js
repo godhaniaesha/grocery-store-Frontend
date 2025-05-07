@@ -641,9 +641,9 @@ export default function SearchHeader() {
                                         role="button"
                                         tabIndex={0}
                                         onClick={(e) => {
-                                          localStorage.setItem('selectedSubCategoryId', subcat._id);
+                                          localStorage.setItem('selectedSubCategoryIdfromheader', subcat._id);
+                                          localStorage.removeItem('selectedCategoryId');
                                           localStorage.setItem('activePage', 'Vegetables');
-                                          // alert(`Selected Sub Category: ${subcat.subCategoryName}`);
                                           navigate('/Vegetable');
                                         }}
                                       >
@@ -723,7 +723,8 @@ export default function SearchHeader() {
                                 console.log('Filtered products:', filteredProducts);
                               }}
                             >
-                              {subcat.subCategoryName}
+                              <h6 className="fw-bold">{subcat.subCategoryName}</h6>
+                              <hr className="mt-0"></hr>
                               {products
                                 .filter(product => product.subCategoryId === subcat._id)
                                 .map((product, idx) => (
