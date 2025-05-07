@@ -228,21 +228,21 @@ function Recommended(props) {
                                             alt={selectedProduct.title}
                                             className="z_modal-product-img"
                                         />
-                                        <span className="Z_black-ribbon">{selectedProduct.variantDiscount}</span>
+                                        <span className="z_modal-discount-badge">{selectedProduct.variantDiscount}</span>
                                     </div>
                                 </div>
                                 <div className="col-md-6">
                                     <div className="z_modal-content">
-                                        <h3 className="mb-3">{selectedProduct.title}</h3>
+                                        <h4 className="mb-3">{selectedProduct.title}</h4>
  
-                                        <div className="z_rating-container mb-4">
+                                        {/* <div className="z_rating-container mb-4">
                                             {renderStars(selectedProduct.rating)}
                                             <span className="z_rating-text ms-2">({selectedProduct.rating} customer review)</span>
-                                        </div>
+                                        </div> */}
  
                                         <div className="mb-4">
                                             <div className="d-flex align-items-center gap-2">
-                                                <span className="h3 mb-0">${selectedProduct.price.toFixed(2)}</span>
+                                                <span className="h5 mb-0">${selectedProduct.price.toFixed(2)}</span>
                                                 <span className="text-decoration-line-through text-muted">
                                                     ${selectedProduct.originalPrice.toFixed(2)}
                                                 </span>

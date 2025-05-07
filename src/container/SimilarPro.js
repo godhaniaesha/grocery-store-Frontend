@@ -226,7 +226,7 @@ function SimilarPro({setIsProductDetailPage,setIsVegetablePage}) {
                                             {product.discount}% <p className='mb-0'>OFF</p>
                                         </div> */}
                                          <div className="Z_black-ribbon">
-                                                -{product.discount}
+                                                {product.discount}
                                             </div>
                                         <div className="a_image_slider">
                                             {Array.isArray(product.image) ?

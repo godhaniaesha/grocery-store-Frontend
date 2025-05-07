@@ -320,7 +320,7 @@ export default function SearchHeader() {
     try {
       await dispatch(login(values)).unwrap();
       setShowLoginModal(false);
-      
+
       // Login પછી તરત જ data fetch કરવા માટે
       try {
         await Promise.all([
@@ -332,7 +332,7 @@ export default function SearchHeader() {
         console.error('Error fetching data after login:', error);
         toast.error('Failed to load categories. Please try again.');
       }
-      
+
       toast.success('Login successful!');
       navigate('/main');
     } catch (err) {
@@ -393,7 +393,7 @@ export default function SearchHeader() {
         password: values.password,
         confirmPassword: values.confirmPassword
       })).unwrap();
-      
+
       if (result.success) {
         setCurrentView('login');
         toast.success('Password updated successfully');
@@ -474,29 +474,29 @@ export default function SearchHeader() {
                   </button>
                   {showUserDropdown && (
                     <div className="user-dropdown-menu text-center">
-                      <div className="dropdown-item gap-2 d-flex align-items-center" 
+                      <div className="dropdown-item gap-2 d-flex align-items-center"
                         onClick={() => {
                           setShowUserDropdown(false);
                           handleLoginClick();
                         }}
-                      > 
+                      >
                         <span><FaSignInAlt size={20} /></span> Login
                       </div>
-                      <Link 
-                        to="/MyAccount" 
+                      <Link
+                        to="/MyAccount"
                         className="dropdown-item gap-2 d-flex align-items-center"
                         onClick={() => setShowUserDropdown(false)}
                       >
                         <FaUserAlt size={20} />My Account
                       </Link>
-                      <Link 
-                        to="/orders" 
+                      <Link
+                        to="/orders"
                         className="dropdown-item gap-2 d-flex align-items-center"
                         onClick={() => setShowUserDropdown(false)}
                       >
                         <FiShoppingBag size={20} />Orders
                       </Link>
-                      <Link 
+                      <Link
                         to="#"
                         className="dropdown-item gap-2 d-flex align-items-center"
                         onClick={async () => {
@@ -637,9 +637,9 @@ export default function SearchHeader() {
                                         role="button"
                                         tabIndex={0}
                                         onClick={(e) => {
-                                          localStorage.setItem('selectedSubCategoryId', subcat._id);
+                                          localStorage.setItem('selectedSubCategoryIdfromheader', subcat._id);
+                                          localStorage.removeItem('selectedCategoryId');
                                           localStorage.setItem('activePage', 'Vegetables');
-                                          // alert(`Selected Sub Category: ${subcat.subCategoryName}`);
                                           navigate('/Vegetable');
                                         }}
                                       >
@@ -719,7 +719,8 @@ export default function SearchHeader() {
                                 console.log('Filtered products:', filteredProducts);
                               }}
                             >
-                              {subcat.subCategoryName}
+                              <h6 className="fw-bold">{subcat.subCategoryName}</h6>
+                              <hr className="mt-0"></hr>
                               {products
                                 .filter(product => product.subCategoryId === subcat._id)
                                 .map((product, idx) => (

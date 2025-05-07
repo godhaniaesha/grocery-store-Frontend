@@ -10,15 +10,20 @@ import Category from './Category';
 import '../styles/Home.css'
 import "../styles/x_app.css"
 import "../styles/denisha.css"
-import vegetables from "../img/x_img/vegetables.png";
-import leafy from "../img/x_img/leafy.png";
-import seasonal from "../img/x_img/seasonal.png";
-import organic from "../img/x_img/organic.png";
-import hydroponic from "../img/x_img/hydroponic.png";
-import root from "../img/x_img/root.png";
 import { LiaAngleRightSolid } from 'react-icons/lia';
 import { fetchCategories } from '../redux/slices/categorySlice';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
+import {
+    GiSaltShaker,
+    GiCoffeeCup,
+    GiOilDrum,
+    GiBroccoli,
+    GiWheat,
+    GiMilkCarton,
+    GiMeat,
+    GiFruitBowl,
+} from "react-icons/gi";
+import { FaWineBottle } from "react-icons/fa";
 // Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
@@ -40,7 +45,28 @@ import { createWishlist } from '../redux/slices/wishlist.Slice';
 
 function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetablePage }) {
     const [selectedCategory, setSelectedCategory] = useState(localStorage.getItem('selectedCategoryId') || '');
-    const [selectedSubcategory, setSelectedSubcategory] = useState(localStorage.getItem('selectedSubcategoryId') || '');
+
+    const iconMapping = {
+        "Salt": <GiSaltShaker size={35} />,
+        "Coffee & Tea": <GiCoffeeCup size={35} />,
+        "Oil": <GiOilDrum size={35} />,
+        "Vinegar": <FaWineBottle size={35} />,
+        "Vegetables": <GiBroccoli size={35} />,
+        "Grains": <GiWheat size={30} />,
+        "Dairy": <GiMilkCarton size={30} />,
+        "Meat": <GiMeat size={30} />,
+        "Fruits": <GiFruitBowl size={30} />
+    };
+
+    const getCategoryIcon = (categoryName) => {
+        for (const [key, icon] of Object.entries(iconMapping)) {
+            if (categoryName.toLowerCase().includes(key.toLowerCase())) {
+                return icon;
+            }
+        }
+        return <GiBroccoli size={35} />;
+    };
+    const [selectedSubcategory, setSelectedSubcategory] = useState(localStorage.getItem('selectedSubCategoryIdfromheader') || '');
     const [showModal, setShowModal] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
 
@@ -52,7 +78,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
     // Handler for subcategory selection
     const handleSubcategorySelect = (subcategoryId) => {
         setSelectedSubcategory(subcategoryId);
-        localStorage.setItem('selectedSubcategoryId', subcategoryId);
+        localStorage.setItem('selectedSubCategoryIdfromheader', subcategoryId);
         dispatch(fetchProducts({ subcategoryId }));
         handleFilterClose();
     };
@@ -114,6 +140,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
         setSelectedCategory(categoryId);
         // localStorage માં કેટેગરી ID સેવ કરો
         localStorage.setItem('selectedCategoryId', categoryId);
+        localStorage.removeItem('selectedSubCategoryIdfromheader');
         // સિલેક્ટેડ કેટેગરી ના પ્રોડક્ટ્સ ફેચ કરો
         dispatch(fetchProducts({ categoryId }));
         // offcanvas બંધ કરો
@@ -258,22 +285,29 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                 const hasVariant = variants.some(v => v.productId === product._id);
                 if (!hasVariant) return false;
 
-                // Then check category filter
+                // Get selected category and subcategory from localStorage
                 const selectedCategoryFromStorage = localStorage.getItem('selectedCategoryId');
-                const selectedSubcategoryFromStorage = localStorage.getItem('selectedSubcategoryId');
+                const selectedSubcategoryFromStorage = localStorage.getItem('selectedSubCategoryIdfromheader');
 
+                // Match category if selected
                 const matchesCategory = !selectedCategoryFromStorage ||
                     (product.categoryId && compareCategoryIds(product.categoryId, selectedCategoryFromStorage));
 
+                // Match subcategory if selected
                 const matchesSubcategory = !selectedSubcategoryFromStorage ||
                     (product.subCategoryId && compareSubcategoryIds(product.subCategoryId, selectedSubcategoryFromStorage));
 
+                // Log filtering details for debugging
                 if (selectedCategoryFromStorage && !matchesCategory) {
-                    console.log("Product filtered out:", product.productName, "Category ID:", product.categoryId, "Selected Category:", selectedCategoryFromStorage);
+                    console.log("Product filtered out:", product.productName,
+                        "Category ID:", product.categoryId,
+                        "Selected Category:", selectedCategoryFromStorage);
                 }
 
                 if (selectedSubcategoryFromStorage && !matchesSubcategory) {
-                    console.log("Product filtered out:", product.productName, "Subcategory ID:", product.subCategoryId, "Selected Subcategory:", selectedSubcategoryFromStorage);
+                    console.log("Product filtered out:", product.productName,
+                        "Subcategory ID:", product.subCategoryId,
+                        "Selected Subcategory:", selectedSubcategoryFromStorage);
                 }
 
                 return matchesCategory && matchesSubcategory;
@@ -493,40 +527,40 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
 
     const handleAddToCart = async (product) => {
         try {
-          const variant = variants?.find(v => v.productId === product._id);
-          if (!variant) {
-            toast.error("Product variant not found");
-            return;
-          }
-          console.log(variant._id, "variant._id");
-          
-    
-          await dispatch(createCart({
-            productId: product._id,
-            productVarientId: variant._id,
-            quantity: 1
-          })).unwrap();
-          toast.success("Item added to cart");
+            const variant = variants?.find(v => v.productId === product._id);
+            if (!variant) {
+                toast.error("Product variant not found");
+                return;
+            }
+            console.log(variant._id, "variant._id");
+
+
+            await dispatch(createCart({
+                productId: product._id,
+                productVarientId: variant._id,
+                quantity: 1
+            })).unwrap();
+            toast.success("Item added to cart");
         } catch (error) {
-          console.error("Cart operation failed:", error);
-          // Check if error is for existing cart item
-          if (error?.message === 'Cart Already Exist') {
-            toast.info("Item quantity updated in cart"); // Changed message here
-          } else {
-            toast.error("Failed to add to cart");
-          }
+            console.error("Cart operation failed:", error);
+            // Check if error is for existing cart item
+            if (error?.message === 'Cart Already Exist') {
+                toast.info("Item quantity updated in cart"); // Changed message here
+            } else {
+                toast.error("Failed to add to cart");
+            }
         }
-      };
+    };
 
 
-      const handleAddToWishlist = async (productId) => {
+    const handleAddToWishlist = async (productId) => {
         try {
-          await dispatch(createWishlist(productId)).unwrap();
-          toast.success('Item added to wishlist');
+            await dispatch(createWishlist(productId)).unwrap();
+            toast.success('Item added to wishlist');
         } catch (error) {
-          toast.error(error.message || 'Failed to add to wishlist');
+            toast.error(error.message || 'Failed to add to wishlist');
         }
-      };
+    };
 
     return (
         <>
@@ -572,44 +606,41 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                             className="z_category-swiper"
                         >
                             {categories.map((category, index) => (
-                                <>
-                                    <SwiperSlide key={index} className='me-0 d-flex justify-content-center'>
+                                <SwiperSlide key={index}>
+
+                                    <div className="db_card text-center h-100 ">
                                         <div
                                             className="z_category-card"
                                             onClick={() => {
-                                                // જો એજ કેટેગરી પર ક્લિક થાય તો
+                                                localStorage.removeItem('selectedSubCategoryIdfromheader');
+
                                                 if (selectedCategory === category._id) {
-                                                    // localStorage માંથી ID દૂર કરો
                                                     localStorage.removeItem('selectedCategoryId');
-                                                    // selectedCategory ને ખાલી કરો
                                                     setSelectedCategory('');
-                                                    // બધા પ્રોડક્ટ્સ ફેચ કરો
                                                     dispatch(fetchProducts({}));
                                                 } else {
-                                                    // નવી કેટેગરી સિલેક્ટ કરો
                                                     setSelectedCategory(category._id);
                                                     localStorage.setItem('selectedCategoryId', category._id);
                                                     dispatch(fetchProducts({ categoryId: category._id }));
                                                 }
                                             }}
                                             style={{
-                                                cursor: 'pointer'
+                                                cursor: 'pointer',
+                                                borderRadius: '50%',
+                                                padding: '10px',
+                                                transition: 'all 0.3s ease'
                                             }}
                                         >
-                                            <div className="z_category-image-wrapper" style={{
-                                                border: selectedCategory === category._id ? '1px solid var(--greencolor)' : 'none'
-                                            }}>
-                                                <img
-                                                    src={`http://localhost:4000/${category.categoryImage}`}
-                                                    alt={category.categoryName}
-                                                    className="z_category-image"
-                                                />
-                                            </div>
-                                            <p className="x_category-name">{category.categoryName}</p>
+                                            <div className="db_icon">{getCategoryIcon(category.categoryName)}</div>
+
+                                            <h6 className="db_card_title">
+                                                {category.categoryName?.length > 17 ? `${category.categoryName.substring(0, 17)}...` : category.categoryName}
+                                            </h6>
                                         </div>
-                                    </SwiperSlide>
-                                </>
+                                    </div>
+                                </SwiperSlide>
                             ))}
+
                         </Swiper>
                     </div>
                 </section>
@@ -750,7 +781,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                 className="z_checkbox-label"
                                                 onClick={() => {
                                                     // localStorage માંથી selectedSubcategoryId દૂર કરો
-                                                    localStorage.removeItem('selectedSubcategoryId');
+                                                    localStorage.removeItem('selectedSubCategoryIdfromheader');
                                                     // selectedSubcategory ને ખાલી કરો
                                                     setSelectedSubcategory('');
                                                     // બધા પ્રોડક્ટ્સ ફેચ કરો
@@ -862,7 +893,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                             </div>
                                             {/* Add HOT badge */}
                                             <div className="Z_black-ribbon">
-                                                -{product.discount}
+                                                {product.discount}
                                             </div>
 
                                             {/* {product.discount > 0 && (
@@ -875,11 +906,11 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                 {renderStars(product.rating)}
                                                 <span className="z_rating-text">({product.rating})</span>
                                             </div> */}
-                                            <Card.Title className="z_product-title text-nowrap"          onClick={() => {
-                          localStorage.setItem('selectedProductId', product._id);
-                          localStorage.setItem('activePage', 'ProductDetails');
-                          navigate(`/product-details/${product._id}`);
-                        }}>{product.name}</Card.Title>
+                                            <Card.Title className="z_product-title text-nowrap" onClick={() => {
+                                                localStorage.setItem('selectedProductId', product._id);
+                                                localStorage.setItem('activePage', 'ProductDetails');
+                                                navigate(`/product-details/${product._id}`);
+                                            }}>{product.name}</Card.Title>
                                             <Card.Text className="z_product-subtitle">
                                                 {product.size}
                                             </Card.Text>
@@ -940,22 +971,24 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                     alt={selectedProduct.name}
                                                     className="z_modal-product-img"
                                                 />
-                                                {selectedProduct.discount > 0 && (
+                                                <span className="z_modal-discount-badge">{selectedProduct.discount}</span>
+
+                                                {/* {selectedProduct.discount > 0 && (
                                                     <span className="z_modal-discount-badge">
-                                                        -{selectedProduct.discount}%
+                                                        {selectedProduct.discount}
                                                     </span>
-                                                )}
+                                                )} */}
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="z_modal-content">
-                                                <h3 className="mb-3">{selectedProduct.name}</h3>
-                                                <div className="z_rating-container mb-4">
-                                                    <span className="z_rating-text ms-2 py-1 px-2" style={{border:"1px solid green",     borderRadius: "25px"}}>{selectedProduct.discount} Off</span>
-                                                </div>
+                                                <h4 className="mb-3">{selectedProduct.name}</h4>
+                                                {/* <div className="z_rating-container mb-4">
+                                                    <span className="z_rating-text ms-2 py-1 px-2" style={{ border: "1px solid green", borderRadius: "25px" }}>{selectedProduct.discount} Off</span>
+                                                </div> */}
                                                 <div className="mb-4">
                                                     <div className="d-flex align-items-center gap-2">
-                                                        <span className="h3 mb-0">{selectedProduct.price}</span>
+                                                        <span className="h5 mb-0">{selectedProduct.price}</span>
                                                         <span className="text-decoration-line-through text-muted">
                                                             {selectedProduct.discountPrice}
                                                         </span>

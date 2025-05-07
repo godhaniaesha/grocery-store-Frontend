@@ -241,7 +241,7 @@ function Bestseller(props) {
                         </div>
                       </div>
                       <div className="Z_black-ribbon">
-                        -{product.variantDiscount}
+                        {product.variantDiscount}
                       </div>
                     </div>
                     <Card.Body className="z_card-body">
@@ -294,24 +294,24 @@ function Bestseller(props) {
                         className="z_modal-product-img"
                       />
                       <span className="z_modal-discount-badge">
-                        -{selectedProduct.variantDiscount}%
+                        {selectedProduct.variantDiscount}
                       </span>
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="z_modal-content">
-                      <h3 className="mb-3">{selectedProduct.productName}</h3>
+                      <h4 className="mb-3">{selectedProduct.productName}</h4>
  
-                      <div className="z_rating-container mb-4">
+                      {/* <div className="z_rating-container mb-4">
                         {renderStars(4.5)}
                         <span className="z_rating-text ms-2">
                           (4.5 customer review)
                         </span>
-                      </div>
+                      </div> */}
  
                       <div className="mb-4">
                         <div className="d-flex align-items-center gap-2">
-                          <span className="h3 mb-0">
+                          <span className="h5 mb-0">
                             ${selectedProduct.variantPrice?.toFixed(2) || '0.00'}
                           </span>
                           <span className="text-decoration-line-through text-muted">
