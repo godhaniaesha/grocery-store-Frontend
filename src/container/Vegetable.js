@@ -145,6 +145,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
         setSelectedCategory(categoryId);
         // localStorage માં કેટેગરી ID સેવ કરો
         localStorage.setItem('selectedCategoryId', categoryId);
+        localStorage.removeItem('searchQuery');
         localStorage.removeItem('selectedSubCategoryIdfromheader');
         // સિલેક્ટેડ કેટેગરી ના પ્રોડક્ટ્સ ફેચ કરો
         dispatch(fetchProducts({ categoryId }));
@@ -245,11 +246,15 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
     };
 
     const handleShow = (product) => {
+        const variant = variants?.find(v => v.productId === product._id);
+        const existingCartItem = cartItems?.find(item => 
+            item.productId === product._id && 
+            item.productVarientId === variant?._id
+        );
+        
         setSelectedProduct(product);
-        console.log(product, "product");
-
+        setQuantity(existingCartItem?.quantity || 1);
         setShowModal(true);
-        setQuantity(1);
         setTimeout(() => setModalShow(true), 100);
     };
 
@@ -291,6 +296,14 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                 const hasVariant = variants.some(v => v.productId === product._id);
                 if (!hasVariant) return false;
 
+                // Get search query from localStorage
+                const searchQuery = localStorage.getItem('searchQuery');
+                
+                // If search query exists, filter by product name
+                if (searchQuery) {
+                    return product.productName.toLowerCase().includes(searchQuery.toLowerCase());
+                }
+
                 // Get selected category and subcategory from localStorage
                 const selectedCategoryFromStorage = localStorage.getItem('selectedCategoryId');
                 const selectedSubcategoryFromStorage = localStorage.getItem('selectedSubCategoryIdfromheader');
@@ -302,19 +315,6 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                 // Match subcategory if selected
                 const matchesSubcategory = !selectedSubcategoryFromStorage ||
                     (product.subCategoryId && compareSubcategoryIds(product.subCategoryId, selectedSubcategoryFromStorage));
-
-                // Log filtering details for debugging
-                if (selectedCategoryFromStorage && !matchesCategory) {
-                    console.log("Product filtered out:", product.productName,
-                        "Category ID:", product.categoryId,
-                        "Selected Category:", selectedCategoryFromStorage);
-                }
-
-                if (selectedSubcategoryFromStorage && !matchesSubcategory) {
-                    console.log("Product filtered out:", product.productName,
-                        "Subcategory ID:", product.subCategoryId,
-                        "Selected Subcategory:", selectedSubcategoryFromStorage);
-                }
 
                 return matchesCategory && matchesSubcategory;
             })
@@ -538,23 +538,34 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                 toast.error("Product variant not found");
                 return;
             }
-            console.log(variant._id, "variant._id");
 
+            const existingCartItem = cartItems?.find(item => 
+                item.productId === product._id && 
+                item.productVarientId === variant._id
+            );
 
-            await dispatch(createCart({
-                productId: product._id,
-                productVarientId: variant._id,
-                quantity: 1
-            })).unwrap();
-            toast.success("Item added to cart");
-        } catch (error) {
-            console.error("Cart operation failed:", error);
-            // Check if error is for existing cart item
-            if (error?.message === 'Cart Already Exist') {
-                toast.info("Item quantity updated in cart"); // Changed message here
+            if (existingCartItem) {
+                await dispatch(updateCart({
+                    cartId: existingCartItem._id,
+                    productId: product._id,
+                    productVarientId: variant._id,
+                    quantity: quantity
+                })).unwrap();
+                toast.success("Cart updated successfully");
             } else {
-                toast.error("Failed to add to cart");
+                await dispatch(createCart({
+                    productId: product._id,
+                    productVarientId: variant._id,
+                    quantity: quantity
+                })).unwrap();
+                toast.success("Added to cart successfully");
             }
+
+            await dispatch(getallMyCarts());
+            handleClose(); // Close modal after cart operation
+        } catch (error) {
+            console.error('Failed to update cart:', error);
+            toast.error(error.message || "Failed to update cart");
         }
     };
 
@@ -642,6 +653,8 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                 } else {
                                                     setSelectedCategory(category._id);
                                                     localStorage.setItem('selectedCategoryId', category._id);
+                                                    localStorage.removeItem('searchQuery');
+                                                    localStorage.removeItem('selectedSubCategoryIdfromheader');
                                                     dispatch(fetchProducts({ categoryId: category._id }));
                                                 }
                                             }}
@@ -1018,19 +1031,24 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                 <p className="text-muted mb-4">{selectedProduct.description}</p>
                                                 <div className="z_modal-quantity-container">
                                                     <div className="z_modal-quantity-selector">
-                                                        <button
+                                                        <button 
                                                             className="z_modal-quantity-btn"
                                                             onClick={() => handleModalQuantityChange(-1)}
                                                             disabled={quantity === 1}
                                                         >
                                                             <FaMinus size={12} />
                                                         </button>
-
-                                                        <span className="z_modal-quantity-number">
-                                                            {quantity}
-                                                        </span>
-
-                                                        <button
+                                                        <div className="d-flex flex-column align-items-center">
+                                                            <span className="z_modal-quantity-number">
+                                                                {quantity}
+                                                            </span>
+                                                            {/* {selectedProduct.quantity > 0 && (
+                                                                <small className="text-muted" style={{fontSize: '0.75rem'}}>
+                                                                    In Cart: {selectedProduct.quantity}
+                                                                </small>
+                                                            )} */}
+                                                        </div>
+                                                        <button 
                                                             className="z_modal-quantity-btn"
                                                             onClick={() => handleModalQuantityChange(1)}
                                                             disabled={quantity === 10}
@@ -1039,13 +1057,12 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                         </button>
                                                     </div>
 
-                                                    <button
+                                                    <button 
                                                         className="z_modal-add-cart-btn"
                                                         onClick={() => handleAddToCart(selectedProduct)}
-                                                        disabled={!selectedProduct.stockStatus}
                                                     >
-                                                        <FaShoppingCart className="me-2" />
-                                                        Add to Cart
+                                                        Add to cart
+                                                        <FaShoppingCart className="z_cart-icon" />
                                                     </button>
                                                 </div>
 
