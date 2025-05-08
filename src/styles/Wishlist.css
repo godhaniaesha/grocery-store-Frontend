@@ -3,7 +3,7 @@
 .db_wishlist .db_wishlist_header {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 2px solid #e9f1f6;
+    border-bottom: 1px solid #2d614559;
 }
 
 .db_wishlist .db_header_content {
@@ -15,7 +15,7 @@
 }
 
 .db_wishlist .db_title {
-    color: #213448;
+    color: #2c6145;
     font-size: 2rem;
     font-weight: 700;
     margin: 0;
@@ -24,7 +24,7 @@
 .db_wishlist .db_count {
     color: #666;
     font-size: 1rem;
-    background: #e9f1f6;
+    background: #effff1;
     padding: 0.5rem 1rem;
     border-radius: 20px;
 }
@@ -38,7 +38,7 @@
 .db_wishlist .db_wishlist_item {
     position: relative;
     background: #fff;
-    border: 1px solid #e9f1f6;
+    border: 1px solid #effff1;
     border-radius: 12px;
     transition: all 0.3s ease;
     overflow: hidden;
@@ -113,7 +113,7 @@
 }
 
 .db_wishlist .db_current_price {
-    color: #213448;
+    color: #2c6145;
     font-size: 1.25rem;
     font-weight: 700;
 }
@@ -153,9 +153,9 @@
     width: 100%;
     padding: 0.75rem;
     background: #f0f8f4;
-    border: 2px solid #213448;
+    border: 2px solid #2c6145;
     border-radius: 8px;
-    color: #213448;
+    color: #2c6145;
     font-size: 1rem;
     font-weight: 600;
     display: flex;
@@ -167,7 +167,7 @@
 }
 
 .db_wishlist .db_add_cart_btn:hover {
-    background: #213448;
+    background: #2c6145;
     color: white;
     transform: translateY(-2px);
 }
@@ -192,7 +192,7 @@
 
 .db_wishlist .db_empty_icon {
     font-size: 4rem;
-    color: #213448;
+    color: #2c6145;
     margin-bottom: 1.5rem;
     opacity: 0.7;
 }
@@ -216,7 +216,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: #213448;
+    background: #2c6145;
     color: white;
     text-decoration: none;
     border-radius: 8px;
@@ -330,7 +330,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #213448;
+    color: #2c6145;
     cursor: pointer;
     transition: all 0.3s ease;
     transform: translateY(20px);
@@ -343,7 +343,7 @@
 }
 
 .db_wishlist .z_hover-icon-btn:hover {
-    background: #213448;
+    background: #2c6145;
     color: white;
 }
 
@@ -386,7 +386,7 @@
 
 .db_wishlist .z_current-price {
     font-size: 1.1rem;
-    color: #213448;
+    color: #2c6145;
     font-weight: 700;
 }
 

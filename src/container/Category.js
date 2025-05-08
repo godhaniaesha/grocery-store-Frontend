@@ -11,6 +11,7 @@ import { Navigation } from 'swiper/modules';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 export function Category({ onCategoryClick }) {
   const dispatch = useDispatch();
@@ -48,7 +49,7 @@ export function Category({ onCategoryClick }) {
   };
 
   if (isLoading) {
-    return <div>Loading categories...</div>;
+    return <LoadingSpinner></LoadingSpinner>;
   }
 
   if (error) {

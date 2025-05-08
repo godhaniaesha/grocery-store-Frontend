@@ -9,12 +9,12 @@
 
 .db_privacy_icon {
     font-size: 3rem;
-    color: #213448;
+    color: #2c6145;
     margin-bottom: 0.5rem;
 }
 
 .db_privacy_header h1 {
-    color: #213448;
+    color: #2c6145;
     font-size: 2.2rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
@@ -51,11 +51,11 @@
     gap: 0.8rem;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid #e9f1f6;
+    border-bottom: 2px solid #effff1;
 }
 
 .db_section_icon {
-    color: #213448;
+    color: #2c6145;
     font-size: 1.5rem;
 }
 
@@ -78,7 +78,7 @@
 }
 
 .db_info_card h3 {
-    color: #213448;
+    color: #2c6145;
     font-size: 1.1rem;
     margin-bottom: 0.8rem;
 }
@@ -110,7 +110,7 @@
 }
 
 .db_item_icon {
-    color: #213448;
+    color: #2c6145;
     font-size: 1.8rem;
     margin-bottom: 0.5rem;
 }
@@ -141,7 +141,7 @@
 
 .db_cookie_info ul li:before {
     content: "•";
-    color: #213448;
+    color: #2c6145;
     position: absolute;
     left: 0;
     font-weight: bold;
@@ -183,7 +183,7 @@
 }
 
 .db_contact_card h3 {
-    color: #213448;
+    color: #2c6145;
     font-size: 1.1rem;
     margin-bottom: 0.8rem;
 }
