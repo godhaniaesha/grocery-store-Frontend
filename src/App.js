@@ -13,7 +13,7 @@ function App() {
     <Provider store={store}>
       <MainRoutes />
       <ToastContainer
-        position="top-right"
+        position="bottom-left"
         autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}

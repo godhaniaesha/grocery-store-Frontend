@@ -30,6 +30,8 @@ const Search = () => {
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       localStorage.setItem('searchQuery', searchQuery);
+      localStorage.removeItem('selectedCategoryId');
+      localStorage.removeItem('selectedSubCategoryIdfromheader');
       navigate('/Vegetable');
       setShowSuggestions(false);
     }
@@ -37,6 +39,8 @@ const Search = () => {
 
   const handleSearch = () => {
     localStorage.setItem('searchQuery', searchQuery);
+    localStorage.removeItem('selectedCategoryId');
+    localStorage.removeItem('selectedSubCategoryIdfromheader');
     navigate('/Vegetable');
     setShowSuggestions(false);
   };

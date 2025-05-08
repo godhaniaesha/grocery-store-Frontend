@@ -107,13 +107,7 @@ export default function HomeMain() {
   }, [location.pathname]); // Add location.pathname as dependency
 
   // Add a function to handle category navigation
-  const handleCategoryNavigation = (categoryId, categoryName) => {
-    console.log("categories", categoryId, categoryName);
-    localStorage.setItem('selectedCategoryId', categoryId);
-    localStorage.setItem('selectedCategoryName', categoryName);
-    localStorage.setItem('activePage', 'Vegetables');
-    setIsVegetablePage(true);
-  };
+  
 
   return (
     <>

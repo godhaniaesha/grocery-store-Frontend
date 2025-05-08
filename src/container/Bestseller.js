@@ -46,6 +46,7 @@ function Bestseller(props) {
     dispatch(fetchProductVariants({}));
     dispatch(fetchCategories());
     dispatch(getWishlistItems());
+    
   }, [dispatch]);
  
   const handleClose = () => {
@@ -57,9 +58,19 @@ function Bestseller(props) {
   };
  
   const handleShow = (product) => {
-    setSelectedProduct(product);
+    const variant = variants?.find(v => v.productId === product._id);
+    const existingCartItem = cartItems?.find(item => 
+      item.productId === product._id && 
+      item.productVarientId === variant?._id
+    );
+    
+    // Set initial quantity based on cart or default to 1
+    setQuantity(existingCartItem?.quantity || 1);
+    setSelectedProduct({
+      ...product,
+      cartQuantity: existingCartItem?.quantity || 0
+    });
     setShowModal(true);
-    setQuantity(1);
     setTimeout(() => setModalShow(true), 100);
   };
  
@@ -139,25 +150,42 @@ function Bestseller(props) {
         toast.error("Product variant not found");
         return;
       }
-      console.log(variant._id, "variant._id");
+      const existingCartItem = cartItems?.find(item => 
+        item.productId === product._id && 
+        item.productVarientId === variant._id
+      );
       
+      if (existingCartItem) {
+        const newQuantity = existingCartItem.quantity + quantity;
+        
+        if (newQuantity > 10) {
+          toast.warning("Maximum 10 items allowed in cart");
+          return;
+        }
 
-      await dispatch(createCart({
-        productId: product._id,
-        productVarientId: variant._id,
-        quantity: 1
-      })).unwrap();
-      toast.success("Item added to cart");
+        await dispatch(updateCart({
+          cartId: existingCartItem._id,
+          productId: product._id,
+          productVarientId: variant._id,
+          quantity: newQuantity
+        })).unwrap();
+        toast.success("Cart quantity updated successfully");
+      } else {
+        await dispatch(createCart({
+          productId: product._id,
+          productVarientId: variant._id,
+          quantity: quantity
+        })).unwrap();
+        toast.success("Item added to cart successfully");
+      }
+      
+      await dispatch(getallMyCarts());
+      handleClose();
     } catch (error) {
       console.error("Cart operation failed:", error);
-      // Check if error is for existing cart item
-      if (error?.message === 'Cart Already Exist') {
-        toast.info("Item quantity updated in cart"); // Changed message here
-      } else {
-        toast.error("Failed to add to cart");
-      }
+      toast.error(error.message || "કાર્ટમાં ઉમેરવામાં નિષ્ફળ");
     }
-  };
+};
 
 
 
@@ -341,6 +369,7 @@ function Bestseller(props) {
                         {selectedProduct.description}
                       </p>
  
+                      {/* // In the Modal section, update the quantity display: */}
                       <div className="z_modal-quantity-container">
                         <div className="z_modal-quantity-selector">
                           <button
@@ -351,9 +380,16 @@ function Bestseller(props) {
                             <FaMinus size={12} />
                           </button>
  
-                          <span className="z_modal-quantity-number">
-                            {quantity}
-                          </span>
+                          <div className="d-flex flex-column align-items-center">
+                            <span className="z_modal-quantity-number">
+                              {quantity}
+                            </span>
+                            {/* {selectedProduct.cartQuantity > 0 && (
+                              // <small className="text-muted" style={{fontSize: '0.75rem'}}>
+                              //    {selectedProduct.cartQuantity}
+                              // </small>
+                            )} */}
+                          </div>
  
                           <button
                             className="z_modal-quantity-btn"
@@ -364,7 +400,10 @@ function Bestseller(props) {
                           </button>
                         </div>
  
-                        <button className="z_modal-add-cart-btn">
+                        <button 
+                          className="z_modal-add-cart-btn"
+                          onClick={() => handleAddToCart(selectedProduct)}
+                        >
                           Add to cart
                           <FaShoppingCart className="z_cart-icon" />
                         </button>

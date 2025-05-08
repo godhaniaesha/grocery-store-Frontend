@@ -17,6 +17,7 @@ import PopularCategories from '../container/PopularCategories';
 import Bestseller from '../container/Bestseller';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Checkout from '../container/Checkout';
+import CartDesign from '../container/CartDesign';
 
 const MainRoutes = () => {
   const [loading, setLoading] = useState(true);
@@ -44,6 +45,7 @@ const MainRoutes = () => {
         <Route path="/FAQ" element={<FAQ />} />
         <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
         <Route path="/Addcart" element={<Addcart />} />
+        <Route path="/CartDesign" element={<CartDesign />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/MyAccount" element={<MyAccount />} />
         <Route path="/contactus" element={<Contactus />} />

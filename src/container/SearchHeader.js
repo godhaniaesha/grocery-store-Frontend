@@ -26,7 +26,7 @@ export default function SearchHeader() {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false)
-  // const [filteredProducts, setFilteredProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     if (products?.length > 0) {
@@ -380,6 +380,8 @@ export default function SearchHeader() {
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       localStorage.setItem('searchQuery', searchQuery);
+      localStorage.removeItem('selectedCategoryId');
+      localStorage.removeItem('selectedSubCategoryIdfromheader');
       navigate('/Vegetable');
       setShowSuggestions(false);
     }
@@ -387,11 +389,13 @@ export default function SearchHeader() {
 
   const handleSearch = () => {
     localStorage.setItem('searchQuery', searchQuery);
+    localStorage.removeItem('selectedCategoryId');
+    localStorage.removeItem('selectedSubCategoryIdfromheader');
     navigate('/Vegetable');
     setShowSuggestions(false);
   };
 
-  const filteredProducts = products?.filter(product =>
+  const filteredProductss = products?.filter(product =>
     product?.productName?.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
 
@@ -549,7 +553,7 @@ export default function SearchHeader() {
             </button>
           </div>
 
-          {showSuggestions && filteredProducts.length > 0 && (
+          {showSuggestions && filteredProductss.length > 0 && (
             <div 
               className="suggestion-dropdown position-absolute start-0 w-100 bg-white border rounded mt-1 text-dark" 
               style={{ 
@@ -560,7 +564,7 @@ export default function SearchHeader() {
                 top: 'calc(100% + 5px)'
               }}
             >
-              {filteredProducts.map((product) => (
+              {filteredProductss.map((product) => (
                 <div 
                   key={product._id}
                   className="suggestion-item p-2 border-bottom hover:bg-gray-100"
@@ -647,6 +651,7 @@ export default function SearchHeader() {
                                         onClick={(e) => {
                                           localStorage.setItem('selectedSubCategoryIdfromheader', subcat._id);
                                           localStorage.removeItem('selectedCategoryId');
+                                          localStorage.removeItem('searchQuery');
                                           localStorage.setItem('activePage', 'Vegetables');
                                           navigate('/Vegetable');
                                         }}
