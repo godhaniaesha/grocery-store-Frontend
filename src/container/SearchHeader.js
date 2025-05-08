@@ -16,6 +16,7 @@ import * as Yup from 'yup';
 import { FiShoppingBag } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import Search from "../components/Search.js";
+import { getWishlistItems } from '../redux/slices/wishlist.Slice';
 
 export default function SearchHeader() {
   const navigate = useNavigate();
@@ -44,6 +45,9 @@ export default function SearchHeader() {
   // Get data from Redux store with default values
   const { categories: storeCategories = [], loading: categoriesLoading } = useSelector((state) => state.category || {});
   const { subcategories = [], loading: subcategoriesLoading } = useSelector((state) => state.subcategory || {});
+  const { wishlistItems } = useSelector(state => state.wishlist);
+  const { cartItems } = useSelector(state => state.addcart);
+
 
   // Debug logs
   useEffect(() => {
@@ -492,7 +496,7 @@ export default function SearchHeader() {
                       className="badge bg-dark text-white position-absolute top-0 start-100 translate-middle rounded-circle"
                       style={{ "--bs-bg-opacity": "0.5" }}
                     >
-                      3
+                    {wishlistItems.length}
                     </span>
                   </Link>
                 </div>
@@ -505,7 +509,7 @@ export default function SearchHeader() {
                       className="badge bg-dark text-white position-absolute top-0 start-100 translate-middle rounded-circle"
                       style={{ "--bs-bg-opacity": "0.5" }}
                     >
-                      0
+                    {cartItems.length}
                     </span>
                   </Link>
                 </div>

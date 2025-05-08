@@ -133,7 +133,7 @@ function Bestseller(props) {
  
   // Add cart handling functions
   const handleAddToCart = async (product) => {
-    try {
+    try {  
       const variant = variants?.find(v => v.productId === product._id);
       if (!variant) {
         toast.error("Product variant not found");
