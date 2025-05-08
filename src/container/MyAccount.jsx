@@ -8,6 +8,8 @@ const MyAccount = () => {
     const dispatch = useDispatch();
     const [isEditing, setIsEditing] = useState(false);
     const { userData, isLoading } = useSelector((state) => state.user);
+    const [selectedImageFile, setSelectedImageFile] = useState(null);
+
     const [userInfo, setUserInfo] = useState({
         firstName: '',
         lastName: '',
@@ -17,7 +19,7 @@ const MyAccount = () => {
         state: '',
         pincode: '',
         locality: '',
-        avatar: require("../image/user.jpg")
+        image: ''
     });
 
     useEffect(() => {
@@ -35,15 +37,34 @@ const MyAccount = () => {
                 state: userData.state || '',
                 pincode: userData.pincode || '',
                 locality: userData.locality || '',
-                avatar: userData.avatar || require("../image/user.jpg")
+                image: userData.image || ''
             });
         }
     }, [userData]);
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setSelectedImageFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setUserInfo({ ...userInfo, image: reader.result });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
-            await dispatch(updateUser(userInfo)).unwrap();
+            const updatedData = { ...userInfo };
+
+            if (selectedImageFile) {
+                updatedData.image = userInfo.image; // Changed from 'image' to 'userInfo.image'
+            }
+
+            await dispatch(updateUser(updatedData)).unwrap();
             setIsEditing(false);
         } catch (error) {
             console.error('Failed to update user:', error);
@@ -55,15 +76,27 @@ const MyAccount = () => {
             <div className="account-header">
                 <h1>My Account</h1>
             </div>
-            
+
             <div className="account-content">
                 <div className="account-sidebar">
                     <div className="avatar-wrapper">
-                        <img src={userInfo.avatar} alt="Profile" className="avatar-img" />
-                        <button className="change-photo-btn">Change Photo</button>
+                        <img
+                            src={userInfo.image ? userInfo.image : require("../image/user.jpg")} // Changed from 'image' to 'userInfo.image'
+                            alt="Profile"
+                            className="avatar-img"
+                        />
+
+                        <label className="change-photo-btn">
+                            Change Photo
+                            <input
+                                type="file"
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                onChange={handleImageChange}
+                            />
+                        </label>
                     </div>
                     <div className="quote-section mt-2">
-                     
                         <p className="quote-text small">
                             "Your one-stop destination for fresh groceries, quality products, and exceptional service. Shop smart, live better! 🛒✨"
                         </p>
@@ -79,7 +112,7 @@ const MyAccount = () => {
                             </button>
                         )}
                     </div>
-                    
+
                     {!isEditing ? (
                         <div className="info-display">
                             <div className="info-row">
@@ -128,18 +161,18 @@ const MyAccount = () => {
                             <div className="form-row">
                                 <div className="form-field">
                                     <label>First Name</label>
-                                    <input 
+                                    <input
                                         type="text"
                                         value={userInfo.firstName}
-                                        onChange={(e) => setUserInfo({...userInfo, firstName: e.target.value})}
+                                        onChange={(e) => setUserInfo({ ...userInfo, firstName: e.target.value })}
                                     />
                                 </div>
                                 <div className="form-field">
                                     <label>Last Name</label>
-                                    <input 
+                                    <input
                                         type="text"
                                         value={userInfo.lastName}
-                                        onChange={(e) => setUserInfo({...userInfo, lastName: e.target.value})}
+                                        onChange={(e) => setUserInfo({ ...userInfo, lastName: e.target.value })}
                                     />
                                 </div>
                             </div>
@@ -147,18 +180,18 @@ const MyAccount = () => {
                             <div className="form-row">
                                 <div className="form-field">
                                     <label>Phone Number</label>
-                                    <input 
+                                    <input
                                         type="tel"
                                         value={userInfo.mobileNo}
-                                        onChange={(e) => setUserInfo({...userInfo, mobileNo: e.target.value})}
+                                        onChange={(e) => setUserInfo({ ...userInfo, mobileNo: e.target.value })}
                                     />
                                 </div>
                                 <div className="form-field">
                                     <label>Email Address</label>
-                                    <input 
+                                    <input
                                         type="email"
                                         value={userInfo.email}
-                                        onChange={(e) => setUserInfo({...userInfo, email: e.target.value})}
+                                        onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
                                     />
                                 </div>
                             </div>
@@ -166,18 +199,18 @@ const MyAccount = () => {
                             <div className="form-row">
                                 <div className="form-field">
                                     <label>City</label>
-                                    <input 
+                                    <input
                                         type="text"
                                         value={userInfo.city}
-                                        onChange={(e) => setUserInfo({...userInfo, city: e.target.value})}
+                                        onChange={(e) => setUserInfo({ ...userInfo, city: e.target.value })}
                                     />
                                 </div>
                                 <div className="form-field">
                                     <label>State</label>
-                                    <input 
+                                    <input
                                         type="text"
                                         value={userInfo.state}
-                                        onChange={(e) => setUserInfo({...userInfo, state: e.target.value})}
+                                        onChange={(e) => setUserInfo({ ...userInfo, state: e.target.value })}
                                     />
                                 </div>
                             </div>
@@ -185,26 +218,26 @@ const MyAccount = () => {
                             <div className="form-row">
                                 <div className="form-field">
                                     <label>Postal Code</label>
-                                    <input 
+                                    <input
                                         type="text"
                                         value={userInfo.pincode}
-                                        onChange={(e) => setUserInfo({...userInfo, pincode: e.target.value})}
+                                        onChange={(e) => setUserInfo({ ...userInfo, pincode: e.target.value })}
                                     />
                                 </div>
                                 <div className="form-field">
                                     <label>Country</label>
-                                    <input 
+                                    <input
                                         type="text"
                                         value={userInfo.locality}
-                                        onChange={(e) => setUserInfo({...userInfo, locality: e.target.value})}
+                                        onChange={(e) => setUserInfo({ ...userInfo, locality: e.target.value })}
                                     />
                                 </div>
                             </div>
 
                             <div className="button-group">
                                 <button type="submit" className="save-btn">Save</button>
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     className="cancel-btn"
                                     onClick={() => setIsEditing(false)}
                                 >

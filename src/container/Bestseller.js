@@ -26,6 +26,7 @@ import 'swiper/css/navigation';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
  
 function Bestseller(props) {
   const dispatch = useDispatch();
@@ -128,7 +129,7 @@ function Bestseller(props) {
   };
 
   if (productLoading || variantLoading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner></LoadingSpinner>;
   }
  
   // Add cart handling functions

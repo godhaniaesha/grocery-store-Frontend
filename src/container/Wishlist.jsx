@@ -34,8 +34,15 @@ const Wishlist = () => {
         ));
     };
 
-    const removeFromWishlist = (wishlistId) => {
-        dispatch(deleteFromWishlist(wishlistId));
+    const removeFromWishlist = async (wishlistId) => {
+        try {
+            await dispatch(deleteFromWishlist(wishlistId)).unwrap();
+            toast.success("Item has been successfully removed from wishlist.");
+            dispatch(getWishlistItems()); 
+        } catch (error) {
+            toast.error("Failed to remove item.");
+            console.error("Wishlist deletion failed:", error);
+        }
     };
 
     const addToCart = async (product) => {
@@ -104,7 +111,9 @@ const Wishlist = () => {
 
             <div className="db_wishlist_grid">
                 {wishlistItems.map((item) => {
-                    const product = item.productData[0]; // Access the first product from productData array
+                    const product = item.productData[0];
+                    const variant = variants?.find(v => v.productId === product._id);
+                    
                     return (
                         <Card key={item._id} className="z_product-card">
                             <div className="z_product-image-container">
@@ -129,6 +138,11 @@ const Wishlist = () => {
                                         </button>
                                     </div>
                                 </div>
+                                {variant && (
+                                    <div className="Z_black-ribbon">
+                                        -{variant.discount}
+                                    </div>
+                                )}
                             </div>
                             <Card.Body className="z_card-body">
                                 <div className="z_rating-container">
@@ -137,17 +151,27 @@ const Wishlist = () => {
                                         ({Number(product?.rating || 0).toFixed(1)})
                                     </span>
                                 </div>
-                                <Card.Title className="z_product-title"          onClick={() => {
-                          localStorage.setItem('selectedProductId', product._id);
-                          localStorage.setItem('activePage', 'ProductDetails');
-                          navigate(`/product-details/${product._id}`);
-                        }}>
+                                <Card.Title className="z_product-title" onClick={() => {
+                                    localStorage.setItem('selectedProductId', product._id);
+                                    localStorage.setItem('activePage', 'ProductDetails');
+                                    navigate(`/product-details/${product._id}`);
+                                }}>
                                     {product.productName}
                                 </Card.Title>
                                 <Card.Text className="z_product-subtitle">
                                     {product.description}
                                 </Card.Text>
                                
+                                {variant && (
+                                    <div className="z_price-container">
+                                        <span className="z_current-price">
+                                            ${variant.price || 0}
+                                        </span>
+                                        <span className="z_original-price">
+                                            ${((variant.price || 0) * 1.2).toFixed(2)}
+                                        </span>
+                                    </div>
+                                )}
                             </Card.Body>
                         </Card>
                     );

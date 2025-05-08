@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Table,
-  Button,
-  Card,
-  Form,
-  Modal,
-  ButtonGroup,
-  ToggleButton,
-} from "react-bootstrap";
-import { createCart, deleteCart, getallMyCarts, updateCart } from '../redux/slices/cart.Slice';
-import { FaArrowRight, FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { Row, Col, Button, Card,Modal} from "react-bootstrap";
+import { deleteCart, getallMyCarts, updateCart } from '../redux/slices/cart.Slice';
+import { FaArrowRight, FaEdit} from "react-icons/fa";
 import {
   selectCurrency,
   selectCurrencySymbol,
-  convertPrice,
+ 
 } from "../redux/slices/currency.Slice";
 
 import "../styles/denisha.css";
@@ -28,9 +17,7 @@ import { FiPlus } from "react-icons/fi";
 import { Formik, Field, ErrorMessage, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
-import FastKartHeader from "./FastKartHeader";
-import LogoHeader from "./LogoHeader";
-import Footer from "./Footer";
+
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCoupons } from "../redux/slices/coupon.Slice";
 import { createOrder } from "../redux/slices/order.Slice";
@@ -62,10 +49,8 @@ function Addcart({ setIsCheckoutPage, setIsCartPage }) {
     return `${currencySymbol}${convertedAmount}`;
   };
 
-  const userId = JSON.parse(localStorage.getItem("user"))?._id;
-  const userCartItems = useSelector((state) =>
-    (state.addcart.cartItems || []).filter((item) => item.userId === userId)
-  );
+
+
 
   const [show, setShow] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState(1);
@@ -80,10 +65,7 @@ function Addcart({ setIsCheckoutPage, setIsCartPage }) {
     dispatch(getUserAddresses());
   }, [dispatch]);
   // Function to remove applied coupon
-  const handleRemoveCoupon = () => {
-    setAppliedCoupon(null);
-    localStorage.removeItem("appliedCoupon");
-  };
+ 
 
   // Modals
   const [showFirstModal, setShowFirstModal] = useState(false);
@@ -149,32 +131,7 @@ function Addcart({ setIsCheckoutPage, setIsCartPage }) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const [cart, setCart] = useState([
-    {
-      id: 1,
-      name: "Broccoli - Organically Grown",
-      weight: "250 g",
-      price: 35,
-      qty: 1,
-      img: brocolli,
-    },
-    {
-      id: 2,
-      name: "Carrots - Fresh Farm",
-      weight: "500 g",
-      price: 25,
-      qty: 2,
-      img: brocolli,
-    },
-    {
-      id: 3,
-      name: "Tomatoes - Organic",
-      weight: "1 kg",
-      price: 40,
-      qty: 1,
-      img: brocolli,
-    },
-  ]);
+ 
 
   const updateQuantity = async (cartId, type) => {
     try {
