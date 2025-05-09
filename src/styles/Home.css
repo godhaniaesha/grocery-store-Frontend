@@ -2524,3 +2524,10 @@
 .Z_apply_code_btn:hover {
   background: #333;
 }
+
+
+@media screen and (max-width: 425px) {
+  .z_category-swiper {
+    padding: 20px 5px;
+  }
+}

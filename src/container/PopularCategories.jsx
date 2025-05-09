@@ -126,8 +126,8 @@ export default function PopularCategories() {
               <div className="db_card_body">
                 <div className="db_icon">{getCategoryIcon(category.categoryName)}</div>
                 {/* <h6 className="db_card_title">{category.categoryName}</h6> */}
-                <h6 className="db_card_title">
-                  {category.categoryName?.length > 17 ? `${category.categoryName.substring(0, 17)}...` : category.categoryName}
+                <h6 className="db_card_title" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>                  
+                  {category.categoryName}
                 </h6>
                 <p className="db_card_subtitle">
                   {getProductCount(category._id)} Products

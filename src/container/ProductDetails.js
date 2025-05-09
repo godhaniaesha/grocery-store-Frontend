@@ -293,7 +293,7 @@ const ProductDetails = ({setIsVegetablePage,setIsProductDetailPage,productId}) =
               <div className="size-selection mt-sm-4 mt-2">
                 <p className="mb-2">Pack Size: {getCurrentVariant()?.size || product?.productVarientData?.[0]?.size || 'N/A'}</p>
                 <div className="d-flex gap-2 flex-wrap">
-                  {product?.productVarientData?.map((variant) => (
+                  {product?.productVarientData?.filter(variant => variant.status === true).map((variant) => (
                     <button
                       key={variant.size}
                       className={`a_size-btn ${
@@ -343,7 +343,7 @@ const ProductDetails = ({setIsVegetablePage,setIsProductDetailPage,productId}) =
                   <h3>Product Tags</h3>
                   <div className="a_tags-container d-flex flex-wrap gap-2 mt-2">
                     {product?.tags?.map((tag, index) => (
-                      <span 
+                      <span
                         key={index} 
                         className="a_tag-item px-3 py-2 rounded-pill bg-light text-dark d-inline-flex align-items-center transition-all hover:bg-primary hover:text-white" 
                         style={{
@@ -365,10 +365,8 @@ const ProductDetails = ({setIsVegetablePage,setIsProductDetailPage,productId}) =
           </div>
         </div>
       </div>
-
       {/* Similar Products */}
       {/* <SimilarPro /> */}
-
       {showShareModal && (
         <>
           <div

@@ -1,8 +1,9 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureAppStore } from './redux/store';
 import MainRoutes from './routes/main.route';
+import adminRoute from './routes/admin.route';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -11,7 +12,12 @@ function App() {
 
   return (
     <Provider store={store}>
-      <MainRoutes />
+      <Routes>
+        {React.Children.map(adminRoute, (route, index) => (
+          React.cloneElement(route, { key: `admin-route-${index}` })
+        ))}
+        <Route key="main-routes" path="/*" element={<MainRoutes />} />
+      </Routes>
       <ToastContainer
         position="bottom-left"
         autoClose={3000}
