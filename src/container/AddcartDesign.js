@@ -43,17 +43,18 @@ export default function AddcartDesign() {
   // const [agreedToTerms, setAgreedToTerms] = useState(false);
 
 
-  // Add the applyDiscountCode function
+  // Replace the applyDiscountCode function with this updated version
   const applyDiscountCode = () => {
     if (!discountCode.trim()) {
       alert('Please enter coupon code');
       return;
     }
-    const coupon = coupons.find(c => c.code === discountCode);
+    const coupon = coupons.find(c => c.code === discountCode || c.title === discountCode);
     if (coupon) {
-      // Add coupon apply logic here
+      setAppliedCoupon(coupon);
       console.log('Coupon applied:', coupon);
     } else {
+      setAppliedCoupon(null);
       alert('Invalid coupon code');
     }
   };
@@ -173,12 +174,12 @@ export default function AddcartDesign() {
 
   const applyCouponCode = (code) => {
     setDiscountCode(code);
-    const coupon = coupons.find(c => c.code === code);
+    const coupon = coupons.find(c => c.code === code || c.title === code);
     if (coupon) {
-      setAppliedCoupon(coupon);  // Set the applied coupon
+      setAppliedCoupon(coupon);
       console.log('Coupon applied:', coupon);
     } else {
-      setAppliedCoupon(null);  // Clear applied coupon if invalid
+      setAppliedCoupon(null);
       alert('Invalid coupon code');
     }
   };
@@ -211,16 +212,18 @@ export default function AddcartDesign() {
       grandTotal: getTotal()
     };
 
+    console.log(appliedCoupon,"appliedCoupon");
+    
     const orderData = {
       userId: localStorage.getItem('userId'),
       addressId: selectedAddress._id,
       items: orderItems,
       platFormFee: Number(totals.platformFee) || 0,
-      couponId: appliedCoupon?._id || null,
+      coupenId: appliedCoupon._id,  // Ensure couponId is properly set
       totalAmount: Number(totals.grandTotal) || 0,
       orderStatus: "Pending",
-        paymentStatus: "not Received"
-      };
+      paymentStatus: "not Received"
+    };
 
     try {
       const result = await dispatch(createOrder(orderData)).unwrap();
@@ -229,7 +232,6 @@ export default function AddcartDesign() {
       }
     } catch (error) {
       console.error('Order creation failed:', error);
-      // alert('Failed to create order. Please try again.');
     }
 };
 
@@ -715,7 +717,7 @@ const handleDeleteAddress = async (addressId) => {
                         </div>
                         <button
                           className="btn btn-sm"
-                          onClick={() => applyCouponCode(coupon.title)}
+                          onClick={() => applyCouponCode(coupon.code || coupon.title)}
                           style={{
                             fontSize: "0.85rem",
                             padding: "0.3rem 1rem",

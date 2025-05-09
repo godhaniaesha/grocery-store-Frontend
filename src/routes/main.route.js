@@ -1,6 +1,7 @@
 // main.route.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import SearchHeader from '../container/SearchHeader';
 import Main from '../container/Main';
 import Vegetable from '../container/Vegetable';
@@ -22,14 +23,47 @@ import AddcartDesign from '../container/AddcartDesign';
 
 const MainRoutes = () => {
   const [loading, setLoading] = useState(true);
+  
+  // Add Redux state subscriptions
+  const auth = useSelector(state => state.auth);
+  const cart = useSelector(state => state.addcart);
+  const wishlist = useSelector(state => state.wishlist);
+  const user = useSelector(state => state.user);
+  const orders = useSelector(state => state.order);
+  const products = useSelector(state => state.product);
+  const categories = useSelector(state => state.category);
+  const addresses = useSelector(state => state.address);
 
-  // લોડિંગ સ્થિતિ સેટ કરવા માટે useEffect નો ઉપયોગ કરો
-  React.useEffect(() => {
-    // સાઇટ લોડ થયા પછી લોડિંગ બંધ કરો
+  // Loading effect
+  useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 1000);
   }, []);
+
+  // Effect to handle auth state changes
+  useEffect(() => {
+    if (auth.error) {
+      // Handle auth errors
+      console.log('Auth error:', auth.error);
+    }
+  }, [auth]);
+
+  // Effect to handle cart updates
+  useEffect(() => {
+    if (cart.cartItems) {
+      // Handle cart updates
+      console.log('Cart updated:', cart.cartItems.length);
+    }
+  }, [cart.cartItems]);
+
+  // Effect to handle wishlist updates
+  useEffect(() => {
+    if (wishlist.wishlistItems) {
+      // Handle wishlist updates
+      console.log('Wishlist updated:', wishlist.wishlistItems.length);
+    }
+  }, [wishlist.wishlistItems]);
 
   if (loading) {
     return <LoadingSpinner />;
