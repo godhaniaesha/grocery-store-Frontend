@@ -507,7 +507,7 @@ export default function SearchHeader() {
 
                 {/* Cart */}
                 <div className="text-center position-relative">
-                  <Link to="/Addcart" className="btn bg-transparent p-0 border-0 d-flex justify-content-center w-100 position-relative">
+                  <Link to="/AddcartDesign" className="btn bg-transparent p-0 border-0 d-flex justify-content-center w-100 position-relative">
                     <FaShoppingCart size={22} className="text-white" />
                     <span
                       className="badge bg-dark text-white position-absolute top-0 start-100 translate-middle rounded-circle"
