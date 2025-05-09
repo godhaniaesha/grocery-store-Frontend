@@ -1,14 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { createUser, login, generateOtp, verifyOtp, verifyGeneratedOtp, resetPassword, userLogout } from '../redux/slices/Auth.slice.js';
-import { FaSearch, FaShoppingCart, FaHeart, FaBars, FaTimes, FaUser, FaTimesCircle, FaUserAlt, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
+import { FaSearch, FaShoppingCart, FaHeart, FaBars, FaTimes, FaUser, FaTimesCircle, FaUserAlt, FaSignOutAlt, FaSignInAlt, FaLocationArrow } from 'react-icons/fa';
+import { FaLocationDot } from "react-icons/fa6";
+
 import { BsShop } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import { fetchCategories } from '../redux/slices/categorySlice';
 import { getAllSubcategories } from '../redux/slices/Subcategory.slice';
 import { fetchProducts } from '../redux/slices/product.Slice.js';
 import '../styles/x_app.css'
-import { GrFormClose } from 'react-icons/gr';
+import { GrFormClose, GrLocationPin } from 'react-icons/gr';
 import { HiMenuAlt2 } from 'react-icons/hi';
 import { IoIosArrowDown, IoIosEye, IoIosEyeOff, IoIosLogIn, IoMdLogIn } from 'react-icons/io';
 import { Formik, Form } from 'formik';
@@ -17,6 +19,7 @@ import { FiShoppingBag } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import Search from "../components/Search.js";
 import { getWishlistItems } from '../redux/slices/wishlist.Slice';
+import { LocateIcon } from "lucide-react";
 
 export default function SearchHeader() {
   const navigate = useNavigate();
@@ -462,6 +465,13 @@ export default function SearchHeader() {
                         onClick={() => setShowUserDropdown(false)}
                       >
                         <FaUserAlt size={20} />My Account
+                      </Link>
+                      <Link
+                        to="/MyAddresses"
+                        className="dropdown-item gap-2 d-flex align-items-center"
+                        onClick={() => setShowUserDropdown(false)}
+                      >
+                        <FaLocationDot  size={20} />My Addresses
                       </Link>
                       <Link
                         to="/orders"

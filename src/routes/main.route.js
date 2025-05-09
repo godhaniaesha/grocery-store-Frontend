@@ -10,7 +10,6 @@ import Footer from '../container/Footer';
 import ProductDetails from '../container/ProductDetails';
 import FAQ from '../container/FAQ';
 import PrivacyPolicy from '../container/PrivacyPolicy';
-import Addcart from '../container/Addcart';
 import Wishlist from '../container/Wishlist';
 import MyAccount from '../container/MyAccount';
 import Contactus from '../container/Contactus';
@@ -18,8 +17,8 @@ import PopularCategories from '../container/PopularCategories';
 import Bestseller from '../container/Bestseller';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Checkout from '../container/Checkout';
-import CartDesign from '../container/CartDesign';
 import AddcartDesign from '../container/AddcartDesign';
+import MyAddresses from '../components/MyAddresses';
 
 const MainRoutes = () => {
   const [loading, setLoading] = useState(true);
@@ -79,8 +78,6 @@ const MainRoutes = () => {
         <Route path="/product-details/:id" element={<ProductDetails />} />
         <Route path="/FAQ" element={<FAQ />} />
         <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
-        <Route path="/Addcart" element={<Addcart />} />
-        <Route path="/CartDesign" element={<CartDesign />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/MyAccount" element={<MyAccount />} />
         <Route path="/contactus" element={<Contactus />} />
@@ -88,6 +85,7 @@ const MainRoutes = () => {
         <Route path="/Bestsellers" element={<Bestseller />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/AddcartDesign" element={<AddcartDesign />} />
+        <Route path="/MyAddresses" element={<MyAddresses />} />
       </Routes>
       <Footer />
     </>
