@@ -241,348 +241,212 @@ export default function Checkout({ setIsCheckoutPage }) {
 
 
     return (
-        <div>
-            <div className='a_header_container'>
-                <div className='g_pad_topbottom'>
-                    <div className="p-4 bg-white shadow rounded">
-                        <Form>
-                            <Row>
-                                {/* Left Section - Payment Methods */}
-                                <Col md={8}>
-                                    <p className="mb-4 g_check_p">Select Payment Method</p>
-                                    {validationErrors.paymentMethod && (
-                                        <div className="text-danger mb-2">{validationErrors.paymentMethod}</div>
-                                    )}
-                                    <label className={`g_method_border p-3 d-flex g_radio-wrapper align-items-center w-96 ${selected === "Cod" ? "selected-border" : ""}`}>
+        <div className="g_checkout_container">
+            <div className="g_checkout_wrapper">
+                <Row className="g_checkout_row">
+                    <Col lg={7} xs={12}>
+                        <div className="g_checkout_left">
+                            <h2 className="g_checkout_title">Checkout</h2>
+
+                            {/* Shipping Address Section */}
+                            <div className="g_shipping_box">
+                                <div className="g_shipping_header">
+                                    <span className="g_shipping_icon">✓</span>
+                                    SHIPPING ADDRESS
+                                </div>
+                                <div className="g_shipping_content">
+                                    <Form.Control
+                                        type="text"
+                                        defaultValue="Daniel Hecker"
+                                        className="g_input"
+                                        readOnly
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Payment Method Section */}
+                            <div className="g_payment_section">
+                                <h3 className="g_section_subtitle">Payment method</h3>
+                                <div className="g_payment_options">
+                                    <label className={`g_payment_option ${selected === 'Card' ? 'g_selected' : ''}`}>
                                         <input
                                             type="radio"
-                                            id="Cod"
                                             name="payment"
-                                            checked={selected === "Cod"}
-                                            onChange={() => setSelected('Cod')}
-                                            className="mr-2 accent-green-600 g_radio-input"
+                                            value="Card"
+                                            checked={selected === 'Card'}
+                                            onChange={() => setSelected('Card')}
+                                            className="g_radio_input"
                                         />
-                                        <span className="g_radio-custom"></span>
-                                        <span htmlFor="Cod" className="g_payment_method mb-0 ms-2 g_radio-label">
-                                            Cash on Delivery
-                                        </span>
+                                        <span className="g_radio_custom"></span>
+                                        <span className="g_payment_label">Credit card</span>
                                     </label>
-                                    <label className={`g_method_border g_radio-wrapper mt-4 p-3  align-items-center  w-100 ${selected === "Card" ? "selected-border" : ""}`}>
-                                        <div className='d-flex justify-content-between'>
-                                            <div className='d-flex align-items-center'>
+
+                                    <label className={`g_payment_option ${selected === 'PayPal' ? 'g_selected' : ''}`}>
+                                        <input
+                                            type="radio"
+                                            name="payment"
+                                            value="PayPal"
+                                            checked={selected === 'PayPal'}
+                                            onChange={() => setSelected('PayPal')}
+                                            className="g_radio_input"
+                                        />
+                                        <span className="g_radio_custom"></span>
+                                        <span className="g_payment_label">PayPal</span>
+                                    </label>
+                                </div>
+
+                                {/* Card Details Section */}
+                                {selected === 'Card' && (
+                                    <div className="g_card_details">
+                                        <div className="g_card_input_group">
+                                            <label>Name On Card</label>
+                                            <input
+                                                type="text"
+                                                placeholder="Mehedi Hasan Parves"
+                                                className="g_card_input"
+                                                value={cardDetails.cardHolder}
+                                                onChange={(e) => setCardDetails({ ...cardDetails, cardHolder: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="g_card_input_group">
+                                            <label>Card Number</label>
+                                            <input
+                                                type="text"
+                                                placeholder="3787-3849-3126-0777"
+                                                className="g_card_input"
+                                                value={cardDetails.cardNumber}
+                                                onChange={(e) => setCardDetails({ ...cardDetails, cardNumber: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="g_card_row">
+                                            <div className="g_card_input_group">
+                                                <label>Expiration Date</label>
                                                 <input
-                                                    type="radio"
-                                                    name="payment"
-                                                    checked={selected === "Card"}
-                                                    onChange={() => setSelected('Card')}
-                                                    className="g_radio-input"
+                                                    type="text"
+                                                    placeholder="27/4"
+                                                    className="g_card_input"
+                                                    value={cardDetails.expiryDate}
+                                                    onChange={(e) => setCardDetails({ ...cardDetails, expiryDate: e.target.value })}
                                                 />
-                                                <span className="g_radio-custom"></span>
-                                                <span className="g_radio-label g_payment_method ms-3">Credit/Debit Card</span>
-
                                             </div>
-                                            <div className='d-flex flex-wrap'>
-                                                <Image src={visa} className='ms-2'></Image>
-                                                <Image src={masterCard} className='ms-2'></Image>
-                                                <Image src={amex} className='ms-2'></Image>
-                                                <Image src={discover} className='ms-2 me-4'></Image>
-                                            </div>
-                                        </div>
-                                        {selected === "Card" && (
-                                            <>
-                                                <hr />
-                                                <Row className="mt-3">
-                                                    <Col md={6}>
-                                                        <Form.Group>
-                                                            <Form.Label className='my-3 g_payment_method'>Card Number</Form.Label>
-                                                            <Form.Control
-                                                                placeholder="Card Number"
-                                                                className='g_form_background bg-light mb-3'
-                                                                value={cardDetails.cardNumber}
-                                                                onChange={(e) => setCardDetails({ ...cardDetails, cardNumber: e.target.value })}
-                                                                isInvalid={!!validationErrors.cardNumber}
-                                                            />
-                                                            <Form.Control.Feedback type="invalid">
-                                                                {validationErrors.cardNumber}
-                                                            </Form.Control.Feedback>
-                                                        </Form.Group>
-                                                    </Col>
-                                                    <Col md={6}>
-                                                        <Form.Group>
-                                                            <Form.Label className='my-3 g_payment_method'>Card Holder Name</Form.Label>
-                                                            <Form.Control
-                                                                placeholder="Card Holder Name"
-                                                                className='g_form_background bg-light mb-3'
-                                                                value={cardDetails.cardHolder}
-                                                                onChange={(e) => setCardDetails({ ...cardDetails, cardHolder: e.target.value })}
-                                                                isInvalid={!!validationErrors.cardHolder}
-                                                            />
-                                                            <Form.Control.Feedback type="invalid">
-                                                                {validationErrors.cardHolder}
-                                                            </Form.Control.Feedback>
-                                                        </Form.Group>
-                                                    </Col>
-                                                    <Col md={6}>
-                                                        <Form.Group>
-                                                            <Form.Label className='my-3 g_payment_method'>Expiry Date</Form.Label>
-                                                            <Form.Control
-                                                                placeholder="MM / YYYY"
-                                                                className='g_form_background bg-light'
-                                                                value={cardDetails.expiryDate}
-                                                                onChange={(e) => setCardDetails({ ...cardDetails, expiryDate: e.target.value })}
-                                                                isInvalid={!!validationErrors.expiryDate}
-                                                            />
-                                                            <Form.Control.Feedback type="invalid">
-                                                                {validationErrors.expiryDate}
-                                                            </Form.Control.Feedback>
-                                                        </Form.Group>
-                                                    </Col>
-                                                    <Col md={6}>
-                                                        <Form.Group>
-                                                            <Form.Label className='my-3 g_payment_method'>CVV</Form.Label>
-                                                            <Form.Control
-                                                                placeholder="CVV"
-                                                                className='g_form_background bg-light'
-                                                                value={cardDetails.cvv}
-                                                                onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value })}
-                                                                isInvalid={!!validationErrors.cvv}
-                                                            />
-                                                            <Form.Control.Feedback type="invalid">
-                                                                {validationErrors.cvv}
-                                                            </Form.Control.Feedback>
-                                                        </Form.Group>
-                                                    </Col>
-                                                </Row>
-                                            </>
-                                        )}
-
-                                    </label>
-                                    <label className={`g_method_border g_radio-wrapper mt-4 p-3  align-items-center w-100 ${selected === "Upi" ? "selected-border" : ""}`}>
-                                        <div className='d-flex justify-content-between'>
-                                            <div className='d-flex align-items-center'>
+                                            <div className="g_card_input_group">
+                                                <label>CVV/CVC</label>
                                                 <input
-                                                    type="radio"
-                                                    name="payment"
-                                                    checked={selected === "Upi"}
-                                                    onChange={() => setSelected('Upi')}
-                                                    className="g_radio-input"
+                                                    type="text"
+                                                    placeholder="072"
+                                                    className="g_card_input"
+                                                    value={cardDetails.cvv}
+                                                    onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value })}
                                                 />
-                                                <span className="g_radio-custom"></span>
-                                                <span className="g_radio-label g_payment_method ms-3">UPI</span>
-
-                                            </div>
-                                            <div className='d-flex flex-wrap'>
-                                                <Image src={Upi} className='ms-2'></Image>
-                                                <Image src={paytm} className='ms-2'></Image>
-                                                <Image src={gpay} className='ms-2'></Image>
-                                                <Image src={phonepay} className='ms-2 me-4'></Image>
                                             </div>
                                         </div>
-                                        {selected === "Upi" && (
-                                            <>
-                                                <hr />
-                                                <Row className="mt-3">
-                                                    <Col>
-                                                        <Form.Group>
-                                                            <Form.Label className='my-3 g_payment_method'>UPI ID</Form.Label>
-                                                            <div className="input-group">
-                                                                <Form.Control
-                                                                    type="text"
-                                                                    placeholder="Enter UPI ID"
-                                                                    className='g_form_background bg-light'
-                                                                    value={upiId}
-                                                                    onChange={(e) => {
-                                                                        setUpiId(e.target.value);
-                                                                        // Clear validation error when user starts typing
-                                                                        if (validationErrors.upiId) {
-                                                                            setValidationErrors({ ...validationErrors, upiId: '' });
-                                                                        }
-                                                                    }}
-                                                                    isInvalid={!!validationErrors.upiId}
-                                                                />
-
-                                                                <div className='g_border_left p'></div>
-                                                                <div className="input-group-append input-group-text g_Upi_background" >
-                                                                    <Form.Select
-                                                                        className='g_form_background'
-                                                                        style={{ backgroundColor: "#EFEFEF", border: "none" }}
-                                                                    >
-                                                                        <option value="">@okicici</option>
-                                                                        <option value="@oksbi">@oksbi</option>
-                                                                        <option value="@okhdfc">@okhdfc</option>
-                                                                        <option value="@okaxis">@okaxis</option>
-                                                                    </Form.Select>
-                                                                </div>
-                                                            </div>
-                                                            <Form.Control.Feedback type="invalid">
-                                                                {validationErrors.upiId}
-                                                            </Form.Control.Feedback>
-                                                            {validationErrors.upiId && (
-                                                                <Form.Control.Feedback type="invalid" style={{ display: 'block' }}>
-                                                                    {validationErrors.upiId}
-                                                                </Form.Control.Feedback>
-                                                            )}
-                                                        </Form.Group>
-                                                    </Col>
-                                                </Row>
-                                            </>
-                                        )}
-
-                                    </label>
-                                    <label className={`g_method_border g_radio-wrapper mt-4 p-3  align-items-center w-100 ${selected === "Net Banking" ? "selected-border" : ""}`}>
-                                        <div className='d-flex justify-content-between'>
-                                            <div className='d-flex align-items-center'>
-                                                <input
-                                                    type="radio"
-                                                    name="payment"
-                                                    checked={selected === "Net Banking"}
-                                                    onChange={() => setSelected('Net Banking')}
-                                                    className="g_radio-input"
-                                                />
-                                                <span className="g_radio-custom"></span>
-                                                <span className="g_radio-label g_payment_method ms-3">Net banking</span>
-
-                                            </div>
-                                            <div className='d-flex flex-wrap'>
-                                                <Image src={citi} className='ms-2'></Image>
-                                                <Image src={wells} className='ms-2'></Image>
-                                                <Image src={capital} className='ms-2'></Image>
-                                                <Image src={td} className='ms-2 me-4'></Image>
-                                            </div>
+                                        <div className="g_save_card">
+                                            <input
+                                                type="checkbox"
+                                                id="saveCard"
+                                                className="g_checkbox"
+                                            />
+                                            <label htmlFor="saveCard">Securely save this card for faster checkout next time</label>
                                         </div>
-                                        {selected === "Net Banking" && (
-                                            <>
-                                                <hr />
-                                                <Row className="mt-3">
-                                                    <Col>
-                                                        <Form.Group>
-                                                            <div className="position-relative">
-                                                                <div className="position-absolute" style={{ left: '10px', top: '50%', transform: 'translateY(-50%)' }}>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#999" className="bi bi-search" viewBox="0 0 16 16">
-                                                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                                                                    </svg>
-                                                                </div>
-                                                                <Form.Control
-                                                                    type="text"
-                                                                    placeholder="Search your bank"
-                                                                    className='form-control'
-                                                                    style={{
-                                                                        backgroundColor: '#F5F5F5',
-                                                                        border: 'none',
-                                                                        borderRadius: '8px',
-                                                                        padding: '12px 12px 12px 35px',
-                                                                        fontSize: '14px'
-                                                                    }}
-                                                                />
-                                                            </div>
-                                                            {validationErrors.bank && (
-                                                                <div className="text-danger mt-2">
-                                                                    {validationErrors.bank}
-                                                                </div>
-                                                            )}
-                                                            <div>
-                                                                <div className="mt-4">
-                                                                    <Row className="g-3">
-                                                                        <Col xs={6} md={2}>
-                                                                            <Card
-                                                                                className={`h-100 cursor-pointer border-0 border p-2 ${selectedBank === 'citi' ? 'border-success' : ''}`}
-                                                                                role="button"
-                                                                                onClick={() => setSelectedBank('citi')}
-                                                                            >
-                                                                                <div className="d-flex flex-column align-items-center">
-                                                                                    <Image src={citi} alt="Citi Bank" className="mb-2" />
-                                                                                    <span className="text-center small">Citi Bank</span>
-                                                                                </div>
-                                                                            </Card>
-                                                                        </Col>
-                                                                        <Col xs={6} md={2}>
-                                                                            <Card className="h-100 cursor-pointer border-0 border  p-2" role="button">
-                                                                                <div className="d-flex flex-column align-items-center">
-                                                                                    <Image src={wells} alt="Wells Fargo Bank" className="mb-2" />
-                                                                                    <span className="text-center small">Wells Fargo Bank</span>
-                                                                                </div>
-                                                                            </Card>
-                                                                        </Col>
-                                                                        <Col xs={6} md={2}>
-                                                                            <Card className="h-100 cursor-pointer border-0 border  p-2" role="button">
-                                                                                <div className="d-flex flex-column align-items-center">
-                                                                                    <Image src={capital} alt="Capital One Bank" className="mb-2" />
-                                                                                    <span className="text-center small">Capital One Bank</span>
-                                                                                </div>
-                                                                            </Card>
-                                                                        </Col>
-                                                                        <Col xs={6} md={2}>
-                                                                            <Card className="h-100 cursor-pointer border-0 border p-2" role="button">
-                                                                                <div className="d-flex flex-column align-items-center">
-                                                                                    <Image src={wells} alt="Wells Fargo Bank" className="mb-2" />
-                                                                                    <span className="text-center small">Wells Fargo Bank</span>
-                                                                                </div>
-                                                                            </Card>
-                                                                        </Col>
-                                                                    </Row>
-                                                                </div>
-                                                            </div>
-                                                        </Form.Group>
-                                                    </Col>
-                                                </Row>
-                                            </>
-                                        )}
 
-                                    </label>
+                                    </div>
+                                )}
+                                <button className="g_payment_button" onClick={handleShow}>
+                                    Pay $155
+                                </button>
+                            </div>
+                        </div>
+                    </Col>
 
-                                </Col>
-
-                                {/* Right Section - Price Details */}
-                                <Col md={4} >
-                                    <div className='g_checkout_border'>
-                                        <div className='bg-light '>
-                                            <div className='g_check_pad'>
-                                                <p className='g_check_p'>Price Details</p>
+                    <Col lg={5} xs={12}>
+                        <div className="g_cart_summary">
+                            <h3 className="g_summary_title">Shopping cart</h3>
+                            <div className="g_cart_items">
+                                <div className="g_cart_item">
+                                    <div className="g_item_image_container">
+                                        <img src="/path/to/image1.jpg" alt="Prairie Blossoms" className="g_item_image" />
+                                    </div>
+                                    <div className="g_item_details">
+                                        <h4 className="g_item_name">Prairie Blossoms Smocked Floral Peasant Top</h4>
+                                        <div className="g_item_controls">
+                                            <div className="g_quantity_control">
+                                                <button className="g_qty_btn g_qty_minus">-</button>
+                                                <input type="text" value="1" readOnly className="g_qty_input" />
+                                                <button className="g_qty_btn g_qty_plus">+</button>
                                             </div>
-                                        </div>
-                                        <div className='g_check_pad'>
-                                            <div className='d-flex justify-content-between g_check_interpad'>
-                                                <div className='g_check_name'>Price ({cartItems.length} Items)</div>
-                                                <div className='g_check_prize'>${calculateTotals().subtotal.toFixed(2)}</div>
-                                            </div>
-                                            <div className='d-flex justify-content-between g_check_interpad'>
-                                                <div className='g_check_name'>Discount</div>
-                                                <div className='g_check_prize1'>-${calculateTotals().discount.toFixed(2)}</div>
-                                            </div>
-                                            <div className='d-flex justify-content-between g_check_interpad'>
-                                                <div className='g_check_name'>Platform Fee</div>
-                                                <div className='g_check_prize'>${calculateTotals().platformFee.toFixed(2)}</div>
-                                            </div>
-                                            <div className='d-flex justify-content-between g_check_interpad'>
-                                                <div className='g_check_name'>Delivery Charges</div>
-                                                <div className='g_check_prize1'><span className='g_check_strike'>$20</span>FREE</div>
-                                            </div>
-                                            <hr />
-                                            <div className='d-flex justify-content-between g_check_interpad'>
-                                                <div className='g_check_prize'>Total</div>
-                                                <div className='g_check_prize'>${calculateTotals().grandTotal.toFixed(2)}</div>
-                                            </div>
+                                            <span className="g_item_price">$57</span>
                                         </div>
                                     </div>
-                                </Col>
-                            </Row>
-                        </Form>
-                        <Button className="mt-4 g_payment_button" variant="success" onClick={handleShow}>Pay ${calculateTotals().grandTotal.toFixed(2)}</Button>
-                    </div>
-                </div>
+                                </div>
+
+                                <div className="g_cart_item">
+                                    <div className="g_item_image_container">
+                                        <img src="/path/to/image2.jpg" alt="Fit to Be Tied" className="g_item_image" />
+                                    </div>
+                                    <div className="g_item_details">
+                                        <h4 className="g_item_name">Fit to Be Tied Crinkle Cotton Tie-Front Shirt</h4>
+                                        <div className="g_item_controls">
+                                            <div className="g_quantity_control">
+                                                <button className="g_qty_btn">-</button>
+                                                <span>1</span>
+                                                <button className="g_qty_btn">+</button>
+                                            </div>
+                                            <span className="g_item_price">$57</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="g_cart_item">
+                                    <div className="g_item_image_container">
+                                        <img src="/path/to/image3.jpg" alt="On the Move" className="g_item_image" />
+                                    </div>
+                                    <div className="g_item_details">
+                                        <h4 className="g_item_name">On the Move Pleated Corduroy Cargo Pants</h4>
+                                        <div className="g_item_controls">
+                                            <div className="g_quantity_control">
+                                                <button className="g_qty_btn">-</button>
+                                                <span>1</span>
+                                                <button className="g_qty_btn">+</button>
+                                            </div>
+                                            <span className="g_item_price">$51</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="g_cart_summary_footer">
+                                <div className="g_coupon_section">
+                                    <input type="text" placeholder="VJ895TURT" className="g_coupon_input" />
+                                    <button className="g_apply_btn">Applied</button>
+                                </div>
+
+                                <div className="g_price_details">
+                                    <div className="g_price_row">
+                                        <span>Subtotal</span>
+                                        <span>$165</span>
+                                    </div>
+                                    <div className="g_price_row">
+                                        <span>Taxes and vat</span>
+                                        <span>$10</span>
+                                    </div>
+                                    <div className="g_price_row">
+                                        <span>Delivery charge</span>
+                                        <span>$00</span>
+                                    </div>
+                                    <div className="g_price_row">
+                                        <span>Discount</span>
+                                        <span>-$20</span>
+                                    </div>
+                                    <div className="g_price_row g_total">
+                                        <span>Total</span>
+                                        <span>$155</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
             </div>
-
-            <Modal show={show} onHide={handleClose} centered>
-                <Modal.Body>
-                    <div className="text-center">
-                        <Image src={order}></Image>
-                        <h4 className='my-2'>Thank you </h4>  
-                        <p className="text-muted my-2+">Your order has been placed successfully. </p>
-                    </div>
-                </Modal.Body>
-            </Modal>
-
-
         </div>
-    )
+    );
 }
