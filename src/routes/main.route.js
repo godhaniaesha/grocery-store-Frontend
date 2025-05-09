@@ -20,6 +20,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import Checkout from '../container/Checkout';
 import CartDesign from '../container/CartDesign';
 import AddcartDesign from '../container/AddcartDesign';
+import Myorder from '../container/Myorder';
 
 const MainRoutes = () => {
   const [loading, setLoading] = useState(true);
@@ -88,6 +89,7 @@ const MainRoutes = () => {
         <Route path="/Bestsellers" element={<Bestseller />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/AddcartDesign" element={<AddcartDesign />} />
+        <Route path="/Myorder" element={<Myorder />} />
       </Routes>
       <Footer />
     </>

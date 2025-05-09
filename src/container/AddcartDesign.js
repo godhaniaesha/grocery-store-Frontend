@@ -294,7 +294,7 @@ const handleDeleteAddress = async (addressId) => {
 };
 
   return (
-    <div className="container py-5">
+    <div className="a_header_container py-5">
       <div className="row">
         <div className="col-lg-8 mb-md-4 mb-2">
         <div className="card shadow-sm mb-4">

@@ -34,6 +34,7 @@ import HomeMain from '../components/HomeMain';
 import SimilarPro from '../container/SimilarPro';
 import VerifyForgot from '../components/VerifyForgot';
 import Main from '../container/Main';
+import Myorder from '../container/Myorder';
 // import MainRoutes from '../container/MainRoutes';
 
 const UserRoutes = [
@@ -57,6 +58,7 @@ const UserRoutes = [
     <Route path="/RoleSelection" element={<RoleSelection />} />,
     <Route path="/MyProfile" element={<MyProfile />} />,
     <Route path="/SimilarPro" element={<SimilarPro />} />,
+    <Route path="/Myorder" element={<Myorder />} />,
 
 
     // authentication
@@ -85,6 +87,8 @@ const UserRoutes = [
     <Route path="/Contact" element={<Contactus />} />,
     <Route path="/Faqs" element={<Faqs />} />,
     <Route path="/Checkout" element={<Checkout />} />
+
+    
 ];
 
 export default UserRoutes;
