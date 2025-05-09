@@ -1,15 +1,22 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserOrders } from '../redux/slices/order.Slice';
+import { fetchProducts } from '../redux/slices/product.Slice';
 import "../styles/x_app.css"
 
 function Myorder(props) {
     const dispatch = useDispatch();
-    const { userOrders, loading } = useSelector((state) => state.order);
+    const { userOrders, loading: orderLoading } = useSelector((state) => state.order);
+    const { products, loading: productLoading } = useSelector((state) => state.product);
 
     useEffect(() => {
         dispatch(fetchUserOrders());
+        dispatch(fetchProducts());
     }, [dispatch]);
+
+    const getProductDetails = (productId) => {
+        return products?.find(product => product._id === productId) || null;
+    };
     return (
         <>
             <div className='a_header_container my-4'>
@@ -21,7 +28,7 @@ function Myorder(props) {
                 <h1 className="x_page_title">My Orders</h1>
 
 
-                {loading ? (
+                {orderLoading || productLoading ? (
                     <div>Loading...</div>
                 ) : userOrders && userOrders.data ? (
                     userOrders.data.map((order) => (
@@ -54,12 +61,12 @@ function Myorder(props) {
                                             <tr key={item._id}>
                                                 <td className="d-flex align-items-center gap-2">
                                                     <img 
-                                                        src={item.product?.images[0] || 'https://via.placeholder.com/50'} 
-                                                        alt={item.product?.productName || 'Product'} 
+                                                        src={getProductDetails(item.productId)?.images[0] || 'https://via.placeholder.com/50'} 
+                                                        alt={getProductDetails(item.productId)?.productName || 'Product'} 
                                                         className="product-thumb" 
                                                         style={{width: "50px", height: "50px", objectFit: "cover", borderRadius: "4px"}} 
                                                     />
-                                                    <span>{item.product?.productName || 'Product Unavailable'}</span>
+                                                    <span>{getProductDetails(item.productId)?.productName || 'Product Unavailable'}</span>
                                                 </td>
                                                 <td>SAR {item.price || 0}</td>
                                                 <td>{item.quantity || 0} items</td>
