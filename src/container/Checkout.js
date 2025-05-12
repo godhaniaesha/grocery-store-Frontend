@@ -388,14 +388,7 @@ export default function Checkout()   {
 
                                 {/* Payment Button */}
                                 <div className="g_payment_button_container mt-4">
-                                    // At the top of your file, add these imports
-                                    import Thankspopup from './Thankspopup';
-                                    import { useState } from 'react';
                                     
-                                    // Inside your component, add this state
-                                    const [showThanksModal, setShowThanksModal] = useState(false);
-                                    
-                                    // Modify your button click handler
                                     <Button 
                                         className="g_payment_button" 
                                         onClick={async () => {
@@ -411,7 +404,7 @@ export default function Checkout()   {
                                         Proceed to Pay
                                     </Button>
                                     
-                                    // Add the Thankspopup component at the bottom of your render
+                                  
                                     <Thankspopup show={showThanksModal} setShow={setShowThanksModal} />
                                 </div>
                             </div>
