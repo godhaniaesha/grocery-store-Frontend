@@ -454,7 +454,96 @@
 }
 
 .g_payment_section {
-    margin-top: 24px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.g_payment_options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.g_payment_option {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.g_payment_option:hover {
+    border-color: #4CAF50;
+    background-color: #f9f9f9;
+}
+
+.g_payment_option.g_selected {
+    border-color: #4CAF50;
+    background-color: #f0f9f0;
+}
+
+.g_radio_input {
+    display: none;
+}
+
+.g_radio_custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #757575;
+    border-radius: 50%;
+    margin-right: 15px;
+    position: relative;
+}
+
+.g_payment_option.g_selected .g_radio_custom::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #4CAF50;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.g_payment_label_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+}
+
+.g_payment_label {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+.g_payment_icons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.g_card_icon,
+.g_upi_icon,
+.g_bank_icon {
+    height: 25px;
+    object-fit: contain;
+}
+
+.g_section_subtitle {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 600;
 }
 
 .g_payment_options {
@@ -881,4 +970,28 @@
 
 .g_qty_btn:hover {
     color: rgba(15, 15, 15, 0.8);
+}
+
+.g_payment_button_container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.g_payment_button {
+    background-color: #28a745;
+    border: none;
+    padding: 10px 30px;
+    font-size: 16px;
+    border-radius: 5px;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.g_payment_button:hover {
+    background-color: #218838;
+}
+
+.g_payment_button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
 }

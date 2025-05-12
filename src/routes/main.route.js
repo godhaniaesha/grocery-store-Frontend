@@ -20,6 +20,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import Checkout from '../container/Checkout';
 import CartDesign from '../container/CartDesign';
 import AddcartDesign from '../container/AddcartDesign';
+import Thankspopup from '../container/Thankspopup';
 
 const MainRoutes = () => {
   const [loading, setLoading] = useState(true);
@@ -88,6 +89,8 @@ const MainRoutes = () => {
         <Route path="/Bestsellers" element={<Bestseller />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/AddcartDesign" element={<AddcartDesign />} />
+        <Route path="/Thankspopup" element={<Thankspopup />} />
+
       </Routes>
       <Footer />
     </>
