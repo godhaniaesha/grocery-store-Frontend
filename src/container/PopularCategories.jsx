@@ -20,6 +20,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import '../styles/Popularcategory.css';
 import { fetchProductsByCategory } from '../redux/slices/product.Slice';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 export default function PopularCategories() {
   const [activeCategory, setActiveCategory] = useState(null);
@@ -70,7 +71,7 @@ export default function PopularCategories() {
   };
 
   if (isLoading) {
-    return <div>Loading categories...</div>;
+    return <LoadingSpinner></LoadingSpinner>;
   }
 
   if (error) {

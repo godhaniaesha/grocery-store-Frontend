@@ -9,7 +9,6 @@ import WhyUs from './WhyUs'
 import Testimonial from './Testimonial'
 import Footer from './Footer'
 import Subscribe from './Subscribe'
-import GardenFresh from './GardenFresh'
 
 export default function Main() {
   return (
@@ -19,7 +18,6 @@ export default function Main() {
             <PopularCategories></PopularCategories>
             <Bestseller></Bestseller>
             <AdvertiseCards></AdvertiseCards>
-            {/* <GardenFresh></GardenFresh> */}
             <Recommended></Recommended>
             <WhyUs></WhyUs>
             <Testimonial></Testimonial>

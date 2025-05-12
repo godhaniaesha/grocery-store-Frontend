@@ -5,8 +5,7 @@ import { fetchProducts } from '../redux/slices/product.Slice';
 import { fetchProductVariants } from '../redux/slices/productVeriant.Slice';
 import { selectCurrency, selectCurrencySymbol, convertPrice } from '../redux/slices/currency.Slice';
 import { getAllSubcategories } from '../redux/slices/Subcategory.slice';
-import GardenFresh from './GardenFresh';
-import Category from './Category';
+
 import '../styles/Home.css'
 import "../styles/x_app.css"
 import "../styles/denisha.css"
