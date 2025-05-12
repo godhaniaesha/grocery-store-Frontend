@@ -18,11 +18,8 @@ import Bestseller from '../container/Bestseller';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Checkout from '../container/Checkout';
 import AddcartDesign from '../container/AddcartDesign';
-<<<<<<< HEAD
 import Myorder from '../container/Myorder';
-=======
 import MyAddresses from '../components/MyAddresses';
->>>>>>> origin/denisha9-05
 
 const MainRoutes = () => {
   const [loading, setLoading] = useState(true);
