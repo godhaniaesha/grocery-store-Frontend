@@ -10,8 +10,10 @@ import { fetchProductVariants } from '../redux/slices/productVeriant.Slice';
 import { createCart, updateCart, getallMyCarts } from '../redux/slices/cart.Slice';
 import { createWishlist, deleteFromWishlist, getWishlistItems } from "../redux/slices/wishlist.Slice";
 import { toast } from "react-toastify";
+import { useNavigate } from 'react-router-dom';
 
 function Recommended() {
+    const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [modalShow, setModalShow] = useState(false);
@@ -236,7 +238,10 @@ function Recommended() {
                                         {renderStars(product.rating)}
                                         <span className="z_rating-text">({product.rating})</span>
                                     </div>
-                                    <Card.Title className="z_product-title">{product.title}</Card.Title>
+                                    <Card.Title className="z_product-title"  style={{ cursor: "pointer" }} onClick={() => {
+                                                localStorage.setItem('selectedProductId', product.id);
+                                                navigate(`/product-details/${product.id}`);
+                                            }}>{product.title}</Card.Title>
                                     <Card.Text className="z_product-subtitle">{product.subtitle}</Card.Text>
                                     <div className="z_price-container">
                                         <span className="z_current-price">${product.price.toFixed(2)}</span>

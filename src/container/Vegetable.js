@@ -639,9 +639,9 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                             {categories.map((category, index) => (
                                 <SwiperSlide key={index}>
 
-                                    <div className="db_card text-center h-100 ">
+                                    <div className="db_card text-center h-100">
                                         <div
-                                            className="z_category-card"
+                                            className="z_category-card d-flex flex-column justify-content-center align-items-center"
                                             onClick={() => {
                                                 localStorage.removeItem('selectedSubCategoryIdfromheader');
 
@@ -661,12 +661,16 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                 cursor: 'pointer',
                                                 borderRadius: '50%',
                                                 padding: '10px',
-                                                transition: 'all 0.3s ease'
+                                                transition: 'all 0.3s ease',
+                                                height: '150px',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                justifyContent: 'center'
                                             }}
                                         >
                                             <div className="db_icon">{getCategoryIcon(category.categoryName)}</div>
 
-                                            <h6 className="db_card_title">
+                                            <h6 className="db_card_title mb-0">
                                                 {category.categoryName?.length > 17 ? `${category.categoryName.substring(0, 17)}...` : category.categoryName}
                                             </h6>
                                         </div>

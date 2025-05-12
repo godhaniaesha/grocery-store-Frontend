@@ -98,11 +98,6 @@ function SimilarPro({ setIsProductDetailPage, setIsVegetablePage }) {
             .filter(Boolean);
     };
 
-    const handleProductClick = (productId) => {
-        localStorage.setItem('selectedProductId', productId);
-        localStorage.setItem('activePage', 'ProductDetails');
-        navigate(`/HomeMain`);
-    };
 
 
     const handleQuantityChange = async (product, change) => {
@@ -198,7 +193,7 @@ function SimilarPro({ setIsProductDetailPage, setIsVegetablePage }) {
     }, [dispatch, selectedProductId]);
 
     if (productLoading || variantLoading) return <LoadingSpinner></LoadingSpinner>;
-    if (productError || variantError) return <div>Error: {productError || variantError}</div>;
+    if (productError || variantError) return <div>Error: {productError?.message || variantError?.message || 'An error occurred'}</div>;
 
     const formattedProducts = getSimilarProducts(products, variants, selectedProductId);
 
@@ -209,8 +204,8 @@ function SimilarPro({ setIsProductDetailPage, setIsVegetablePage }) {
                     <div className="a_garden-fresh-header">
                         <h2 className="a_garden-fresh-title">Garden Fresh</h2>
                         <Link to="/Vegetable" className="a_view-all">
-  View All <LiaAngleRightSolid />
-</Link>
+                            View All <LiaAngleRightSolid />
+                        </Link>
                     </div>
                     <span className="line"></span>
                     <div className="a_garden-fresh-grid mt-3">
@@ -296,7 +291,7 @@ const handleShow = (product) => {
                     <span className="line"></span>
                     <div className="a_garden-fresh-grid mt-3">
                         {formattedProducts.map((product, index) => (
-                            <div key={index} className="z_product-card" onClick={() => handleProductClick(product.id)} style={{ cursor: 'pointer' }}>
+                            <div key={index} className="z_product-card"  style={{ cursor: 'pointer' }}>
                                 <div className="z_product-image-container">
                                     <Card.Img
                                         variant="top"
@@ -346,7 +341,10 @@ const handleShow = (product) => {
                                             ({Number(product.rating || 0).toFixed(1)})
                                         </span>
                                     </div>
-                                    <h3 className="z_product-title">{product.name}</h3>
+                                    <h3 className="z_product-title"  style={{ cursor: "pointer" }} onClick={() => {
+                                                localStorage.setItem('selectedProductId', product.id);
+                                                navigate(`/product-details/${product.id}`);
+                                            }}>{product.name}</h3>
                                     <p className="z_product-weight mb-1">{product.size}</p>
                                     <div className="d-flex align-items-center justify-content-between">
                                         <div className="z_price-container mb-0 me-2">

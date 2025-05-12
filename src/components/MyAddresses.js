@@ -601,7 +601,7 @@ const MyAddresses = () => {
           display: flex;
           align-items: center;
           gap: 6px;
-          padding: 8px 16px;
+          padding: 6px 12px;
           border-radius: 8px;
           border: none;
           font-weight: 500;
