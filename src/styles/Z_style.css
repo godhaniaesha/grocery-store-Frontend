@@ -995,7 +995,11 @@
     color: #333;
     margin: 0;
   }
-  
+  .Z_image{
+    width: 70%;
+    height: 200px;
+    object-fit: cover;
+  }
   .z_title-highlight {
     color: #2c6145;
   }

@@ -20,13 +20,31 @@ import { getallMyCarts, clearCart } from '../redux/slices/cart.Slice';
 import { createPayment } from '../redux/slices/checkout.Slice';
 import { createOrder, updateOrderStatus } from '../redux/slices/order.Slice';
 import { useNavigate } from 'react-router-dom';
+import { getUserAddresses } from '../redux/slices/address.Slice';
+import Thankspopup from './Thankspopup';
 
-export default function Checkout({ setIsCheckoutPage }) {
+export default function Checkout()   {
     const [selected, setSelected] = useState("");
     const [show, setShow] = useState(false);
+    const [showThanksModal, setShowThanksModal] = useState(false);
 
+    const [selectedAddress, setSelectedAddress] = useState(null);
+    const [showAddressModal, setShowAddressModal] = useState(false); // Add this line
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { addresses } = useSelector((state) => state.address);
+
+    // Load selected address from localStorage when component mounts
+    useEffect(() => {
+        const savedAddress = localStorage.getItem('selectedAddress');
+        if (savedAddress) {
+            setSelectedAddress(JSON.parse(savedAddress));
+        }
+    }, []);
+
+    useEffect(() => {
+        dispatch(getUserAddresses());
+    }, [dispatch]);
 
     // Get cart items from Redux store
     const cartItems = useSelector((state) => {
@@ -42,7 +60,7 @@ export default function Checkout({ setIsCheckoutPage }) {
 
     // Load applied coupon from localStorage
     useEffect(() => {
-        const storedCoupon = localStorage.getItem('appliedCoupon');
+        const storedCoupon = localStorage.getItem('coupon');
         if (storedCoupon) {
             setAppliedCoupon(JSON.parse(storedCoupon));
         }
@@ -142,36 +160,10 @@ export default function Checkout({ setIsCheckoutPage }) {
         return errors;
     };
 
-    // Update handleShow function to include payment validation
     const handleShow = async () => {
         try {
             if (!selected || selected === "") {
                 setValidationErrors({ ...validationErrors, paymentMethod: 'Please select a payment method' });
-                return;
-            }
-
-            let hasErrors = false;
-            if (selected === 'Card') {
-                const cardErrors = validateCardPayment();
-                if (Object.keys(cardErrors).length > 0) {
-                    setValidationErrors({ ...validationErrors, ...cardErrors });
-                    hasErrors = true;
-                }
-            } else if (selected === 'Upi') {
-                const upiErrors = validateUpiPayment();
-                if (Object.keys(upiErrors).length > 0) {
-                    setValidationErrors({ ...validationErrors, ...upiErrors });
-                    hasErrors = true;
-                }
-            } else if (selected === 'Net Banking') {
-                const bankErrors = validateNetBanking();
-                if (Object.keys(bankErrors).length > 0) {
-                    setValidationErrors({ ...validationErrors, ...bankErrors });
-                    hasErrors = true;
-                }
-            }
-
-            if (hasErrors) {
                 return;
             }
 
@@ -181,8 +173,6 @@ export default function Checkout({ setIsCheckoutPage }) {
                 throw new Error('No order ID found');
             }
 
-
-
             // Update order status
             const updateResponse = await dispatch(updateOrderStatus(orderIdStr));
 
@@ -190,7 +180,7 @@ export default function Checkout({ setIsCheckoutPage }) {
                 throw new Error('Failed to update order status');
             }
 
-            // Create payment record
+            // Create payment record with basic payment data
             const paymentData = {
                 orderId: orderIdStr,
                 paymentMethod: selected,
@@ -213,24 +203,25 @@ export default function Checkout({ setIsCheckoutPage }) {
 
                 const paymentResult = await response.json();
                 console.log('Payment record created:', paymentResult);
+
+                // Show success modal and wait before navigation
+                setShow(true);
+
+                // Set a timeout to allow users to see the modal
+                setTimeout(() => {
+                    setShow(false);
+                    navigate('/Main');
+                    localStorage.removeItem('orderId');
+                    localStorage.removeItem('activePage');
+                    localStorage.removeItem("appliedCoupon");
+                    dispatch(clearCart());
+                }, 2000);
+
             } catch (error) {
                 console.error('Error creating payment record:', error);
-                // Continue with order success flow even if payment record fails
+                alert('Payment failed. Please try again.');
+                return;
             }
-
-            // Show success modal and wait before navigation
-            setShow(true);
-
-            // Set a timeout to allow users to see the modal
-            setTimeout(() => {
-                setShow(false);
-                navigate('/HomeMain');
-                localStorage.removeItem('orderId');
-                localStorage.removeItem('activePage');
-                setIsCheckoutPage(false);
-                localStorage.removeItem("appliedCoupon");
-                dispatch(clearCart());
-            }, 2000); // Wait for 2 seconds
 
         } catch (error) {
             console.error('Order status update failed:', error);
@@ -255,105 +246,174 @@ export default function Checkout({ setIsCheckoutPage }) {
                                     SHIPPING ADDRESS
                                 </div>
                                 <div className="g_shipping_content">
-                                    <Form.Control
-                                        type="text"
-                                        defaultValue="Daniel Hecker"
-                                        className="g_input"
-                                        readOnly
-                                    />
+                                    {selectedAddress ? (
+                                        <div className="selected-address">
+                                            <p className='mb-0 fw-semibold'>{selectedAddress.firstName} {selectedAddress.lastName}</p>
+                                            <p>{selectedAddress.address1},{selectedAddress.address2},{selectedAddress.postalCode}</p>
+                                            {/* <p>{selectedAddress.address2}</p>
+                                            <p>{selectedAddress.city}, {selectedAddress.state} {selectedAddress.postalCode}</p>
+                                            <p>{selectedAddress.phone}</p> */}
+                                        </div>
+                                    ) : (
+                                        <div className="d-flex justify-content-between align-items-center">
+                                            <p>Please first go to cart and select an address</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
+                            {/* Remove the Address Selection Modal */}
+
+                            {/* Address Selection Modal */}
+                            <Modal show={showAddressModal} onHide={() => setShowAddressModal(false)}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Select Address</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    {addresses?.map((address) => (
+                                        <div
+                                            key={address._id}
+                                            className="address-option p-3 border mb-2"
+                                            onClick={() => {
+                                                setSelectedAddress(address);
+                                                setShowAddressModal(false);
+                                            }}
+                                        >
+                                            <h6>{address.firstName} {address.lastName}</h6>
+                                            <p className="mb-1">{address.address1}</p>
+                                            <p className="mb-1">{address.address2}</p>
+                                            <p className="mb-1">{address.city}, {address.state} {address.postalCode}</p>
+                                            <p className="mb-0">{address.phone}</p>
+                                        </div>
+                                    ))}
+                                </Modal.Body>
+                            </Modal>
+
                             {/* Payment Method Section */}
                             <div className="g_payment_section">
-                                <h3 className="g_section_subtitle">Payment method</h3>
+                                <h3 className="g_section_subtitle">Select Payment Method</h3>
                                 <div className="g_payment_options">
-                                    <label className={`g_payment_option ${selected === 'Card' ? 'g_selected' : ''}`}>
+                                    {/* COD Option */}
+                                    <label className={`g_payment_option ${selected === 'Cod' ? 'g_selected' : ''}`}>
                                         <input
                                             type="radio"
                                             name="payment"
-                                            value="Card"
-                                            checked={selected === 'Card'}
-                                            onChange={() => setSelected('Card')}
+                                            value="Cod"
+                                            checked={selected === 'Cod'}
+                                            onChange={(e) => {
+                                                setSelected(e.target.value);
+                                                console.log('Selected Payment Method:', e.target.value);
+                                            }}
                                             className="g_radio_input"
                                         />
                                         <span className="g_radio_custom"></span>
-                                        <span className="g_payment_label">Credit card</span>
+                                        <span className="g_payment_label">Cash on Delivery</span>
                                     </label>
-
-                                    <label className={`g_payment_option ${selected === 'PayPal' ? 'g_selected' : ''}`}>
+                                
+                                    {/* Credit/Debit Card Option */}
+                                    <label className={`g_payment_option ${selected === 'Credit Card / Debit Card' ? 'g_selected' : ''}`}>
                                         <input
                                             type="radio"
                                             name="payment"
-                                            value="PayPal"
-                                            checked={selected === 'PayPal'}
-                                            onChange={() => setSelected('PayPal')}
+                                            value="Credit Card / Debit Card"
+                                            checked={selected === 'Credit Card / Debit Card'}
+                                            onChange={(e) => {
+                                                setSelected(e.target.value);
+                                                console.log('Selected Payment Method:', e.target.value);
+                                            }}
                                             className="g_radio_input"
                                         />
                                         <span className="g_radio_custom"></span>
-                                        <span className="g_payment_label">PayPal</span>
+                                        <div className="g_payment_label_container">
+                                            <span className="g_payment_label">Credit Card / Debit Card</span>
+                                            <div className="g_payment_icons">
+                                                <img src={visa} alt="visa" className="g_card_icon" />
+                                                <img src={masterCard} alt="mastercard" className="g_card_icon" />
+                                                <img src={amex} alt="amex" className="g_card_icon" />
+                                                <img src={discover} alt="discover" className="g_card_icon" />
+                                            </div>
+                                        </div>
+                                    </label>
+                                
+                                    {/* UPI Option */}
+                                    <label className={`g_payment_option ${selected === 'UPI' ? 'g_selected' : ''}`}>
+                                        <input
+                                            type="radio"
+                                            name="payment"
+                                            value="UPI"
+                                            checked={selected === 'UPI'}
+                                            onChange={(e) => {
+                                                setSelected(e.target.value);
+                                                console.log('Selected Payment Method:', e.target.value);
+                                            }}
+                                            className="g_radio_input"
+                                        />
+                                        <span className="g_radio_custom"></span>
+                                        <div className="g_payment_label_container">
+                                            <span className="g_payment_label">UPI</span>
+                                            <div className="g_payment_icons">
+                                                <img src={Upi} alt="upi" className="g_upi_icon" />
+                                                <img src={paytm} alt="paytm" className="g_upi_icon" />
+                                                <img src={gpay} alt="gpay" className="g_upi_icon" />
+                                                <img src={phonepay} alt="phonepay" className="g_upi_icon" />
+                                            </div>
+                                        </div>
+                                    </label>
+                                
+                                    {/* Net Banking Option */}
+                                    <label className={`g_payment_option ${selected === 'Net Banking' ? 'g_selected' : ''}`}>
+                                        <input
+                                            type="radio"
+                                            name="payment"
+                                            value="Net Banking"
+                                            checked={selected === 'Net Banking'}
+                                            onChange={(e) => {
+                                                setSelected(e.target.value);
+                                                console.log('Selected Payment Method:', e.target.value);
+                                            }}
+                                            className="g_radio_input"
+                                        />
+                                        <span className="g_radio_custom"></span>
+                                        <div className="g_payment_label_container">
+                                            <span className="g_payment_label">Net Banking</span>
+                                            <div className="g_payment_icons">
+                                                <img src={citi} alt="citi" className="g_bank_icon" />
+                                                <img src={wells} alt="wells fargo" className="g_bank_icon" />
+                                                <img src={capital} alt="capital one" className="g_bank_icon" />
+                                                <img src={td} alt="td" className="g_bank_icon" />
+                                            </div>
+                                        </div>
                                     </label>
                                 </div>
 
-                                {/* Card Details Section */}
-                                {selected === 'Card' && (
-                                    <div className="g_card_details">
-                                        <div className="g_card_input_group">
-                                            <label>Name On Card</label>
-                                            <input
-                                                type="text"
-                                                placeholder="Mehedi Hasan Parves"
-                                                className="g_card_input"
-                                                value={cardDetails.cardHolder}
-                                                onChange={(e) => setCardDetails({ ...cardDetails, cardHolder: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="g_card_input_group">
-                                            <label>Card Number</label>
-                                            <input
-                                                type="text"
-                                                placeholder="3787-3849-3126-0777"
-                                                className="g_card_input"
-                                                value={cardDetails.cardNumber}
-                                                onChange={(e) => setCardDetails({ ...cardDetails, cardNumber: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="g_card_row">
-                                            <div className="g_card_input_group">
-                                                <label>Expiration Date</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="27/4"
-                                                    className="g_card_input"
-                                                    value={cardDetails.expiryDate}
-                                                    onChange={(e) => setCardDetails({ ...cardDetails, expiryDate: e.target.value })}
-                                                />
-                                            </div>
-                                            <div className="g_card_input_group">
-                                                <label>CVV/CVC</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="072"
-                                                    className="g_card_input"
-                                                    value={cardDetails.cvv}
-                                                    onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value })}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="g_save_card">
-                                            <input
-                                                type="checkbox"
-                                                id="saveCard"
-                                                className="g_checkbox"
-                                            />
-                                            <label htmlFor="saveCard">Securely save this card for faster checkout next time</label>
-                                        </div>
-
-                                    </div>
-                                )}
-                                <button className="g_payment_button" onClick={handleShow}>
-                                    Pay $155
-                                </button>
+                                {/* Payment Button */}
+                                <div className="g_payment_button_container mt-4">
+                                    // At the top of your file, add these imports
+                                    import Thankspopup from './Thankspopup';
+                                    import { useState } from 'react';
+                                    
+                                    // Inside your component, add this state
+                                    const [showThanksModal, setShowThanksModal] = useState(false);
+                                    
+                                    // Modify your button click handler
+                                    <Button 
+                                        className="g_payment_button" 
+                                        onClick={async () => {
+                                            await handleShow();
+                                            setShowThanksModal(true);
+                                            setTimeout(() => {
+                                                setShowThanksModal(false);
+                                                navigate('/Myorder');
+                                            }, 300000); // 5 minutes
+                                        }}
+                                        disabled={!selected || !selectedAddress}
+                                    >
+                                        Proceed to Pay
+                                    </Button>
+                                    
+                                    // Add the Thankspopup component at the bottom of your render
+                                    <Thankspopup show={showThanksModal} setShow={setShowThanksModal} />
+                                </div>
                             </div>
                         </div>
                     </Col>
@@ -362,84 +422,78 @@ export default function Checkout({ setIsCheckoutPage }) {
                         <div className="g_cart_summary">
                             <h3 className="g_summary_title">Shopping cart</h3>
                             <div className="g_cart_items">
-                                <div className="g_cart_item">
-                                    <div className="g_item_image_container">
-                                        <img src="/path/to/image1.jpg" alt="Prairie Blossoms" className="g_item_image" />
-                                    </div>
-                                    <div className="g_item_details">
-                                        <h4 className="g_item_name">Prairie Blossoms Smocked Floral Peasant Top</h4>
-                                        <div className="g_item_controls">
-                                            <div className="g_quantity_control">
-                                                <button className="g_qty_btn g_qty_minus">-</button>
-                                                <input type="text" value="1" readOnly className="g_qty_input" />
-                                                <button className="g_qty_btn g_qty_plus">+</button>
+                                {cartItems.map((item) => (
+                                    <div key={item._id} className="g_cart_item">
+                                        <div className="g_item_image_container">
+                                            <img
+                                                src={`http://localhost:4000/${item.productData?.[0]?.images?.[0]}`}
+                                                alt={item.productData?.[0]?.productName || 'Product'}
+                                                className="g_item_image"
+                                            />
+                                        </div>
+                                        <div className="g_item_details">
+                                            <h4 className="g_item_name">
+                                                {item.productData?.[0]?.productName || 'Product Name Not Available'}
+                                            </h4>
+                                            <div className="g_item_controls">
+                                                <div className="g_quantity_control">
+                                                    <button
+                                                        className="g_qty_btn g_qty_minus"
+                                                        onClick={() => handleQuantityChange(item._id, item.quantity - 1)}
+                                                    >-</button>
+                                                    <input
+                                                        type="text"
+                                                        value={item.quantity}
+                                                        readOnly
+                                                        className="g_qty_input"
+                                                    />
+                                                    <button
+                                                        className="g_qty_btn g_qty_plus"
+                                                        onClick={() => handleQuantityChange(item._id, item.quantity + 1)}
+                                                    >+</button>
+                                                </div>
+                                                <span className="g_item_price">
+                                                    ${((item.productVarientData?.[0]?.price || 0) * (item.quantity || 0)).toFixed(2)}
+                                                </span>
                                             </div>
-                                            <span className="g_item_price">$57</span>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div className="g_cart_item">
-                                    <div className="g_item_image_container">
-                                        <img src="/path/to/image2.jpg" alt="Fit to Be Tied" className="g_item_image" />
-                                    </div>
-                                    <div className="g_item_details">
-                                        <h4 className="g_item_name">Fit to Be Tied Crinkle Cotton Tie-Front Shirt</h4>
-                                        <div className="g_item_controls">
-                                            <div className="g_quantity_control">
-                                                <button className="g_qty_btn">-</button>
-                                                <span>1</span>
-                                                <button className="g_qty_btn">+</button>
-                                            </div>
-                                            <span className="g_item_price">$57</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="g_cart_item">
-                                    <div className="g_item_image_container">
-                                        <img src="/path/to/image3.jpg" alt="On the Move" className="g_item_image" />
-                                    </div>
-                                    <div className="g_item_details">
-                                        <h4 className="g_item_name">On the Move Pleated Corduroy Cargo Pants</h4>
-                                        <div className="g_item_controls">
-                                            <div className="g_quantity_control">
-                                                <button className="g_qty_btn">-</button>
-                                                <span>1</span>
-                                                <button className="g_qty_btn">+</button>
-                                            </div>
-                                            <span className="g_item_price">$51</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
 
                             <div className="g_cart_summary_footer">
                                 <div className="g_coupon_section">
-                                    <input type="text" placeholder="VJ895TURT" className="g_coupon_input" />
-                                    <button className="g_apply_btn">Applied</button>
+                                    <input
+                                        type="text"
+                                        value={appliedCoupon?.title || ''}
+                                        placeholder="Enter coupon code"
+                                        className="g_coupon_input"
+                                    />
+                                    <button className="g_apply_btn">
+                                        {appliedCoupon ? 'Applied' : 'Apply'}
+                                    </button>
                                 </div>
 
                                 <div className="g_price_details">
                                     <div className="g_price_row">
                                         <span>Subtotal</span>
-                                        <span>$165</span>
+                                        <span>${calculateTotals().subtotal}</span>
                                     </div>
                                     <div className="g_price_row">
                                         <span>Taxes and vat</span>
-                                        <span>$10</span>
+                                        <span>${calculateTotals().platformFee}</span>
                                     </div>
                                     <div className="g_price_row">
                                         <span>Delivery charge</span>
-                                        <span>$00</span>
+                                        <span>$0</span>
                                     </div>
                                     <div className="g_price_row">
                                         <span>Discount</span>
-                                        <span>-$20</span>
+                                        <span>-${calculateTotals().discount}</span>
                                     </div>
                                     <div className="g_price_row g_total">
                                         <span>Total</span>
-                                        <span>$155</span>
+                                        <span>${calculateTotals().grandTotal}</span>
                                     </div>
                                 </div>
                             </div>
@@ -447,6 +501,7 @@ export default function Checkout({ setIsCheckoutPage }) {
                     </Col>
                 </Row>
             </div>
+            {/* <Thankspopup show={show} setShow={setShow} /> */}
         </div>
     );
 }

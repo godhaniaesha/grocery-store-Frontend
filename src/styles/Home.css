@@ -2531,3 +2531,18 @@
     padding: 20px 5px;
   }
 }
+
+.address-card {
+  border: 2px solid transparent !important;
+}
+
+.address-card:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.address-card.selected-address {
+  background: linear-gradient(white, white) padding-box,
+    linear-gradient(45deg, #6366f1, #8b5cf6, #d946ef) border-box;
+  border: 2px solid transparent !important;
+  transform: scale(1.01);
+}

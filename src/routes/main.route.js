@@ -18,8 +18,12 @@ import Bestseller from '../container/Bestseller';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Checkout from '../container/Checkout';
 import AddcartDesign from '../container/AddcartDesign';
+<<<<<<< HEAD
 import Myorder from '../container/Myorder';
 import MyAddresses from '../components/MyAddresses';
+=======
+import Thankspopup from '../container/Thankspopup';
+>>>>>>> upstream/Krups0605
 
 const MainRoutes = () => {
   const [loading, setLoading] = useState(true);
@@ -88,6 +92,8 @@ const MainRoutes = () => {
         <Route path="/AddcartDesign" element={<AddcartDesign />} />
         <Route path="/Myorder" element={<Myorder />} />
         <Route path="/MyAddresses" element={<MyAddresses />} />
+        <Route path="/Thankspopup" element={<Thankspopup />} />
+
       </Routes>
       <Footer />
     </>

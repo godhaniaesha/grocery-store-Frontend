@@ -8,9 +8,11 @@ import {
   selectCurrency,
   selectCurrencySymbol,
 } from "../redux/slices/currency.Slice";
-import { createAddress, getUserAddresses, updateAddress } from "../redux/slices/address.Slice";
+import { createAddress, deleteAddress, getUserAddresses, updateAddress } from "../redux/slices/address.Slice";
 import { createOrder } from '../redux/slices/order.Slice';
 import { useNavigate } from 'react-router-dom';
+import { FaHome, FaBuilding, FaMapMarkerAlt, FaList, FaPlus } from 'react-icons/fa';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
 export default function AddcartDesign() {
   const dispatch = useDispatch();
@@ -116,7 +118,19 @@ export default function AddcartDesign() {
   };
 
   const getTotal = () => {
-    return getSubtotal();
+    const subtotal = getSubtotal();
+    let discount = 0;
+
+    if (appliedCoupon) {
+      if (appliedCoupon.coupenType === "Fixed") {
+        discount = appliedCoupon.coupenDiscount;
+      } else if (appliedCoupon.coupenType === "Percentage") {
+        discount = subtotal * (appliedCoupon.coupenDiscount / 100);
+      }
+    }
+
+    const shippingCost = shippingMethod === "free" ? 0 : 35;
+    return subtotal - discount + shippingCost;
   };
 
 
@@ -134,17 +148,53 @@ export default function AddcartDesign() {
     saveAddressAs: ""
   });
 
+  const handleEditAddress = async (address) => {
+    setEditingAddress(address);
+    setAddress({
+      firstName: address.firstName,
+      lastName: address.lastName,
+      phone: address.phone,
+      email: address.email,
+      address1: address.address1,
+      address2: address.address2,
+      postalCode: address.postalCode,
+      city: address.city,
+      state: address.state,
+      country: address.country,
+      saveAddressAs: address.saveAddressAs
+    });
+    setShowAddressForm(true);
+  };
+
   const handleAddAddress = async () => {
-    if (!address.firstName || !address.lastName || !address.phone || !address.email || 
-        !address.address1 || !address.address2 || !address.postalCode || 
-        !address.city || !address.state || !address.country || !address.saveAddressAs) {
+    if (!address.firstName || !address.lastName || !address.phone || !address.email ||
+      !address.address1 || !address.address2 || !address.postalCode ||
+      !address.city || !address.state || !address.country || !address.saveAddressAs) {
       alert('કૃપા કરી બધી એડ્રેસ ફીલ્ડ્સ ભરો');
       return;
     }
-    
+
     try {
-      await dispatch(createAddress(address)).unwrap();
+      if (editingAddress) {
+        // Update existing address
+        await dispatch(updateAddress({
+          addressId: editingAddress._id,
+          addressData: address
+        })).unwrap();
+      } else {
+        // Create new address
+        await dispatch(createAddress(address)).unwrap();
+      }
+
       dispatch(getUserAddresses()); // Refresh addresses list
+
+      // Update selected address if we're editing it
+      if (editingAddress && selectedAddress && editingAddress._id === selectedAddress._id) {
+        setSelectedAddress({ ...address, _id: editingAddress._id });
+        localStorage.setItem('selectedAddress', JSON.stringify({ ...address, _id: editingAddress._id }));
+      }
+
+      // Reset form
       setAddress({
         firstName: "",
         lastName: "",
@@ -158,11 +208,41 @@ export default function AddcartDesign() {
         country: "",
         saveAddressAs: ""
       });
+      setEditingAddress(null);
       setShowAddressForm(false);
     } catch (error) {
-      alert('એડ્રેસ સેવ કરવામાં ભૂલ થઈ છે');
+      alert(editingAddress ? 'એડ્રેસ અપડેટ કરવામાં ભૂલ થઈ છે' : 'Error saving address');
     }
   };
+  // ... existing code ...
+  const handleDeleteAddress = async (addressId) => {
+    try {
+      if (!addressId) {
+        console.error('No address ID provided for deletion');
+        return;
+      }
+
+      if (window.confirm('Are you sure you want to delete this address?')) {
+        await dispatch(deleteAddress(addressId)).unwrap();
+
+        // If the deleted address was the selected address, clear it
+        if (selectedAddress && selectedAddress._id === addressId) {
+          setSelectedAddress(null);
+          localStorage.removeItem('selectedAddress');
+        }
+
+        // Refresh the addresses list
+        dispatch(getUserAddresses());
+
+        // Close the modal if it's open
+        setShowAddressModal(false);
+      }
+    } catch (error) {
+      console.error('Error deleting address:', error);
+      alert('Failed to delete address. Please try again.');
+    }
+  };
+
 
   const handleAddressChange = (e) => {
     const { name, value } = e.target;
@@ -195,7 +275,6 @@ export default function AddcartDesign() {
       return;
     }
 
-    // Add validation for cart items
     if (!cartItems || cartItems.length === 0) {
       alert('Your cart is empty');
       return;
@@ -204,351 +283,426 @@ export default function AddcartDesign() {
     const orderItems = cartItems.map(item => ({
       productId: item.productId,
       productVarientId: item.productVarientId,
-      quantity: Number(item.quantity) || 1  // Ensure quantity is a number and has a fallback
+      quantity: Number(item.quantity) || 1
     }));
 
-    const totals = {
-      platformFee: 0,
-      grandTotal: getTotal()
-    };
+    const subtotal = getSubtotal();
+    let discountAmount = 0;
 
-    console.log(appliedCoupon,"appliedCoupon");
-    
+    if (appliedCoupon) {
+      if (appliedCoupon.coupenType === "Fixed") {
+        discountAmount = appliedCoupon.coupenDiscount;
+      } else if (appliedCoupon.coupenType === "Percentage") {
+        discountAmount = subtotal * (appliedCoupon.coupenDiscount / 100);
+      }
+    }
+
+    const shippingCost = shippingMethod === "free" ? 0 : 35;
+    const grandTotal = subtotal - discountAmount + shippingCost;
+    if(appliedCoupon){
+      localStorage.setItem('coupon', JSON.stringify(appliedCoupon));
+    }else{
+      localStorage.removeItem('coupon');
+    }
     const orderData = {
       userId: localStorage.getItem('userId'),
       addressId: selectedAddress._id,
       items: orderItems,
-      platFormFee: Number(totals.platformFee) || 0,
-      coupenId: appliedCoupon._id,  // Ensure couponId is properly set
-      totalAmount: Number(totals.grandTotal) || 0,
+      platFormFee: 0,
+      coupenId: appliedCoupon?._id || null,
+      discountAmount: discountAmount,
+      shippingCost: shippingCost,
+      totalAmount: grandTotal,
       orderStatus: "Pending",
       paymentStatus: "not Received"
     };
 
     try {
       const result = await dispatch(createOrder(orderData)).unwrap();
+      // console.log(result,"result");
+      
       if (result) {
-        navigate('/checkout-success');
+        // ઓર્ડર ID લોકલસ્ટોરેજમાં સેવ કરો
+        localStorage.setItem('orderId', result.data._id);
+        navigate('/checkout');
       }
     } catch (error) {
       console.error('Order creation failed:', error);
+      alert('Order creation failed. Please try again.');
     }
-};
+  };
 
-const handleSelectAddress = (addr) => {
-  setSelectedAddress(addr);
-  localStorage.setItem('selectedAddress', JSON.stringify(addr));
-  setShowAddressModal(false);
-};
+  const handleSelectAddress = (addr) => {
+    setSelectedAddress(addr);
+    localStorage.setItem('selectedAddress', JSON.stringify(addr));
+    setShowAddressModal(false);
+  };
 
-// Add this function to clear selected address
-const handleClearAddress = () => {
-  setSelectedAddress(null);
-  localStorage.removeItem('selectedAddress');
-};
+  // Add this function to clear selected address
+  const handleClearAddress = () => {
+    setSelectedAddress(null);
+    localStorage.removeItem('selectedAddress');
+  };
 
-// Update the selected address display section
-{selectedAddress && (
-  <div className="border rounded p-3 mb-3">
-    <div className="d-flex justify-content-between">
-      <h6 className="mb-2">Selected Address</h6>
-      <button
-        className="btn btn-link text-danger p-0"
-        onClick={handleClearAddress}
-      >
-        Change
-      </button>
-    </div>
-    <p className="mb-1">{selectedAddress.firstName} {selectedAddress.lastName}</p>
-    <p className="mb-1">{selectedAddress.phone}</p>
-    <p className="mb-1">
-      {selectedAddress.address1}, {selectedAddress.address2}-{selectedAddress.postalCode}, {selectedAddress.city}, {selectedAddress.state}, {selectedAddress.country}
-    </p>
-    <span className="badge bg-light text-dark">{selectedAddress.saveAddressAs}</span>
-  </div>
-)}
-const handleEditAddress = async (address) => {
-  try {
-    await dispatch(updateAddress({
-      addressId: address._id,
-      addressData: address
-    })).unwrap();
-    dispatch(getUserAddresses()); // Refresh addresses list
-    setEditingAddress(null);
-    setShowAddressForm(false);
-  } catch (error) {
-    alert('એડ્રેસ અપડેટ કરવામાં ભૂલ થઈ છે');
+  // Update the selected address display section
+  {
+    selectedAddress && (
+      <div className="border rounded p-3 mb-3">
+        <div className="d-flex justify-content-between">
+          <h6 className="mb-2">Selected Address</h6>
+          <button
+            className="btn btn-link text-danger p-0"
+            onClick={handleClearAddress}
+          >
+            Change
+          </button>
+        </div>
+        <p className="mb-1">{selectedAddress.firstName} {selectedAddress.lastName}</p>
+        <p className="mb-1">{selectedAddress.phone}</p>
+        <p className="mb-1">
+          {selectedAddress.address1}, {selectedAddress.address2}-{selectedAddress.postalCode}, {selectedAddress.city}, {selectedAddress.state}, {selectedAddress.country}
+        </p>
+        <span className="badge bg-light text-dark">{selectedAddress.saveAddressAs}</span>
+      </div>
+    )
   }
-};
+  // const handleEditAddress = async (address) => {
+  //   try {
+  //     await dispatch(updateAddress({
+  //       addressId: address._id,
+  //       addressData: address
+  //     })).unwrap();
+  //     dispatch(getUserAddresses()); // Refresh addresses list
+  //     setEditingAddress(null);
+  //     setShowAddressForm(false);
+  //   } catch (error) {
+  //     alert('એડ્રેસ અપડેટ કરવામાં ભૂલ થઈ છે');
+  //   }
+  // };
 
-const handleDeleteAddress = async (addressId) => {
-  try {
-    await dispatch(deleteAddress(addressId)).unwrap();
-    dispatch(getUserAddresses()); // Refresh addresses list
-    if (selectedAddress && selectedAddress._id === addressId) {
-      setSelectedAddress(null);
-    }
-  } catch (error) {
-    alert('એડ્રેસ ડિલીટ કરવામાં ભૂલ થઈ છે');
-  }
-};
+
 
   return (
     <div className="a_header_container py-5">
       <div className="row">
         <div className="col-lg-8 mb-md-4 mb-2">
-        <div className="card shadow-sm mb-4">
-                <div className="card-body p-md-4 p-2">
-                  <div className="d-flex justify-content-between align-items-center mb-4">
-                    <h5 className="fw-bold mb-0">Shipping Address</h5>
-                    <div>
-                      <button
-                        className="btn btn-outline-success me-2"
-                        onClick={() => setShowAddressForm(true)}
-                      >
-                        <i className="bi bi-plus"></i> Add New Address
-                      </button>
-                      <button
-                        className="btn btn-outline-primary"
-                        onClick={() => setShowAddressModal(true)}
-                      >
-                        <i className="bi bi-list"></i> View All Addresses
-                      </button>
-                    </div>
-                  </div>
+          <div className="card shadow-sm mb-4">
+            <div className="card-body p-md-4 p-2">
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <h5 className="fw-bold mb-0">Shipping Address</h5>
+                <div>
+                  <button
+                    className="btn btn-outline-success me-2"
+                    onClick={() => setShowAddressForm(true)}
+                  >
+                    <FaPlus className="me-1" /> Add New Address
+                  </button>
+                  {addresses.length > 0 && (
+                    <button
+                      className="btn btn-outline-primary"
+                      onClick={() => setShowAddressModal(true)}
+                    >
+                      <FaList className="me-1" /> View All Addresses
+                    </button>
+                  )}
+                </div>
+              </div>
 
-                  {/* Selected Address Display */}
-                  {selectedAddress && (
-                    <div className="border rounded p-3 mb-3">
-                      <div className="d-flex justify-content-between">
-                        <h6 className="mb-2">Selected Address</h6>
+              {/* Selected Address Display - Only show when explicitly selected */}
+              {selectedAddress && (
+                <div className="border rounded p-3 mb-3">
+                  <div className="d-flex align-items-center justify-content-between">
+                    <div className='d-flex gap-3'>
+                      <div className="">
+                        {selectedAddress.saveAddressAs === 'Home' && <FaHome size={20} />}
+                        {selectedAddress.saveAddressAs === 'Office' && <FaBuilding size={20} />}
+                        {selectedAddress.saveAddressAs === 'Other' && <FaMapMarkerAlt size={20} />}
+                      </div>
+                      <div>
+                        <p className="mb-0 fw-bold">{selectedAddress.firstName} {selectedAddress.lastName}</p>
+                        <p className="mb-0">{selectedAddress.address1}, {selectedAddress.address2}</p>
+                        <p className="mb-0">{selectedAddress.city}, {selectedAddress.state}, {selectedAddress.postalCode}</p>
+                      </div>
+                    </div>
+                    <div className="d-flex gap-3">
+                      <div className='text-center'>
+                        {/* Edit icon */}
                         <button
-                          className="btn btn-link text-danger p-0"
-                          onClick={() => setSelectedAddress(null)}
+                          className="btn gap-1 p-0 fw-bold text-decoration-none text-primary d-flex align-items-center "
+                          onClick={() => handleEditAddress(selectedAddress)}
+                          style={{ fontSize: '14px' }}
                         >
-                          Change
+                          <FaEdit className=" text-primary" size={19} />
+                          Edit
                         </button>
                       </div>
-                      <p className="mb-1">{selectedAddress.fullName}</p>
-                      <p className="mb-1">{selectedAddress.phoneNumber}</p>
-                      <p className="mb-1">{selectedAddress.streetAddress}</p>
-                      <p className="mb-0">
-                        {selectedAddress.city}, {selectedAddress.state} - {selectedAddress.pincode}
-                      </p>
-                    </div>
-                  )}
 
-                  {/* Address Form Modal */}
-                  <div className={`modal fade ${showAddressForm ? 'show' : ''}`} 
-                       style={{ 
-                         display: showAddressForm ? 'block' : 'none',
-                         backgroundColor: 'rgba(0, 0, 0, 0.5)'
-                       }}
-                       onClick={(e) => {
-                         if (e.target === e.currentTarget) {
-                           setShowAddressForm(false);
-                         }
-                       }}>
-                    <div className="modal-dialog">
-                      <div className="modal-content">
-                        <div className="modal-header">
-                          <h5 className="modal-title">
-                            {editingAddress ? 'Edit Address' : 'Add New Address'}
-                          </h5>
-                          <button type="button" className="btn-close" onClick={() => setShowAddressForm(false)}></button>
-                        </div>
-                        {/* // Add fields in modal form (Changed from: હીં મોડલ ફોર્સમાં ફીલ્ડ્સ ઉમેરો) */}
-                        <div className="modal-body">
-                          <div className="row g-3">
-                            <div className="col-md-6">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="First Name"
-                                name="firstName"
-                                value={address.firstName}
-                                onChange={handleAddressChange}
-                              />
-                            </div>
-                            <div className="col-md-6">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Last Name"
-                                name="lastName"
-                                value={address.lastName}
-                                onChange={handleAddressChange}
-                              />
-                            </div>
-                            <div className="col-md-6">
-                              <input
-                                type="tel"
-                                className="form-control"
-                                placeholder="Phone Number"
-                                name="phone"
-                                value={address.phone}
-                                onChange={handleAddressChange}
-                              />
-                            </div>
-                            <div className="col-md-6">
-                              <input
-                                type="email"
-                                className="form-control"
-                                placeholder="Email"
-                                name="email"
-                                value={address.email}
-                                onChange={handleAddressChange}
-                              />
-                            </div>
-                            <div className="col-12">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Address Line 1"
-                                name="address1"
-                                value={address.address1}
-                                onChange={handleAddressChange}
-                              />
-                            </div>
-                            <div className="col-12">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Address Line 2"
-                                name="address2"
-                                value={address.address2}
-                                onChange={handleAddressChange}
-                              />
-                            </div>
-                            <div className="col-md-6">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Postal Code"
-                                name="postalCode"
-                                value={address.postalCode}
-                                onChange={handleAddressChange}
-                              />
-                            </div>
-                            <div className="col-md-6">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="City"
-                                name="city"
-                                value={address.city}
-                                onChange={handleAddressChange}
-                              />
-                            </div>
-                            <div className="col-md-6">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="State"
-                                name="state"
-                                value={address.state}
-                                onChange={handleAddressChange}
-                              />
-                            </div>
-                            <div className="col-md-6">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Country"
-                                name="country"
-                                value={address.country}
-                                onChange={handleAddressChange}
-                              />
-                            </div>
-                            <div className="col-12">
-                              <select
-                                className="form-select"
-                                name="saveAddressAs"
-                                value={address.saveAddressAs}
-                                onChange={handleAddressChange}
-                              >
-                                <option value="">Save Address As</option>
-                                <option value="Home">Home</option>
-                                <option value="Office">Office</option>
-                                <option value="Other">Other</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="modal-footer">
-                          <button type="button" className="btn btn-secondary" onClick={() => setShowAddressForm(false)}>
-                            Cancel
-                          </button>
-                          <button type="button" className="btn btn-primary" onClick={handleAddAddress}>
-                            {editingAddress ? 'Update Address' : 'Add Address'}
-                          </button>
-                        </div>
-                      </div>
                     </div>
                   </div>
+                </div>
+              )}
 
-                  {/* Address List Modal */}
-                  <div className={`modal fade ${showAddressModal ? 'show' : ''}`}
-                       style={{ 
-                         display: showAddressModal ? 'block' : 'none',
-                         backgroundColor: 'rgba(0, 0, 0, 0.5)'
-                       }}
-                       onClick={(e) => {
-                         if (e.target === e.currentTarget) {
-                           setShowAddressModal(false);
-                         }
-                       }}>
-                    <div className="modal-dialog">
-                      <div className="modal-content">
-                        <div className="modal-header">
-                          <h5 className="modal-title">Your Addresses</h5>
-                          <button type="button" className="btn-close" onClick={() => setShowAddressModal(false)}></button>
+
+              {/* Address Form Modal */}
+              <div className={`modal fade ${showAddressForm ? 'show' : ''}`}
+                style={{
+                  display: showAddressForm ? 'block' : 'none',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)'
+                }}
+                onClick={(e) => {
+                  if (e.target === e.currentTarget) {
+                    setShowAddressForm(false);
+                  }
+                }}>
+                <div className="modal-dialog">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">
+                        {editingAddress ? 'Edit Address' : 'Add New Address'}
+                      </h5>
+                      <button type="button" className="btn-close" onClick={() => setShowAddressForm(false)}></button>
+                    </div>
+                    {/* // Add fields in modal form (Changed from: હીં મોડલ ફોર્સમાં ફીલ્ડ્સ ઉમેરો) */}
+                    <div className="modal-body">
+                      <div className="row g-3">
+                        <div className="col-md-6">
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="First Name"
+                            name="firstName"
+                            value={address.firstName}
+                            onChange={handleAddressChange}
+                          />
                         </div>
-                        <div className="modal-body">
-                          {addresses.length === 0 ? (
-                            <p className="text-center text-muted">No saved addresses</p>
-                          ) : (
-                            addresses.map((addr) => (
-                              <div key={addr.id} className="border rounded p-3 mb-3">
-                                <div className="d-flex justify-content-between align-items-start">
-                                  <div>
-                                    <h6 className="mb-1">{addr.firstName} {addr.lastName}</h6>
-                                    <p className="mb-1">{addr.phone}</p>
-                                    <p className="mb-1">
-                                      {addr.address1}, {addr.address2}-{addr.postalCode}, {addr.city}, {addr.state}, {addr.country}
-                                    </p>
-                                    <span className="badge bg-light text-dark">{addr.saveAddressAs}</span>
-                                  </div>
-                                  <div className="btn-group">
-                                    <button
-                                      className="btn btn-outline-primary btn-sm me-2"
-                                      onClick={() => handleSelectAddress(addr)}
-                                    >
-                                      Select
-                                    </button>
-                                    <button
-                                      className="btn btn-outline-secondary btn-sm"
-                                      onClick={() => handleEditAddress(addr)}
-                                    >
-                                      Edit
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            ))
-                          )}
+                        <div className="col-md-6">
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Last Name"
+                            name="lastName"
+                            value={address.lastName}
+                            onChange={handleAddressChange}
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="tel"
+                            className="form-control"
+                            placeholder="Phone Number"
+                            name="phone"
+                            value={address.phone}
+                            onChange={handleAddressChange}
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="email"
+                            className="form-control"
+                            placeholder="Email"
+                            name="email"
+                            value={address.email}
+                            onChange={handleAddressChange}
+                          />
+                        </div>
+                        <div className="col-12">
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Address Line 1"
+                            name="address1"
+                            value={address.address1}
+                            onChange={handleAddressChange}
+                          />
+                        </div>
+                        <div className="col-12">
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Address Line 2"
+                            name="address2"
+                            value={address.address2}
+                            onChange={handleAddressChange}
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Postal Code"
+                            name="postalCode"
+                            value={address.postalCode}
+                            onChange={handleAddressChange}
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="City"
+                            name="city"
+                            value={address.city}
+                            onChange={handleAddressChange}
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="State"
+                            name="state"
+                            value={address.state}
+                            onChange={handleAddressChange}
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Country"
+                            name="country"
+                            value={address.country}
+                            onChange={handleAddressChange}
+                          />
+                        </div>
+                        <div className="col-12">
+                          <select
+                            className="form-select"
+                            name="saveAddressAs"
+                            value={address.saveAddressAs}
+                            onChange={handleAddressChange}
+                          >
+                            <option value="">Save Address As</option>
+                            <option value="Home">Home</option>
+                            <option value="Office">Office</option>
+                            <option value="Other">Other</option>
+                          </select>
                         </div>
                       </div>
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-secondary" onClick={() => setShowAddressForm(false)}>
+                        Cancel
+                      </button>
+                      <button type="button" className="btn btn-primary" onClick={handleAddAddress}>
+                        {editingAddress ? 'Update Address' : 'Add Address'}
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
+
+              {/* Address List Modal */}
+              <div className={`modal fade ${showAddressModal ? 'show' : ''}`}
+                style={{
+                  display: showAddressModal ? 'block' : 'none',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)'
+                }}
+                onClick={(e) => {
+                  if (e.target === e.currentTarget) {
+                    setShowAddressModal(false);
+                  }
+                }}>
+                <div className="modal-dialog modal-md">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Your Addresses</h5>
+                      <button type="button" className="btn-close" onClick={() => setShowAddressModal(false)}></button>
+                    </div>
+                    <div className="modal-body">
+                      {addresses.length === 0 ? (
+                        <div className="text-center py-4">
+                          <p className="text-muted">No saved addresses</p>
+                          <button
+                            className="btn btn-primary mt-2"
+                            onClick={() => {
+                              setShowAddressModal(false);
+                              setShowAddressForm(true);
+                            }}
+                          >
+                            <FaPlus className="me-1" /> Add New Address
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="row g-3">
+                          {addresses.map((addr) => (
+                            <div key={addr._id} className="">
+                              <div
+                                className={`border rounded p-3 address-card ${selectedAddress?._id === addr._id ? 'selected-address' : ''}`}
+                                onClick={() => handleSelectAddress(addr)}
+                                style={{
+                                  cursor: 'pointer',
+                                  transition: 'all 0.3s ease'
+                                }}
+                              >
+                                <div className="d-flex justify-content-between align-items-start">
+                                  <div className="flex-grow-1">
+                                    <div className="d-flex align-items-center gap-2 mb-2">
+                                      {addr.saveAddressAs === 'Home' && <FaHome className="text-primary" />}
+                                      {addr.saveAddressAs === 'Office' && <FaBuilding className="text-info" />}
+                                      {addr.saveAddressAs === 'Other' && <FaMapMarkerAlt className="text-secondary" />}
+                                      <h6 className="mb-0 fw-bold">{addr.firstName} {addr.lastName}</h6>
+                                      <span className="badge bg-light text-dark ms-2">{addr.saveAddressAs}</span>
+                                    </div>
+                                    <p className="mb-1">
+                                      <span className="text-muted">Phone:</span> {addr.phone}
+                                    </p>
+                                    <p className="mb-1">
+                                      {addr.address1}, {addr.address2}
+                                    </p>
+                                    <p className="mb-0">
+                                      {addr.city}, {addr.state} - {addr.postalCode}, {addr.country}
+                                    </p>
+                                  </div>
+                                  <div className="d-flex flex-column gap-2">
+                                    <button
+                                      className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteAddress(addr._id);
+                                      }}
+                                    >
+                                      <FaTrash size={14} />
+                                      Delete
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <div className="modal-footer">
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => setShowAddressModal(false)}
+                      >
+                        Close
+                      </button>
+                      {addresses.length > 0 && (
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={() => {
+                            setShowAddressModal(false);
+                            setShowAddressForm(true);
+                          }}
+                        >
+                          <FaPlus className="me-1" /> Add New Address
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="card shadow-sm">
             <div className="card-body p-md-4 p-2">
-
-
-              <div 
-                className="table-responsive" 
+              <div
+                className="table-responsive"
                 style={{
                   maxHeight: "400px",
                   overflowY: "auto",
@@ -576,7 +730,7 @@ const handleDeleteAddress = async (addressId) => {
                         <tr key={item._id} className="border-bottom" style={{ transition: "all 0.2s" }}>
                           <td className="py-3 ps-4" style={{ minWidth: "200px" }}>
                             <div className="d-flex align-items-center gap-3">
-                              <div className="position-relative" style={{ 
+                              <div className="position-relative" style={{
                                 width: "60px", // Small size (Changed from: નાની સાઈઝ)
                                 height: "60px", // Square shape with equal height and width (Changed from: ચોરસ આકાર માટે સરખી height અને width)
                                 borderRadius: "8px",
@@ -777,8 +931,8 @@ const handleDeleteAddress = async (addressId) => {
                     </div>
                   ))}
                 </div>
-                 {/* Address Section */}
-            
+                {/* Address Section */}
+
               </div>
             </div>
           </div>
@@ -794,10 +948,23 @@ const handleDeleteAddress = async (addressId) => {
                 <span>{formatPrice(getSubtotal())}</span>
               </div>
 
+              {appliedCoupon && (
+                <div className="d-flex justify-content-between mb-3">
+                  <span>Discount ({appliedCoupon.title})</span>
+                  <span className="text-success">
+                    -{formatPrice(
+                      appliedCoupon.coupenType === "Fixed"
+                        ? appliedCoupon.coupenDiscount
+                        : getSubtotal() * (appliedCoupon.coupenDiscount / 100)
+                    )}
+                  </span>
+                </div>
+              )}
+
               <div className="mb-3">
-                <div className="d-flex justify-content-between mb-2">
+                <div className="d-flex justify-content-between mb-3">
                   <span>Shipping</span>
-                  {/* <span>{formatPrice(getShippingCost())}</span> */}
+                  <span>{shippingMethod === "free" ? formatPrice(0) : formatPrice(35)}</span>
                 </div>
 
                 <div className="form-check mb-2">
