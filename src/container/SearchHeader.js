@@ -32,6 +32,21 @@ export default function SearchHeader() {
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      dispatch(getWishlistItems()); // Fetch wishlist items when component mounts
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setShowLoginModal(true);
+      setCurrentView('login');
+    }
+  }, []);
+
+  useEffect(() => {
     if (products?.length > 0) {
       console.log('All products:', products);
     }
@@ -122,6 +137,20 @@ export default function SearchHeader() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+  
+  const handleProductClick = (product) => {
+    console.log('Selected Product:', product); // For debugging entire product
+    console.log('Selected Product ID:', product._id); // For debugging ID specifically
+    
+    // Store the product ID in localStorage
+    localStorage.setItem('selectedProductId', product._id);
+    
+    // Navigate to product details page
+    navigate(`/product-details/${product._id}`);
+    
+    // Close the menu/dropdown
+    setOpen(false);
+  };
 
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -225,7 +254,7 @@ export default function SearchHeader() {
     }
   };
 
- 
+
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -471,10 +500,10 @@ export default function SearchHeader() {
                         className="dropdown-item gap-2 d-flex align-items-center"
                         onClick={() => setShowUserDropdown(false)}
                       >
-                        <FaLocationDot  size={20} />My Addresses
+                        <FaLocationDot size={20} />My Addresses
                       </Link>
                       <Link
-                        to="/orders"
+                        to="/Myorder"
                         className="dropdown-item gap-2 d-flex align-items-center"
                         onClick={() => setShowUserDropdown(false)}
                       >
@@ -510,7 +539,7 @@ export default function SearchHeader() {
                       className="badge bg-dark text-white position-absolute top-0 start-100 translate-middle rounded-circle"
                       style={{ "--bs-bg-opacity": "0.5" }}
                     >
-                    {wishlistItems.length}
+                      {wishlistItems.length}
                     </span>
                   </Link>
                 </div>
@@ -523,83 +552,83 @@ export default function SearchHeader() {
                       className="badge bg-dark text-white position-absolute top-0 start-100 translate-middle rounded-circle"
                       style={{ "--bs-bg-opacity": "0.5" }}
                     >
-                    {cartItems.length}
+                      {cartItems.length}
                     </span>
                   </Link>
                 </div>
 
                 <div className="text-center d-md-none d-block position-relative">
-        <button
-          className="btn bg-transparent p-0 border-0 d-flex justify-content-center w-100 text-white"
-          onClick={toggleMobileSearch}
-        >
-          {showMobileSearch ? (
-            <FaTimes size={18} />
-          ) : (
-            <FaSearch size={18} />
-          )}
-        </button>
-      </div>
+                  <button
+                    className="btn bg-transparent p-0 border-0 d-flex justify-content-center w-100 text-white"
+                    onClick={toggleMobileSearch}
+                  >
+                    {showMobileSearch ? (
+                      <FaTimes size={18} />
+                    ) : (
+                      <FaSearch size={18} />
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
             {showMobileSearch && (
-        <div className="d-md-none my-2 mb-2 animate-slide-down w-100">
-          <div className="input-group rounded-pill overflow-hidden">
-            <input
-              type="text"
-              className="form-control border-0 py-2 px-3"
-              placeholder="Search for groceries..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onKeyPress={handleKeyPress}
-              autoFocus
-            />
-            <button
-              className="btn btn-light d-flex align-items-center justify-content-center px-3"
-              type="button"
-              onClick={handleSearch}
-            >
-              <FaSearch />
-            </button>
-          </div>
-
-          {showSuggestions && filteredProductss.length > 0 && (
-            <div 
-              className="suggestion-dropdown position-absolute start-0 w-100 bg-white border rounded mt-1 text-dark" 
-              style={{ 
-                zIndex: 9999,
-                maxHeight: '300px', 
-                overflowY: 'auto',
-                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                top: 'calc(100% + 5px)'
-              }}
-            >
-              {filteredProductss.map((product) => (
-                <div 
-                  key={product._id}
-                  className="suggestion-item p-2 border-bottom hover:bg-gray-100"
-                  style={{
-                    cursor: 'pointer',
-                    backgroundColor: 'white'
-                  }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
-                  onClick={() => {
-                    setSearchQuery(product.productName);
-                    setShowSuggestions(false);
-                    handleSearch();
-                  }}
-                >
-                  <div className="d-flex align-items-center">
-                    <FaSearch className="me-2 text-muted" size={14} />
-                    <span>{product.productName}</span>
-                  </div>
+              <div className="d-md-none my-2 mb-2 animate-slide-down w-100">
+                <div className="input-group rounded-pill overflow-hidden">
+                  <input
+                    type="text"
+                    className="form-control border-0 py-2 px-3"
+                    placeholder="Search for groceries..."
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    onKeyPress={handleKeyPress}
+                    autoFocus
+                  />
+                  <button
+                    className="btn btn-light d-flex align-items-center justify-content-center px-3"
+                    type="button"
+                    onClick={handleSearch}
+                  >
+                    <FaSearch />
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+
+                {showSuggestions && filteredProductss.length > 0 && (
+                  <div
+                    className="suggestion-dropdown position-absolute start-0 w-100 bg-white border rounded mt-1 text-dark"
+                    style={{
+                      zIndex: 9999,
+                      maxHeight: '300px',
+                      overflowY: 'auto',
+                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                      top: 'calc(100% + 5px)'
+                    }}
+                  >
+                    {filteredProductss.map((product) => (
+                      <div
+                        key={product._id}
+                        className="suggestion-item p-2 border-bottom hover:bg-gray-100"
+                        style={{
+                          cursor: 'pointer',
+                          backgroundColor: 'white'
+                        }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                        onClick={() => {
+                          setSearchQuery(product.productName);
+                          setShowSuggestions(false);
+                          handleSearch();
+                        }}
+                      >
+                        <div className="d-flex align-items-center">
+                          <FaSearch className="me-2 text-muted" size={14} />
+                          <span>{product.productName}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </nav>
 
           {/* Mobile Search */}
@@ -673,10 +702,17 @@ export default function SearchHeader() {
                                       {products
                                         .filter(product => product.subCategoryId === subcat._id)
                                         .map((product, idx) => (
-                                          <div key={idx} className="x_product_item db_product_name my-1" onClick={() => {
-                                            localStorage.setItem('selectedProductId', product._id);
-                                            navigate(`/product-details/${product._id}`);
-                                          }}>
+                                          <div 
+                                            key={idx} 
+                                            className="x_product_item db_product_name hover-underline my-1" 
+                                            // onClick={(e) => {
+                                            //   e.preventDefault();
+                                            //   e.stopPropagation();
+                                            //   localStorage.setItem('selectedProductId', product._id);
+                                            //   navigate(`/product-details/${product._id}`);
+                                            //   setOpen(false);
+                                            // }}
+                                          >
                                             {product.productName}
                                           </div>
                                         ))}
@@ -734,23 +770,31 @@ export default function SearchHeader() {
                               key={index}
                               className="x_dropdown_item"
                               onClick={(e) => {
+                                e.preventDefault();
                                 e.stopPropagation();
                                 setActive("All Categories");
                                 setShowDropdown(null);
                                 const filteredProducts = products.filter(product => product.subCategoryId === subcat._id);
                                 setFilteredProducts(filteredProducts);
                                 console.log('Filtered products:', filteredProducts);
+                                setOpen(false);
                               }}
                             >
                               <h6 className="fw-bold">{subcat.subCategoryName}</h6>
                               <hr className="mt-0"></hr>
-                              {products
-                                .filter(product => product.subCategoryId === subcat._id)
-                                .map((product, idx) => (
-                                  <div key={idx} className="x_product_item db_product_name hover-underline my-1">
-                                    {product.productName}
-                                  </div>
-                                ))}
+                              {/* // ... existing code ... */}
+{products
+  .filter(product => product.subCategoryId === subcat._id)
+  .map((product, idx) => (
+    <div 
+      key={idx} 
+      className="x_product_item db_product_name hover-underline my-1" 
+      onClick={() => handleProductClick(product)}
+    >
+      {product.productName}
+    </div>
+  ))}
+{/* // ... existing code ... */}
                             </li>
                           ))}
                         </ul>
@@ -1272,6 +1316,8 @@ export default function SearchHeader() {
           width: 900px;
           max-width: 95%;
           position: relative;
+          height:100%;
+          overflow:auto;
         }
 
         .close-btn {

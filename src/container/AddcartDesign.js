@@ -573,16 +573,26 @@ const handleDeleteAddress = async (addressId) => {
                       const variant = item.productVarientData?.[0];
 
                       return (
-                        <tr key={item._id} className="border-bottom" style={{ transition: "all 0.2s" }}>
-                          <td className="py-3 ps-4" style={{ minWidth: "200px" }}>
+                        <tr
+                          key={item._id}
+                          className="border-bottom"
+                          style={{ transition: "all 0.2s" }}
+                        >
+                          <td
+                            className="py-3 ps-4"
+                            style={{ minWidth: "200px" }}
+                          >
                             <div className="d-flex align-items-center gap-3">
-                              <div className="position-relative" style={{ 
-                                width: "60px", // Small size (Changed from: નાની સાઈઝ)
-                                height: "60px", // Square shape with equal height and width (Changed from: ચોરસ આકાર માટે સરખી height અને width)
-                                borderRadius: "8px",
-                                overflow: "hidden",
-                                border: "1px solid #e0e0e0"
-                              }}>
+                              <div
+                                className="position-relative"
+                                style={{
+                                  width: "60px", // Small size (Changed from: નાની સાઈઝ)
+                                  height: "60px", // Square shape with equal height and width (Changed from: ચોરસ આકાર માટે સરખી height અને width)
+                                  borderRadius: "8px",
+                                  overflow: "hidden",
+                                  border: "1px solid #e0e0e0",
+                                }}
+                              >
                                 <img
                                   src={`http://localhost:4000/${product?.images[0]}`}
                                   alt={product?.productName}
@@ -590,26 +600,48 @@ const handleDeleteAddress = async (addressId) => {
                                   style={{
                                     width: "100%",
                                     height: "100%",
-                                    objectFit: "cover"
+                                    objectFit: "cover",
                                   }}
                                 />
                               </div>
                               <div>
-                                <h6 className="mb-1 fw-semibold">{product?.productName}</h6>
+                                <h6
+                                  className="mb-1 fw-semibold"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => {
+                                    localStorage.setItem(
+                                      "selectedProductId",
+                                      product.id
+                                    );
+                                    navigate(`/product-details/${product.id}`);
+                                  }}
+                                >
+                                  {product?.productName}
+                                </h6>
                                 <span className="badge bg-light text-dark border">
                                   {variant?.size || "Size"}
                                 </span>
                               </div>
                             </div>
                           </td>
-                          <td className="text-center align-middle" style={{ minWidth: "80px" }}>
-                            <span className="fw-semibold">{formatPrice(variant?.price)}</span>
+                          <td
+                            className="text-center align-middle"
+                            style={{ minWidth: "80px" }}
+                          >
+                            <span className="fw-semibold">
+                              {formatPrice(variant?.price)}
+                            </span>
                           </td>
-                          <td className="text-center align-middle" style={{ minWidth: "120px" }}>
+                          <td
+                            className="text-center align-middle"
+                            style={{ minWidth: "120px" }}
+                          >
                             <div className="d-flex align-items-center justify-content-center gap-2">
                               <button
                                 className="btn btn-sm btn-outline-secondary rounded-circle p-1"
-                                onClick={() => updateQuantity(item._id, "decrease")}
+                                onClick={() =>
+                                  updateQuantity(item._id, "decrease")
+                                }
                                 style={{ width: "32px", height: "32px" }}
                               >
                                 <Minus size={16} />
@@ -623,14 +655,19 @@ const handleDeleteAddress = async (addressId) => {
                               />
                               <button
                                 className="btn btn-sm btn-outline-secondary rounded-circle p-1"
-                                onClick={() => updateQuantity(item._id, "increase")}
+                                onClick={() =>
+                                  updateQuantity(item._id, "increase")
+                                }
                                 style={{ width: "32px", height: "32px" }}
                               >
                                 <Plus size={16} />
                               </button>
                             </div>
                           </td>
-                          <td className="text-end align-middle pe-4" style={{ minWidth: "100px" }}>
+                          <td
+                            className="text-end align-middle pe-4"
+                            style={{ minWidth: "100px" }}
+                          >
                             <div className="d-flex justify-content-end align-items-center gap-3">
                               <span className="fw-semibold">
                                 {formatPrice(variant?.price * item.quantity)}

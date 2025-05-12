@@ -1390,7 +1390,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.8;
+  opacity: 0.5;
   z-index: 0;
 }
 
@@ -1414,7 +1414,7 @@
   font-size: 17px;
   line-height: 1.6;
   margin-bottom: 30px;
-  color: #666;
+  color: #000000;
 }
 
 .order-now-btn {
@@ -2448,6 +2448,16 @@
 
   .x_category-name {
     font-size: 12px !important;
+  }
+  .Z_banner_content h2{
+    font-weight: 800;
+  }
+  .Z_banner_content p {
+    font-weight: 600;
+  }
+  .Z_banner_content {
+    padding: 0rem;
+    text-align: left !important;
   }
 }
 
