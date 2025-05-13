@@ -246,11 +246,11 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
 
     const handleShow = (product) => {
         const variant = variants?.find(v => v.productId === product._id);
-        const existingCartItem = cartItems?.find(item => 
-            item.productId === product._id && 
+        const existingCartItem = cartItems?.find(item =>
+            item.productId === product._id &&
             item.productVarientId === variant?._id
         );
-        
+
         setSelectedProduct(product);
         setQuantity(existingCartItem?.quantity || 1);
         setShowModal(true);
@@ -297,7 +297,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
 
                 // Get search query from localStorage
                 const searchQuery = localStorage.getItem('searchQuery');
-                
+
                 // If search query exists, filter by product name
                 if (searchQuery) {
                     return product.productName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -538,8 +538,8 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                 return;
             }
 
-            const existingCartItem = cartItems?.find(item => 
-                item.productId === product._id && 
+            const existingCartItem = cartItems?.find(item =>
+                item.productId === product._id &&
                 item.productVarientId === variant._id
             );
 
@@ -572,7 +572,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
     const handleAddToWishlist = async (productId) => {
         try {
             const isAlreadyInWishlist = isInWishlist(productId);
-    
+
             if (isAlreadyInWishlist) {
                 // Remove from wishlist
                 const wishlistItem = wishlistItems.find(item => item.productId === productId);
@@ -591,7 +591,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
             toast.error(error.message || 'Wishlist operation failed');
         }
     };
-    
+
 
     return (
         <>
@@ -655,45 +655,47 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                             className="z_category-swiper"
                         >
                             {categories.map((category, index) => (
-                                <SwiperSlide key={index}>
-
-                                    <div className="db_card text-center h-100">
-                                        <div
-                                            className="z_category-card d-flex flex-column justify-content-center align-items-center"
-                                            onClick={() => {
-                                                localStorage.removeItem('selectedSubCategoryIdfromheader');
-
-                                                if (selectedCategory === category._id) {
-                                                    localStorage.removeItem('selectedCategoryId');
-                                                    setSelectedCategory('');
-                                                    dispatch(fetchProducts({}));
-                                                } else {
-                                                    setSelectedCategory(category._id);
-                                                    localStorage.setItem('selectedCategoryId', category._id);
-                                                    localStorage.removeItem('searchQuery');
-                                                    localStorage.removeItem('selectedSubCategoryIdfromheader');
-                                                    dispatch(fetchProducts({ categoryId: category._id }));
-                                                }
-                                            }}
-                                            style={{
-                                                cursor: 'pointer',
-                                                borderRadius: '50%',
-                                                padding: '10px',
-                                                transition: 'all 0.3s ease',
-                                                height: '150px',
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                justifyContent: 'center'
-                                            }}
-                                        >
-                                            <div className="db_icon">{getCategoryIcon(category.categoryName)}</div>
-
-                                            <h6 className="db_card_title mb-0">
-                                                {category.categoryName?.length > 17 ? `${category.categoryName.substring(0, 17)}...` : category.categoryName}
-                                            </h6>
-                                        </div>
-                                    </div>
-                                </SwiperSlide>
+                               <SwiperSlide key={index}>
+                               <div className="db_card text-center h-100" 
+                               style={{   border: selectedCategory === category._id ? '1px solid #2c6145' : '1px solid transparent',
+                                           }}>
+                                   <div
+                                       className={`z_category-card d-flex flex-column justify-content-center align-items-center ${selectedCategory === category._id ? 'active-category' : ''}`}
+                                       onClick={() => {
+                                           localStorage.removeItem('selectedSubCategoryIdfromheader');
+                           
+                                           if (selectedCategory === category._id) {
+                                               localStorage.removeItem('selectedCategoryId');
+                                               setSelectedCategory('');
+                                               dispatch(fetchProducts({}));
+                                           } else {
+                                               setSelectedCategory(category._id);
+                                               localStorage.setItem('selectedCategoryId', category._id);
+                                               localStorage.removeItem('searchQuery');
+                                               localStorage.removeItem('selectedSubCategoryIdfromheader');
+                                               dispatch(fetchProducts({ categoryId: category._id }));
+                                           }
+                                       }}
+                                       style={{
+                                           cursor: 'pointer',
+                                           borderRadius: '50%',
+                                           padding: '10px',
+                                           transition: 'all 0.3s ease',
+                                           height: '150px',
+                                           display: 'flex',
+                                           flexDirection: 'column',
+                                           justifyContent: 'center',
+                                           backgroundColor: 'transparent',
+                                        
+                                       }}
+                                   >
+                                       <div className="db_icon">{getCategoryIcon(category.categoryName)}</div>
+                                       <h6 className="db_card_title mb-0">
+                                           {category.categoryName?.length > 17 ? `${category.categoryName.substring(0, 17)}...` : category.categoryName}
+                                       </h6>
+                                   </div>
+                               </div>
+                           </SwiperSlide>
                             ))}
 
                         </Swiper>
@@ -1052,7 +1054,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                 <p className="text-muted mb-4">{selectedProduct.description}</p>
                                                 <div className="z_modal-quantity-container">
                                                     <div className="z_modal-quantity-selector">
-                                                        <button 
+                                                        <button
                                                             className="z_modal-quantity-btn"
                                                             onClick={() => handleModalQuantityChange(-1)}
                                                             disabled={quantity === 1}
@@ -1069,7 +1071,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                                 </small>
                                                             )} */}
                                                         </div>
-                                                        <button 
+                                                        <button
                                                             className="z_modal-quantity-btn"
                                                             onClick={() => handleModalQuantityChange(1)}
                                                             disabled={quantity === 10}
@@ -1078,7 +1080,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                         </button>
                                                     </div>
 
-                                                    <button 
+                                                    <button
                                                         className="z_modal-add-cart-btn"
                                                         onClick={() => handleAddToCart(selectedProduct)}
                                                     >
