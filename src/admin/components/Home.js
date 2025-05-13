@@ -26,34 +26,6 @@ import {
   getAlldataseller,
 } from "../../redux/slices/sellerDashboard";
 
-// const salesData = [
-//   {
-//     name: "Leafy",
-//     value: 148,
-//     color: "linear-gradient(241.18deg, #EBB6CA 57.24%, #FF4F91 21.56%)",
-//   },
-//   {
-//     name: "Seasonal",
-//     value: 67,
-//     color: "linear-gradient(141.26deg, #AFDDF4 58.97%, #4BC4FF 81.15%)",
-//   },
-//   {
-//     name: "Certified Organic",
-//     value: 60,
-//     color: "linear-gradient(221.06deg, #89CD5B 68.72%, #D2E7C4 47.29%,)",
-//   },
-//   {
-//     name: "Root",
-//     value: 36,
-//     color: "linear-gradient(255.51deg, #FFFFFF 45.59%, #FF8F53 85.78%)",
-//   },
-//   {
-//     name: "Hydroponic",
-//     value: 21,
-//     color: "linear-gradient(166.02deg, #4E5EB2 24%, #B4C2D4 89.17%)",
-//   },
-// ];
-
 const Home = () => {
   const dispatch = useDispatch();
   const dash = useSelector((state) => state.sellerDashboard.dashBoard);
@@ -73,21 +45,6 @@ const Home = () => {
       revenue: item.revenue,
     })) || [];
 
-  // const Beta  = [
-  //   { month: "Jan", revenue: 800 },
-  //   { month: "Feb", revenue: 850 },
-  //   { month: "Mar", revenue: 950 },
-  //   { month: "Apr", revenue: 870 },
-  //   { month: "May", revenue: 1000 },
-  //   { month: "Jun", revenue: 970 },
-  //   { month: "Jul", revenue: 1100 },
-  //   { month: "Aug", revenue: 1020 },
-  //   { month: "Sep", revenue: 1300 },
-  //   { month: "Oct", revenue: 980 },
-  //   { month: "Nov", revenue: 890 },
-  //   { month: "Dec", revenue: 920 },
-  // ];
-
   useEffect(() => {
     dispatch(dashBoard());
     dispatch(dashRecentOrder());
@@ -97,22 +54,52 @@ const Home = () => {
   }, []);
 
   const colorMapping = {
-    Leafy: "linear-gradient(241.18deg, #EBB6CA 57.24%, #FF4F91 21.56%)",
-    Seasonal: "linear-gradient(141.26deg, #AFDDF4 58.97%, #4BC4FF 81.15%)",
-    "Certified Organic":
-      "linear-gradient(221.06deg, #89CD5B 68.72%, #D2E7C4 47.29%,)",
-    Root: "linear-gradient(255.51deg, #FFFFFF 45.59%, #FF8F53 85.78%)",
-    Hydroponic: "linear-gradient(166.02deg, #4E5EB2 24%, #B4C2D4 89.17%)",
-    Vegetables:
-      "background: linear-gradient(221.06deg, #D2E7C4 47.29%, #89CD5B 68.72%)",
-    CertifiedOrganic:
-      "background: linear-gradient(166.02deg, #4E5EB2 24%, #B4C2D4 89.17%)",
+   "spices & masala": {
+      // gradient: "linear-gradient(241.18deg, #EBB6CA 57.24%, #FF4F91 21.56%)",
+      gradient: "linear-gradient(241.18deg, #FF4F91 21.56%, #EBB6CA 57.24%)",
+
+      start: "#FF4F91",
+      end: "#EBB6CA"
+    },
+    "grains & pulses": {
+      gradient: "linear-gradient(141.26deg, #AFDDF4 58.97%, #4BC4FF 81.15%)",
+      // gradient: "linear-gradient(141.26deg, #AFDDF4 58.97%, #4BC4FF 81.15%)",
+      start: "#AFDDF4",
+      end: "#4BC4FF"
+    },
+    "fruits & vegetables": {
+      gradient: "linear-gradient(221.06deg, #89CD5B 68.72%, #D2E7C4 47.29%)",
+      start: "#89CD5B",
+      end: "#D2E7C4"
+    },
+    "dairy & bakery": {
+      gradient: "linear-gradient(255.51deg, #FFFFFF 45.59%, #FF8F53 85.78%)",
+      start: "#FFFFFF",
+      end: "#FF8F53"
+    },
+    "oil & ghee": {
+      gradient: "linear-gradient(166.02deg, #4E5EB2 24%, #B4C2D4 89.17%)",
+      start: "#4E5EB2",
+      end: "#B4C2D4"
+    },
+    "snacks & packaged foods": {
+      gradient: "linear-gradient(221.06deg, #D2E7C4 47.29%, #89CD5B 68.72%)",
+      start: "#D2E7C4",
+      end: "#89CD5B"
+    },
+    CertifiedOrganic: {
+      gradient: "linear-gradient(166.02deg, #4E5EB2 24%, #B4C2D4 89.17%)",
+      start: "#4E5EB2",
+      end: "#B4C2D4"
+    }
   };
 
   const salesData = salesByCategory?.map((item) => ({
     name: item.categoryName,
     value: item.totalSales,
-    color: colorMapping[item.categoryName],
+    color: colorMapping[item.categoryName]?.gradient || "#8884d8",
+    startColor: colorMapping[item.categoryName]?.start || "#8884d8",
+    endColor: colorMapping[item.categoryName]?.end || "#83a6ed"
   }));
 
   const totalValue = salesData?.reduce((sum, item) => sum + item.value, 0);
@@ -514,58 +501,58 @@ const Home = () => {
             Recent Order
           </h4>
           <div className="sp_table d-flex justify-content-between flex-column" >
-          <table >
-            <thead>
-              <tr>
-                <th style={{ backgroundColor: "#eaf0ea" }}>Order ID</th>
-                <th style={{ backgroundColor: "#eaf0ea" }}>Customer name</th>
-                <th style={{ backgroundColor: "#eaf0ea" }}>Date & Time</th>
-                <th style={{ backgroundColor: "#eaf0ea" }}>Payment Method</th>
-                <th style={{ backgroundColor: "#eaf0ea" }}>Amount</th>
-                <th style={{ backgroundColor: "#eaf0ea" }}>Order Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sellerData?.data?.slice(0, 10).map((sellerData, index) => {
-                let orderColor;
-                if (sellerData.orderStatus == "Pending") {
-                  orderColor = "sp_btn_yellow";
-                }
-                if (sellerData.orderStatus == "Confirmed") {
-                  orderColor = "sp_btn_green";
-                }
-                if (sellerData.orderStatus == "Shipped") {
-                  orderColor = "sp_btn_green";
-                }
-                if (sellerData.orderStatus == "outForDelivery") {
-                  orderColor = "sp_btn_red";
-                }
-                if (sellerData.orderStatus == "Delivered") {
-                  orderColor = "sp_btn_green";
-                }
-                if (sellerData.orderStatus == "Cancelled") {
-                  orderColor = "sp_btn_red";
-                }
-                return (
-                  <tr key={sellerData._id.sellerData}>
-                    <td>{index + 1}</td>
-                    <td>
-                      {sellerData.useraddress.firstName}{" "}
-                      {sellerData.useraddress.lastName}
-                    </td>
-                    <td>{formattedDate(sellerData.createdAt)}</td>
-                    <td> {sellerData.paymentMethod}</td>
-                    <td>${sellerData.totalPrice}</td>
-                    <td>
-                      <span className={`${orderColor} ustatus`}>
-                        {sellerData.orderStatus}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+            <table >
+              <thead>
+                <tr>
+                  <th style={{ backgroundColor: "#eaf0ea" }}>Order ID</th>
+                  <th style={{ backgroundColor: "#eaf0ea" }}>Customer name</th>
+                  <th style={{ backgroundColor: "#eaf0ea" }}>Date & Time</th>
+                  <th style={{ backgroundColor: "#eaf0ea" }}>Payment Method</th>
+                  <th style={{ backgroundColor: "#eaf0ea" }}>Amount</th>
+                  <th style={{ backgroundColor: "#eaf0ea" }}>Order Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sellerData?.data?.slice(0, 10).map((sellerData, index) => {
+                  let orderColor;
+                  if (sellerData.orderStatus == "Pending") {
+                    orderColor = "sp_btn_yellow";
+                  }
+                  if (sellerData.orderStatus == "Confirmed") {
+                    orderColor = "sp_btn_green";
+                  }
+                  if (sellerData.orderStatus == "Shipped") {
+                    orderColor = "sp_btn_green";
+                  }
+                  if (sellerData.orderStatus == "outForDelivery") {
+                    orderColor = "sp_btn_red";
+                  }
+                  if (sellerData.orderStatus == "Delivered") {
+                    orderColor = "sp_btn_green";
+                  }
+                  if (sellerData.orderStatus == "Cancelled") {
+                    orderColor = "sp_btn_red";
+                  }
+                  return (
+                    <tr key={sellerData._id.sellerData}>
+                      <td>{index + 1}</td>
+                      <td>
+                        {sellerData.useraddress.firstName}{" "}
+                        {sellerData.useraddress.lastName}
+                      </td>
+                      <td>{formattedDate(sellerData.createdAt)}</td>
+                      <td> {sellerData.paymentMethod}</td>
+                      <td>${sellerData.totalPrice}</td>
+                      <td>
+                        <span className={`${orderColor} ustatus`}>
+                          {sellerData.orderStatus}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

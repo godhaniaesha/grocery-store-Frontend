@@ -705,13 +705,13 @@ export default function SearchHeader() {
                                           <div 
                                             key={idx} 
                                             className="x_product_item db_product_name hover-underline my-1" 
-                                            // onClick={(e) => {
-                                            //   e.preventDefault();
-                                            //   e.stopPropagation();
-                                            //   localStorage.setItem('selectedProductId', product._id);
-                                            //   navigate(`/product-details/${product._id}`);
-                                            //   setOpen(false);
-                                            // }}
+                                            onClick={(e) => {
+                                              e.preventDefault();
+                                              e.stopPropagation();
+                                              localStorage.setItem('selectedProductId', product._id);
+                                              navigate(`/product-details/${product._id}`);
+                                              setOpen(false);
+                                            }}
                                           >
                                             {product.productName}
                                           </div>
@@ -1316,8 +1316,6 @@ export default function SearchHeader() {
           width: 900px;
           max-width: 95%;
           position: relative;
-          height:100%;
-          overflow:auto;
         }
 
         .close-btn {

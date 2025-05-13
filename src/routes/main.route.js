@@ -21,6 +21,7 @@ import AddcartDesign from '../container/AddcartDesign';
 import Myorder from '../container/Myorder';
 import MyAddresses from '../components/MyAddresses';
 import Thankspopup from '../container/Thankspopup';
+import SliderCaptcha from '../container/SliderCaptcha.js';
 const MainRoutes = () => {
   const [loading, setLoading] = useState(true);
   
@@ -89,6 +90,7 @@ const MainRoutes = () => {
         <Route path="/Myorder" element={<Myorder />} />
         <Route path="/MyAddresses" element={<MyAddresses />} />
         <Route path="/Thankspopup" element={<Thankspopup />} />
+        <Route path="/SliderCaptcha" element={<SliderCaptcha />} />
 
       </Routes>
       <Footer />
