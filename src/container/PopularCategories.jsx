@@ -79,9 +79,9 @@ export default function PopularCategories() {
   }
 
   return (
-    <div className="db_popular a_header_container py-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="z_section-title mb-4">
+    <div className="db_popular a_header_container py-5 my-5">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2 className="z_section-title ">
           <span className="z_title-highlight">Popular</span>
           {' '}
           <span className="z_title-dark">Category</span>

@@ -1390,8 +1390,13 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.5;
   z-index: 0;
+}
+.z_sm_db{
+  display: none;
+}
+.z_lg_db{
+  display: block;
 }
 
 .Z_banner_content {
@@ -1466,6 +1471,17 @@
     padding: 12px 25px;
     font-size: 15px;
   }
+  .Z_banner::before {
+    opacity: 0.5;
+  }
+
+  .z_sm_db {
+    display: block;
+  }
+
+  .z_lg_db {
+    display: none;
+  }
 }
 
 @media (max-width: 576px) {
@@ -1485,6 +1501,9 @@
     padding: 10px 20px;
     font-size: 14px;
   }
+
+ 
+
 }
 
 /* Category Slider Styles */
@@ -2449,12 +2468,15 @@
   .x_category-name {
     font-size: 12px !important;
   }
-  .Z_banner_content h2{
+
+  .Z_banner_content h2 {
     font-weight: 800;
   }
+
   .Z_banner_content p {
     font-weight: 600;
   }
+
   .Z_banner_content {
     padding: 0rem;
     text-align: left !important;

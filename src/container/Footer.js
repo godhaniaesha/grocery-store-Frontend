@@ -30,10 +30,10 @@ const Footer = () => {
             <h5 className="text-uppercase mb-4">Quick Links</h5>
             <ul className="list-unstyled">
               <li className="mb-2">
-                <Link to="/" className="text-white text-decoration-none">Home</Link>
+                <Link to="/Main" className="text-white text-decoration-none">Home</Link>
               </li>
               <li className="mb-2">
-                <Link to="/Shop" className="text-white text-decoration-none">Shop</Link>
+                <Link to="/Vegetable" className="text-white text-decoration-none">Shop</Link>
               </li>
               <li className="mb-2">
                 <Link to="/PopularCategories" className="text-white text-decoration-none">Categories</Link>
@@ -57,17 +57,18 @@ const Footer = () => {
                 <Link to="/MyAccount" className="text-white text-decoration-none">My Account</Link>
               </li>
               <li className="mb-2">
-                <Link to="/Order" className="text-white text-decoration-none">Order Tracking</Link>
+                <Link to="/Myorder" className="text-white text-decoration-none">My Orders</Link>
               </li>
               <li className="mb-2">
                 <Link to="/wishlist" className="text-white text-decoration-none">Wishlist</Link>
               </li>
               <li className="mb-2">
-                <Link to="/PrivacyPolicy" className="text-white text-decoration-none">Shipping Policy</Link>
+                <Link to="/AddcartDesign" className="text-white text-decoration-none">Cart</Link>
               </li>
               <li className="mb-2">
-                <Link to="/PrivacyPolicy" className="text-white text-decoration-none">Return Policy</Link>
+                <Link to="/PrivacyPolicy" className="text-white text-decoration-none">Privacy Policy</Link>
               </li>
+              
               <li className="mb-2">
                 <Link to="/FAQ" className="text-white text-decoration-none">FAQs</Link>
               </li>

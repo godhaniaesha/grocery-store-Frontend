@@ -595,9 +595,27 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
 
     return (
         <>
+        <section className="Z_banner z_sm_db">
+                    <Container>
+                        <Row className="justify-content-end">
+                            <Col md={6} className="d-flex align-items-center">
+                                <div className="Z_banner_content text-end">
+                                    <h2>Premium Grocery Store</h2>
+                                    <p>Discover our selection of high-quality nuts, dried fruits, seeds, spices, and grains</p>
+                                    <Link to="/Vegetable" className="order-now-btn">
+                                        Order Now
+                                        <span>
+                                            <FaChevronRight />
+                                        </span>
+                                    </Link>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Container>
+                </section>
             <div className='a_header_container'>
                 {/* Banner Section */}
-                <section className="Z_banner">
+                <section className="Z_banner z_lg_db">
                     <Container>
                         <Row className="justify-content-end">
                             <Col md={6} className="d-flex align-items-center">

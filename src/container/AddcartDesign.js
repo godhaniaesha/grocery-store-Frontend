@@ -10,7 +10,7 @@ import {
 } from "../redux/slices/currency.Slice";
 import { createAddress, deleteAddress, getUserAddresses, updateAddress } from "../redux/slices/address.Slice";
 import { createOrder } from '../redux/slices/order.Slice';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaHome, FaBuilding, FaMapMarkerAlt, FaList, FaPlus } from 'react-icons/fa';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 
@@ -1088,9 +1088,9 @@ export default function AddcartDesign() {
                 </button>
 
                 <div className="text-center">
-                  <a href="#" className="text-decoration-none">
+                  <Link to={"/Vegetable"} className="text-decoration-none">
                     Or continue shopping
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
