@@ -21,6 +21,7 @@ import 'swiper/css/navigation';
 import '../styles/Popularcategory.css';
 import { fetchProductsByCategory } from '../redux/slices/product.Slice';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { useNavigate } from 'react-router-dom';  // નવો import ઉમેરો
 
 export default function PopularCategories() {
   const [activeCategory, setActiveCategory] = useState(null);
@@ -28,6 +29,7 @@ export default function PopularCategories() {
   const dispatch = useDispatch();
   const { categories, isLoading, error } = useSelector(state => state.category);
   const { products, productsByCategory } = useSelector(state => state.product);
+  const navigate = useNavigate();  // useNavigate hook ઉમેરો
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -77,7 +79,16 @@ export default function PopularCategories() {
   if (error) {
     return <div>Error: {error}</div>;
   }
-
+  const handleCategoryClick = (category) => {
+    setActiveCategory(category.categoryName);
+    // localStorage માંથી જૂની values કાઢી નાખો
+    localStorage.removeItem('selectedSubCategoryId');
+    localStorage.removeItem('searchQuery');
+    // નવી category ID સેટ કરો
+    localStorage.setItem('selectedCategoryId', category._id);
+    // Vegetable પેજ પર navigate કરો
+    navigate('/Vegetable');
+  };
   return (
     <div className="db_popular a_header_container py-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -122,11 +133,10 @@ export default function PopularCategories() {
           <SwiperSlide key={category._id}>
             <div
               className={`db_card text-center h-100 ${activeCategory === category.categoryName ? 'db_border_active' : ''}`}
-              onClick={() => setActiveCategory(category.categoryName)}
+              onClick={() => handleCategoryClick(category)}  // નવો onClick handler
             >
               <div className="db_card_body">
                 <div className="db_icon">{getCategoryIcon(category.categoryName)}</div>
-                {/* <h6 className="db_card_title">{category.categoryName}</h6> */}
                 <h6 className="db_card_title" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>                  
                   {category.categoryName}
                 </h6>
@@ -141,3 +151,5 @@ export default function PopularCategories() {
     </div>
   );
 }
+
+
