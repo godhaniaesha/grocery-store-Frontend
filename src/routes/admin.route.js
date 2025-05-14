@@ -60,7 +60,7 @@ const AuthRedirect = ({ children }) => {
 
 // List of all public auth routes that should redirect to profile if already logged in
 const publicAuthRoutes = [
-  { path: " n", element: <SellOnLogin /> },
+  { path: "/seller/sell-on-login", element: <SellOnLogin /> },
   { path: "/seller/seller-verify-email", element: <SellerVerifyEmail /> },
   { path: "/seller/seller-reset-password", element: <SellerResetPassword /> },
   { path: "/seller/seller-register", element: <SellerRegister /> },
