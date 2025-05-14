@@ -457,7 +457,7 @@
     padding: 20px;
     background: #fff;
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
 }
 
@@ -994,4 +994,20 @@
 .g_payment_button:disabled {
     background-color: #6c757d;
     cursor: not-allowed;
+}
+
+
+/* Add new address */
+
+
+.G_AddAddressForm .form-control,
+.G_AddAddressForm .form-select:focus {
+    box-shadow: none;
+    border: 1px solid #dee2e6;
+}
+
+.G_addressButton,
+.G_AddAddressForm .G_addressButton {
+    background: linear-gradient(135deg, #2c6145 0%, #1e4431 100%);
+    border: none;
 }
