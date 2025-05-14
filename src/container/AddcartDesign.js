@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { X, Minus, Plus } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,6 +12,9 @@ import { createOrder } from '../redux/slices/order.Slice';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaHome, FaBuilding, FaMapMarkerAlt, FaList, FaPlus } from 'react-icons/fa';
 import { FaEdit, FaTrash } from 'react-icons/fa';
+import "../styles/x_app.css"
+import { RadioGroup } from '@mui/material';
+import RadioButton from '../components/RadioButton';
 
 export default function AddcartDesign() {
   const dispatch = useDispatch();
@@ -299,9 +301,9 @@ export default function AddcartDesign() {
 
     const shippingCost = shippingMethod === "free" ? 0 : 35;
     const grandTotal = subtotal - discountAmount + shippingCost;
-    if(appliedCoupon){
+    if (appliedCoupon) {
       localStorage.setItem('coupon', JSON.stringify(appliedCoupon));
-    }else{
+    } else {
       localStorage.removeItem('coupon');
     }
     const orderData = {
@@ -320,7 +322,7 @@ export default function AddcartDesign() {
     try {
       const result = await dispatch(createOrder(orderData)).unwrap();
       // console.log(result,"result");
-      
+
       if (result) {
         // ઓર્ડર ID લોકલસ્ટોરેજમાં સેવ કરો
         localStorage.setItem('orderId', result.data._id);
@@ -381,10 +383,14 @@ export default function AddcartDesign() {
   // };
 
 
+  const [selectedOption, setSelectedOption] = useState("3rd-party-off");
 
+  const handleChange = e => {
+    setSelectedOption(e.target.id);
+  };
   return (
-    <div className="a_header_container py-5">
-      <div className="row">
+    <div className="a_header_container">
+      <div className="row py-5">
         <div className="col-lg-8 mb-md-4 mb-2">
           <div className="card shadow-sm mb-4">
             <div className="card-body p-md-4 p-2">
@@ -392,14 +398,14 @@ export default function AddcartDesign() {
                 <h5 className="fw-bold mb-0">Shipping Address</h5>
                 <div>
                   <button
-                    className="btn btn-outline-success me-2"
+                    className="btn x_btn_gradient  me-2"
                     onClick={() => setShowAddressForm(true)}
                   >
                     <FaPlus className="me-1" /> Add New Address
                   </button>
                   {addresses.length > 0 && (
                     <button
-                      className="btn btn-outline-primary"
+                      className="btn x_btn_gradient"
                       onClick={() => setShowAddressModal(true)}
                     >
                       <FaList className="me-1" /> View All Addresses
@@ -428,11 +434,11 @@ export default function AddcartDesign() {
                       <div className='text-center'>
                         {/* Edit icon */}
                         <button
-                          className="btn gap-1 p-0 fw-bold text-decoration-none text-primary d-flex align-items-center "
+                          className="btn gap-1 p-0 fw-bold text-decoration-none border-0 x_btn_edit d-flex align-items-center"
                           onClick={() => handleEditAddress(selectedAddress)}
-                          style={{ fontSize: '14px' }}
+                          style={{ fontSize: '14px', color: '#2c6145' }}
                         >
-                          <FaEdit className=" text-primary" size={19} />
+                          <FaEdit size={19} style={{ color: '#2c6145' }} className='mb-1' />
                           Edit
                         </button>
                       </div>
@@ -456,11 +462,18 @@ export default function AddcartDesign() {
                 }}>
                 <div className="modal-dialog">
                   <div className="modal-content">
-                    <div className="modal-header">
+                    {/* <div className="modal-header">
                       <h5 className="modal-title">
                         {editingAddress ? 'Edit Address' : 'Add New Address'}
-                      </h5>
-                      <button type="button" className="btn-close" onClick={() => setShowAddressForm(false)}></button>
+                      </h5> */}
+                    <div className="modal-header" style={{ backgroundColor: "#2c6145" }}>
+                      <h5 className="modal-title" style={{ color: "#fff" }}> {editingAddress ? 'Edit Address' : 'Add New Address'}</h5>
+                      <button
+                        type="button"
+                        className="btn-close"
+                        style={{ filter: "invert(1)" }}
+                        onClick={() => setShowAddressForm(false)}
+                      ></button>
                     </div>
                     {/* // Add fields in modal form (Changed from: હીં મોડલ ફોર્સમાં ફીલ્ડ્સ ઉમેરો) */}
                     <div className="modal-body">
@@ -581,12 +594,24 @@ export default function AddcartDesign() {
                       </div>
                     </div>
                     <div className="modal-footer">
-                      <button type="button" className="btn btn-secondary" onClick={() => setShowAddressForm(false)}>
+                      <button
+                        type="button"
+                        className="btn"
+                        style={{ backgroundColor: "#fff", color: "#2c6145", border: "1px solid #2c6145" }}
+                        onClick={() => setShowAddressForm(false)}
+                      >
                         Cancel
                       </button>
-                      <button type="button" className="btn btn-primary" onClick={handleAddAddress}>
-                        {editingAddress ? 'Update Address' : 'Add Address'}
-                      </button>
+                      {addresses.length > 0 && (
+                        <button
+                          type="button"
+                          className="btn"
+                          style={{ backgroundColor: "#2c6145", color: "#fff" }}
+                          onClick={handleAddAddress}
+                        >
+                          {editingAddress ? 'Update Address' : 'Add Address'}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -605,16 +630,22 @@ export default function AddcartDesign() {
                 }}>
                 <div className="modal-dialog modal-md">
                   <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title">Your Addresses</h5>
-                      <button type="button" className="btn-close" onClick={() => setShowAddressModal(false)}></button>
+                    <div className="modal-header" style={{ backgroundColor: "#2c6145" }}>
+                      <h5 className="modal-title" style={{ color: "#fff" }}>Your Addresses</h5>
+                      <button
+                        type="button"
+                        className="btn-close"
+                        style={{ filter: "invert(1)" }}
+                        onClick={() => setShowAddressModal(false)}
+                      ></button>
                     </div>
                     <div className="modal-body">
                       {addresses.length === 0 ? (
                         <div className="text-center py-4">
                           <p className="text-muted">No saved addresses</p>
                           <button
-                            className="btn btn-primary mt-2"
+                            className="btn"
+                            style={{ backgroundColor: "#2c6145", color: "#fff" }}
                             onClick={() => {
                               setShowAddressModal(false);
                               setShowAddressForm(true);
@@ -632,17 +663,19 @@ export default function AddcartDesign() {
                                 onClick={() => handleSelectAddress(addr)}
                                 style={{
                                   cursor: 'pointer',
-                                  transition: 'all 0.3s ease'
+                                  transition: 'all 0.3s ease',
+                                  borderColor: selectedAddress?._id === addr._id ? "#2c6145" : undefined,
+                                  boxShadow: selectedAddress?._id === addr._id ? "0 0 0 2px #2c614533" : undefined
                                 }}
                               >
                                 <div className="d-flex justify-content-between align-items-start">
                                   <div className="flex-grow-1">
                                     <div className="d-flex align-items-center gap-2 mb-2">
-                                      {addr.saveAddressAs === 'Home' && <FaHome className="text-primary" />}
-                                      {addr.saveAddressAs === 'Office' && <FaBuilding className="text-info" />}
-                                      {addr.saveAddressAs === 'Other' && <FaMapMarkerAlt className="text-secondary" />}
+                                      {addr.saveAddressAs === 'Home' && <FaHome style={{ color: "#2c6145" }} />}
+                                      {addr.saveAddressAs === 'Office' && <FaBuilding style={{ color: "#2c6145" }} />}
+                                      {addr.saveAddressAs === 'Other' && <FaMapMarkerAlt style={{ color: "#2c6145" }} />}
                                       <h6 className="mb-0 fw-bold">{addr.firstName} {addr.lastName}</h6>
-                                      <span className="badge bg-light text-dark ms-2">{addr.saveAddressAs}</span>
+                                      <span className="badge" style={{ backgroundColor: "#2c6145", color: "#fff", marginLeft: 8 }}>{addr.saveAddressAs}</span>
                                     </div>
                                     <p className="mb-1">
                                       <span className="text-muted">Phone:</span> {addr.phone}
@@ -656,13 +689,14 @@ export default function AddcartDesign() {
                                   </div>
                                   <div className="d-flex flex-column gap-2">
                                     <button
-                                      className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
+                                      className="btn btn-sm"
+                                      style={{ borderColor: "#dc3545", color: "#dc3545" }}
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         handleDeleteAddress(addr._id);
                                       }}
                                     >
-                                      <FaTrash size={14} />
+                                      <FaTrash size={14} className='me-1 mb-1' />
                                       Delete
                                     </button>
                                   </div>
@@ -676,7 +710,8 @@ export default function AddcartDesign() {
                     <div className="modal-footer">
                       <button
                         type="button"
-                        className="btn btn-secondary"
+                        className="btn"
+                        style={{ backgroundColor: "#fff", color: "#2c6145", border: "1px solid #2c6145" }}
                         onClick={() => setShowAddressModal(false)}
                       >
                         Close
@@ -684,7 +719,8 @@ export default function AddcartDesign() {
                       {addresses.length > 0 && (
                         <button
                           type="button"
-                          className="btn btn-primary"
+                          className="btn"
+                          style={{ backgroundColor: "#2c6145", color: "#fff" }}
                           onClick={() => {
                             setShowAddressModal(false);
                             setShowAddressForm(true);
@@ -1000,8 +1036,9 @@ export default function AddcartDesign() {
                   <span>Shipping</span>
                   <span>{shippingMethod === "free" ? formatPrice(0) : formatPrice(35)}</span>
                 </div>
-
-                <div className="form-check mb-2">
+                {/* <div
+                  className={`form-check x_radio d-flex mb-0 px-0 ${shippingMethod === "free" ? "selected-shipping" : ""}`}
+                >
                   <input
                     className="form-check-input"
                     type="radio"
@@ -1019,7 +1056,9 @@ export default function AddcartDesign() {
                   </label>
                 </div>
 
-                <div className="form-check mb-2">
+                <div
+                  className={`form-check x_radio d-flex mb-0 px-0 ${shippingMethod === "local" ? "selected-shipping" : ""}`}
+                >
                   <input
                     className="form-check-input"
                     type="radio"
@@ -1037,7 +1076,9 @@ export default function AddcartDesign() {
                   </label>
                 </div>
 
-                <div className="form-check">
+                <div
+                  className={`form-check x_radio d-flex mb-0 px-0 ${shippingMethod === "flat" ? "selected-shipping" : ""}`}
+                >
                   <input
                     className="form-check-input"
                     type="radio"
@@ -1053,16 +1094,67 @@ export default function AddcartDesign() {
                     <span>Flat Rate:</span>
                     <span>$35.00</span>
                   </label>
+                </div> */}
+                <div className="x_option-item px-0">
+                  <label className="x_radio-wrapper p-0 w-100 d-flex align-items-center justify-content-between">
+                    <div className="d-flex align-items-center">
+                      <input
+                        type="radio"
+                        name="shipping"
+                        value="free"
+                        checked={shippingMethod === "free"}
+                        onChange={() => setShippingMethod("free")}
+                        className="x_radio-input"
+                      />
+                      <span className="x_radio-custom"></span>
+                      <span className="x_radio-label ms-2">Free Shipping</span>
+                    </div>
+                    <span className="x_radio-label">$0.00</span>
+                  </label>
+                </div>
+                <div className="x_option-item px-0">
+                  <label className="x_radio-wrapper p-0 w-100 d-flex align-items-center justify-content-between">
+                    <div className="d-flex align-items-center">
+                      <input
+                        type="radio"
+                        name="shipping"
+                        value="local"
+                        checked={shippingMethod === "local"}
+                        onChange={() => setShippingMethod("local")}
+                        className="x_radio-input"
+                      />
+                      <span className="x_radio-custom"></span>
+                      <span className="x_radio-label ms-2">Local:</span>
+                    </div>
+                    <span className="x_radio-label">$35.00</span>
+                  </label>
+                </div>
+                <div className="x_option-item px-0">
+                  <label className="x_radio-wrapper p-0 w-100 d-flex align-items-center justify-content-between">
+                    <div className="d-flex align-items-center">
+                      <input
+                        type="radio"
+                        name="shipping"
+                        value="flat"
+                        checked={shippingMethod === "flat"}
+                        onChange={() => setShippingMethod("flat")}
+                        className="x_radio-input"
+                      />
+                      <span className="x_radio-custom"></span>
+                      <span className="x_radio-label ms-2">Flat Rate:</span>
+                    </div>
+                    <span className="x_radio-label">$35.00</span>
+                  </label>
                 </div>
               </div>
 
               <div className="border-top pt-3 mt-3">
-                <div className="d-flex justify-content-between mb-md-4 mb-2">
+                <div className="d-flex justify-content-between mb-md-3 mb-2">
                   <h5 className="fw-bold">Total</h5>
                   <h5 className="fw-bold">{formatPrice(getTotal())}</h5>
                 </div>
 
-                <div className="form-check mb-3">
+                {/* <div className="form-check mb-3">
                   <input
                     className="form-check-input"
                     type="checkbox"
@@ -1076,7 +1168,24 @@ export default function AddcartDesign() {
                       Terms And Conditions
                     </a>
                   </label>
-                </div>
+                </div> */}
+                <label
+                  className="x_checkbox-wrapper px-0"
+
+                >
+                  <input
+                    type="checkbox"
+                    checked={agreedToTerms}
+                    onChange={(e) => setAgreedToTerms(e.target.checked)}
+                    id="terms"
+                    className="x_custom-checkbox"
+                  />
+                  <span className="x_checkbox-mark"></span>
+                  <span className="x_checkbox-label" htmlFor="terms"> I agree with the{" "}
+                    <a href="#" className="text-decoration-none">
+                      Terms And Conditions
+                    </a></span>
+                </label>
 
                 <button
                   className="btn w-100 mb-3"

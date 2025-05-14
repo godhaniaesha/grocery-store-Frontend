@@ -1748,15 +1748,15 @@
 }
 
 .z_checkbox-input:checked+.z_checkbox-custom {
-  background: #479529;
+ background: linear-gradient(90deg, #23985a, #2c6145);
   border-color: #479529;
 }
 
 .z_checkbox-input:checked+.z_checkbox-custom::after {
   content: "";
   position: absolute;
-  left: 5px;
-  top: 2px;
+  left: 4px;
+  top: 1px;
   width: 5px;
   height: 10px;
   border: solid white;
@@ -2327,7 +2327,8 @@
 }
 
 .z_apply-filter-btn {
-  background: linear-gradient(90deg, #479529, #0c6c44);
+  /* background: linear-gradient(90deg, #479529, #0c6c44); */
+      background: linear-gradient(180deg, #23985a, #2c6145);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -2340,7 +2341,8 @@
 }
 
 .z_apply-filter-btn:hover {
-  background: linear-gradient(90deg, #0c6c44, #479529);
+  background: linear-gradient(90deg, #23985a, #2c6145);
+  /* background: linear-gradient(90deg, #0c6c44, #479529); */
 }
 
 .z_apply-btn {
@@ -2572,9 +2574,15 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.address-card.selected-address {
+/* .address-card.selected-address {
   background: linear-gradient(white, white) padding-box,
     linear-gradient(45deg, #6366f1, #8b5cf6, #d946ef) border-box;
+  border: 2px solid transparent !important;
+  transform: scale(1.01);
+} */
+ .address-card.selected-address {
+  background: linear-gradient(white, white) padding-box,
+    linear-gradient(45deg, #2c6145, #3b7d5c, #4d9973) border-box;
   border: 2px solid transparent !important;
   transform: scale(1.01);
 }
