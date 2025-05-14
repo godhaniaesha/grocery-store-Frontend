@@ -15,7 +15,6 @@ import { color } from "framer-motion";
 
 const AddInventory = () => {
   const sellerStock = useSelector((state) => state.sellerInventory.inventory);
-  console.log(sellerStock);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const allCategory = useSelector((state) => state.sellerProduct.categoryData);

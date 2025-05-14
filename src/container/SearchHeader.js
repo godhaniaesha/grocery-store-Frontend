@@ -20,6 +20,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Search from "../components/Search.js";
 import { getWishlistItems } from '../redux/slices/wishlist.Slice';
 import { LocateIcon } from "lucide-react";
+import LoadingSpinner from "../components/LoadingSpinner.js";
 
 export default function SearchHeader() {
   const navigate = useNavigate();
@@ -645,7 +646,7 @@ export default function SearchHeader() {
             </div>
             <ul className="x_nav_list">
               {isLoading ? (
-                <li className="x_nav_item">Loading...</li>
+                <li className="x_nav_item"><LoadingSpinner></LoadingSpinner></li>
               ) : (
                 categoriesWithSubcategories.map((category) => {
                   console.log('Rendering category:', category.categoryName);
@@ -711,6 +712,8 @@ export default function SearchHeader() {
                                               localStorage.setItem('selectedProductId', product._id);
                                               navigate(`/product-details/${product._id}`);
                                               setOpen(false);
+                                              setActive("All Categories");
+                                              setShowDropdown(null);
                                             }}
                                           >
                                             {product.productName}

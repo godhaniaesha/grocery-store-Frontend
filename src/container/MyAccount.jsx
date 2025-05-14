@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaEdit } from 'react-icons/fa';
+import { FaEdit, FaCamera } from 'react-icons/fa';
 import '../styles/MyAccount.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserData, updateUser } from '../redux/slices/userSlice';
@@ -79,22 +79,37 @@ const MyAccount = () => {
 
             <div className="account-content">
                 <div className="account-sidebar">
-                    <div className="avatar-wrapper">
+                    <div className="avatar-wrapper" style={{ position: 'relative' }}>
                         <img
-                            src={userInfo.image ? userInfo.image : require("../image/user.jpg")} // Changed from 'image' to 'userInfo.image'
+                            src={userInfo.image ? userInfo.image : require("../image/user.jpg")}
                             alt="Profile"
                             className="avatar-img"
                         />
-
-                        <label className="change-photo-btn">
-                            Change Photo
-                            <input
-                                type="file"
-                                accept="image/*"
-                                style={{ display: 'none' }}
-                                onChange={handleImageChange}
-                            />
-                        </label>
+                        {isEditing && (
+                            <div className="camera-icon" 
+                                style={{
+                                    position: 'absolute',
+                                    bottom: '20px',
+                                    right: '45px',
+                                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                                    borderRadius: '50%',
+                                    padding: '8px',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
+                                onClick={() => document.querySelector('input[type="file"]').click()}
+                            >
+                                <FaCamera color="white" size={16} />
+                            </div>
+                        )}
+                        <input
+                            type="file"
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                            onChange={handleImageChange}
+                        />
                     </div>
                     <div className="quote-section mt-2">
                         <p className="quote-text small">

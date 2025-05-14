@@ -41,6 +41,7 @@ import { FaShoppingCart, FaHeart, FaEye } from 'react-icons/fa';
 import Accordion from 'react-bootstrap/Accordion';
 import { toast } from 'react-toastify';
 import { createWishlist, deleteFromWishlist, getWishlistItems } from '../redux/slices/wishlist.Slice';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetablePage }) {
     const [selectedCategory, setSelectedCategory] = useState(localStorage.getItem('selectedCategoryId') || '');
@@ -411,7 +412,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                 style={{ minHeight: "200px" }}
             >
                 <div className="spinner-border text-success" role="status">
-                    <span className="visually-hidden">Loading Category...</span>
+                    <span className="visually-hidden"> <LoadingSpinner></LoadingSpinner></span>
                 </div>
             </div>
         );
