@@ -60,7 +60,9 @@ function ViewOrder() {
             <span className="k-active">View Order</span>
           </div>
         </div>
-        <div className="text-center p-5">Loading order details...</div>
+        <div className="text-center p-5">
+        <LoadingSpinner></LoadingSpinner>
+        </div>
       </Container>
     );
   }

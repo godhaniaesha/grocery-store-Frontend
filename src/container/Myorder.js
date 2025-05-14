@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserOrders } from '../redux/slices/order.Slice';
 import { fetchProducts } from '../redux/slices/product.Slice';
 import "../styles/x_app.css"
+import LoadingSpinner from '../components/LoadingSpinner';
 
 function Myorder(props) {
     const dispatch = useDispatch();
@@ -29,7 +30,7 @@ function Myorder(props) {
                 <h1 className="x_page_title">My Orders</h1>
 
                 {orderLoading || productLoading ? (
-                    <div>Loading...</div>
+                    <div><LoadingSpinner></LoadingSpinner></div>
                 ) : userOrders && userOrders.data ? (
                     userOrders.data.map((order) => (
                         <div key={order._id} className="x_order_card my-4 p-3 p-md-4 bg-white rounded shadow">
