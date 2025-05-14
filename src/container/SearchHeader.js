@@ -320,6 +320,12 @@ export default function SearchHeader() {
       await dispatch(login(values)).unwrap();
       setShowLoginModal(false);
 
+      // After successful login, set isVerified to false in localStorage
+      localStorage.setItem('isVerified', 'false');
+      
+      // Navigate to SliderCaptcha
+      navigate('/SliderCaptcha');
+          
       // Login પછી તરત જ data fetch કરવા માટે
       try {
         await Promise.all([
@@ -333,7 +339,6 @@ export default function SearchHeader() {
       }
 
       toast.success('Login successful!');
-      navigate('/main');
     } catch (err) {
       console.error('Login failed:', err);
       toast.error(err.message || 'Login failed');
@@ -516,6 +521,7 @@ export default function SearchHeader() {
                           try {
                             await dispatch(userLogout()).unwrap();
                             setShowUserDropdown(false);
+                            localStorage.removeItem('isVerified');
                             toast.success('Logged out successfully');
                             setShowLoginModal(true);
                             setCurrentView('login');
