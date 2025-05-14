@@ -239,11 +239,11 @@
     /* Darker border when selected */
 }
 
-.g_payment_button {
+/* .g_payment_button {
     padding: 8px 135px 8px 135px;
     border-radius: 4px;
     background: linear-gradient(180deg, #479529 0%, #0C6C44 100%);
-}
+} */
 
 .g_border_left {
     border: 1px solid rgba(15, 15, 15, 1);
@@ -263,8 +263,8 @@
 
 .x_radio-input:checked+.x_radio-custom::after {
     content: '';
-    width: 14px;
-    height: 14px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: linear-gradient(180deg, #23985a, #2c6145);
 }
@@ -457,7 +457,7 @@
     padding: 20px;
     background: #fff;
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
 }
 
@@ -479,13 +479,13 @@
 }
 
 .g_payment_option:hover {
-    border-color: #4CAF50;
+    border-color: #0c6c44;
     background-color: #f9f9f9;
 }
 
 .g_payment_option.g_selected {
-    border-color: #4CAF50;
-    background-color: #f0f9f0;
+    border-color: #0c6c44;
+    background-color: #f4f9f4;
 }
 
 .g_radio_input {
@@ -495,7 +495,7 @@
 .g_radio_custom {
     width: 20px;
     height: 20px;
-    border: 2px solid #757575;
+    border: 2px solid #0c6c44;
     border-radius: 50%;
     margin-right: 15px;
     position: relative;
@@ -565,7 +565,7 @@
 }
 
 .g_payment_option.g_selected {
-    border: 2px solid rgba(15, 15, 15, 1);
+    border: 1px solid rgb(37, 36, 36);
 }
 
 .g_card_details {
@@ -622,7 +622,7 @@
     display: flex;
     justify-content: center;
     padding: 12px;
-    background: linear-gradient(180deg, #479529 0%, #0C6C44 100%);
+    background: #2c6145;
     color: white;
     border: none;
     border-radius: 4px;
@@ -978,7 +978,7 @@
 }
 
 .g_payment_button {
-    background-color: #28a745;
+    background-color: #0C6C44;
     border: none;
     padding: 10px 30px;
     font-size: 16px;
@@ -988,10 +988,26 @@
 }
 
 .g_payment_button:hover {
-    background-color: #218838;
+    background-color: #106438 !important;
 }
 
 .g_payment_button:disabled {
-    background-color: #6c757d;
+    background-color: #0C6C44;
     cursor: not-allowed;
+}
+
+
+/* Add new address */
+
+
+.G_AddAddressForm .form-control,
+.G_AddAddressForm .form-select:focus {
+    box-shadow: none;
+    border: 1px solid #dee2e6;
+}
+
+.G_addressButton,
+.G_AddAddressForm .G_addressButton {
+    background: linear-gradient(135deg, #2c6145 0%, #1e4431 100%);
+    border: none;
 }

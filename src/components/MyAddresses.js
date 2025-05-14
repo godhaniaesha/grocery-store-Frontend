@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getUserAddresses, deleteAddress, updateAddress, createAddress } from '../redux/slices/address.Slice';
 import { Container, Row, Col, Card, Button, Modal, Form } from 'react-bootstrap';
 import { FaTrash, FaEdit, FaMapMarkerAlt, FaUser, FaPhone, FaEnvelope, FaExclamationTriangle } from 'react-icons/fa';
+import '../styles/Akshay.css'
 
 const MyAddresses = () => {
   const dispatch = useDispatch();
@@ -95,7 +96,7 @@ const MyAddresses = () => {
     }));
   };
 
- 
+
 
   const handleNewAddressChange = (e) => {
     const { name, value } = e.target;
@@ -161,9 +162,9 @@ const MyAddresses = () => {
           <Col xs={12}>
             <div className="text-center py-5">
               <h5 className="text-secondary mb-3">No addresses found</h5>
-              <Button 
-                variant="success" 
-                href="/add-address" 
+              <Button
+                variant="success"
+                href="/add-address"
                 className="mt-3 add-new-btn"
                 style={{ backgroundColor: '#2c6145', borderColor: '#2c6145' }}
               >
@@ -326,7 +327,7 @@ const MyAddresses = () => {
               <Button className='border bg-transparent text-dark' onClick={() => setShowEditModal(false)}>
                 Cancel
               </Button>
-              <Button variant="success" type="submit">
+              <Button className='G_addressButton' type="submit">
                 Save Changes
               </Button>
             </div>
@@ -335,158 +336,158 @@ const MyAddresses = () => {
       </Modal>
 
       {/* Add Address Modal */}
-      <Modal className='ps-0' show={showAddModal} onHide={() => setShowAddModal(false)}>
-  <Modal.Header closeButton>
-    <Modal.Title>Add New Address</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <Form onSubmit={handleAddAddress}>
-      <Form.Group className="mb-3">
-        <Form.Label>Save Address As</Form.Label>
-        <Form.Select
-          name="saveAddressAs"
-          value={newAddress.saveAddressAs}
-          onChange={handleNewAddressChange}
-          required
-        >
-          <option value="">Select Address Type</option>
-          <option value="Home">Home</option>
-          <option value="Office">Office</option>
-          <option value="Other">Other</option>
-        </Form.Select>
-      </Form.Group>
-      <Row>
-        <Col md={6}>
-          <Form.Group className="mb-3">
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="firstName"
-              value={newAddress.firstName}
-              onChange={handleNewAddressChange}
-              required
-            />
-          </Form.Group>
-        </Col>
-        <Col md={6}>
-          <Form.Group className="mb-3">
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="lastName"
-              value={newAddress.lastName}
-              onChange={handleNewAddressChange}
-              required
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-      <Form.Group className="mb-3">
-        <Form.Label>Phone</Form.Label>
-        <Form.Control
-          type="text"
-          name="phone"
-          value={newAddress.phone}
-          onChange={handleNewAddressChange}
-          required
-        />
-      </Form.Group>
-      <Form.Group className="mb-3">
-        <Form.Label>Email</Form.Label>
-        <Form.Control
-          type="email"
-          name="email"
-          value={newAddress.email}
-          onChange={handleNewAddressChange}
-          required
-        />
-      </Form.Group>
-      <Form.Group className="mb-3">
-        <Form.Label>Address Line 1</Form.Label>
-        <Form.Control
-          type="text"
-          name="address1"
-          value={newAddress.address1}
-          onChange={handleNewAddressChange}
-          required
-        />
-      </Form.Group>
-      <Form.Group className="mb-3">
-        <Form.Label>Address Line 2</Form.Label>
-        <Form.Control
-          type="text"
-          name="address2"
-          value={newAddress.address2}
-          onChange={handleNewAddressChange}
-        />
-      </Form.Group>
-      <Row>
-        <Col md={6}>
-          <Form.Group className="mb-3">
-            <Form.Label>City</Form.Label>
-            <Form.Control
-              type="text"
-              name="city"
-              value={newAddress.city}
-              onChange={handleNewAddressChange}
-              required
-            />
-          </Form.Group>
-        </Col>
-        <Col md={6}>
-          <Form.Group className="mb-3">
-            <Form.Label>State</Form.Label>
-            <Form.Control
-              type="text"
-              name="state"
-              value={newAddress.state}
-              onChange={handleNewAddressChange}
-              required
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={6}>
-          <Form.Group className="mb-3">
-            <Form.Label>Country</Form.Label>
-            <Form.Control
-              type="text"
-              name="country"
-              value={newAddress.country}
-              onChange={handleNewAddressChange}
-              required
-            />
-          </Form.Group>
-        </Col>
-        <Col md={6}>
-          <Form.Group className="mb-3">
-            <Form.Label>Postal Code</Form.Label>
-            <Form.Control
-              type="text"
-              name="postalCode"
-              value={newAddress.postalCode}
-              onChange={handleNewAddressChange}
-              required
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-      <div className="d-flex justify-content-end gap-2">
-        <Button className='border bg-transparent text-dark' onClick={() => setShowAddModal(false)}>
-          Cancel
-        </Button>
-        <Button variant="success" type="submit">
-          Add Address
-        </Button>
-      </div>
-    </Form>
-  </Modal.Body>
-</Modal>
+      <Modal className='ps-0 G_address_modal' show={showAddModal} onHide={() => setShowAddModal(false)} >
+        <Modal.Header closeButton>
+          <Modal.Title>Add New Address</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleAddAddress} className='G_AddAddressForm'>
+            <Form.Group className="mb-3">
+              <Form.Label>Save Address As</Form.Label>
+              <Form.Select
+                name="saveAddressAs"
+                value={newAddress.saveAddressAs}
+                onChange={handleNewAddressChange}
+                required
+              >
+                <option value="">Select Address Type</option>
+                <option value="Home">Home</option>
+                <option value="Office">Office</option>
+                <option value="Other">Other</option>
+              </Form.Select>
+            </Form.Group>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>First Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="firstName"
+                    value={newAddress.firstName}
+                    onChange={handleNewAddressChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Last Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="lastName"
+                    value={newAddress.lastName}
+                    onChange={handleNewAddressChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Form.Group className="mb-3">
+              <Form.Label>Phone</Form.Label>
+              <Form.Control
+                type="text"
+                name="phone"
+                value={newAddress.phone}
+                onChange={handleNewAddressChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                value={newAddress.email}
+                onChange={handleNewAddressChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Address Line 1</Form.Label>
+              <Form.Control
+                type="text"
+                name="address1"
+                value={newAddress.address1}
+                onChange={handleNewAddressChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Address Line 2</Form.Label>
+              <Form.Control
+                type="text"
+                name="address2"
+                value={newAddress.address2}
+                onChange={handleNewAddressChange}
+              />
+            </Form.Group>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>City</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="city"
+                    value={newAddress.city}
+                    onChange={handleNewAddressChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>State</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="state"
+                    value={newAddress.state}
+                    onChange={handleNewAddressChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Country</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="country"
+                    value={newAddress.country}
+                    onChange={handleNewAddressChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Postal Code</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="postalCode"
+                    value={newAddress.postalCode}
+                    onChange={handleNewAddressChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <div className="d-flex justify-content-end gap-2">
+              <Button className='border bg-transparent text-dark' onClick={() => setShowAddModal(false)}>
+                Cancel
+              </Button>
+              <Button className='G_addressButton' type="submit">
+                Add Address
+              </Button>
+            </div>
+          </Form>
+        </Modal.Body>
+      </Modal>
       {addresses && addresses.length > 0 && (
         <div className="text-center mt-4">
-          <Button 
-            variant="success" 
+          <Button
+            variant="success"
             onClick={() => setShowAddModal(true)}
             className="mt-3 add-new-btn"
             style={{ backgroundColor: '#2c6145', borderColor: '#2c6145' }}

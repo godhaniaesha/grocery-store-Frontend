@@ -37,7 +37,7 @@ const Login = () => {
 
     const result = await dispatch(loginUser(formData));
     if (result.payload && !result.error) {
-      navigate('/HomeMain'); // Navigate to home page after successful login
+      navigate('/SliderCaptcha'); // Navigate to home page after successful login
     }
   };
 //   const handleSubmit = async (e) => {
@@ -102,7 +102,7 @@ const Login = () => {
           localStorage.setItem('token', token);
           localStorage.setItem('userId', userId);
           setGoogleError(null);
-          navigate('/HomeMain');
+          navigate('/SliderCaptcha');
         } catch (tokenError) {
           console.error('Token decode error:', tokenError);
           setGoogleError('Failed to process authentication token');
