@@ -59,7 +59,7 @@ function SellOnLogin() {
       if (filledSteps === 6 || filledSteps === "6") {
         navigate("/seller/home");
       } else {
-        navigate("/seller/seller-gst");
+        navigate("/seller/admin-captcha");
       }
     } catch (error) {
       console.error("Login Error:", error);

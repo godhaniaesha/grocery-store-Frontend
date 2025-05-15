@@ -22,6 +22,7 @@ import AddInventory from "../admin/components/AddInventory";
 import EditInventory from "../admin/components/EditInventory";
 import ViewInventory from "../admin/components/ViewInventory";
 import ViewProducts from "../admin/components/ViewProducts";
+import ASliderCaptcha from "../admin/components/ASliderCaptcha";
 
 // Create Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -51,7 +52,7 @@ const AuthRedirect = ({ children }) => {
   //   if (steps === "6" || parseInt(steps) === 6) {
   //     return <Navigate to="/seller/home" replace />;
   //   }
-  //   return <Navigate to="/seller/seller-gst" replace />;
+  //   return <Navigate to="/seller/seller-gst" replace />;0
   // }
 
   // If not authenticated, render the login/register pages
@@ -66,6 +67,7 @@ const publicAuthRoutes = [
   { path: "/seller/seller-register", element: <SellerRegister /> },
   { path: "/seller/seller-register-otp", element: <SellerOtpVerify /> },
   { path: "/seller/seller-gst", element: <SellerGstDetails /> },
+  { path: "/seller/admin-captcha", element: <ASliderCaptcha /> },
 ];
 
 const adminRoute = [
