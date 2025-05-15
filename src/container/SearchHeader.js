@@ -127,9 +127,11 @@ export default function SearchHeader() {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setActive("All Categories");
-        setShowDropdown(null);
+      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
+        setShowUserDropdown(false);
+      }
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setShowLoginModal(false);
       }
     };
 
@@ -138,17 +140,17 @@ export default function SearchHeader() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-  
+
   const handleProductClick = (product) => {
     console.log('Selected Product:', product); // For debugging entire product
     console.log('Selected Product ID:', product._id); // For debugging ID specifically
-    
+
     // Store the product ID in localStorage
     localStorage.setItem('selectedProductId', product._id);
-    
+
     // Navigate to product details page
     navigate(`/product-details/${product._id}`);
-    
+
     // Close the menu/dropdown
     setOpen(false);
   };
@@ -160,6 +162,7 @@ export default function SearchHeader() {
   const [otp, setOtp] = useState('');
   const userDropdownRef = useRef(null);
   const modalRef = useRef(null);
+  const isLoggedIn = !!localStorage.getItem('token');
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -254,9 +257,6 @@ export default function SearchHeader() {
       }));
     }
   };
-
-
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -323,10 +323,10 @@ export default function SearchHeader() {
 
       // After successful login, set isVerified to false in localStorage
       localStorage.setItem('isVerified', 'false');
-      
+
       // Navigate to SliderCaptcha
       navigate('/SliderCaptcha');
-          
+
       // Login પછી તરત જ data fetch કરવા માટે
       try {
         await Promise.all([
@@ -477,6 +477,7 @@ export default function SearchHeader() {
               {/* Icons Section */}
               <div className="db_icon_wrapper d-flex align-items-center gap-sm-4 gap-2 ms-sm-3 ms-1">
                 {/* Account */}
+                {/* Account */}
                 <div className="text-center position-relative" ref={userDropdownRef}>
                   <button
                     className="btn bg-transparent p-0 border-0 d-flex justify-content-center w-100"
@@ -484,56 +485,62 @@ export default function SearchHeader() {
                   >
                     <FaUser size={22} className="text-white" />
                   </button>
+
                   {showUserDropdown && (
                     <div className="user-dropdown-menu text-center">
-                      <div className="dropdown-item gap-2 d-flex align-items-center"
-                        onClick={() => {
-                          setShowUserDropdown(false);
-                          handleLoginClick();
-                        }}
-                      >
-                        <span><FaSignInAlt size={20} /></span> Login
-                      </div>
-                      <Link
-                        to="/MyAccount"
-                        className="dropdown-item gap-2 d-flex align-items-center"
-                        onClick={() => setShowUserDropdown(false)}
-                      >
-                        <FaUserAlt size={20} />My Account
-                      </Link>
-                      <Link
-                        to="/MyAddresses"
-                        className="dropdown-item gap-2 d-flex align-items-center"
-                        onClick={() => setShowUserDropdown(false)}
-                      >
-                        <FaLocationDot size={20} />My Addresses
-                      </Link>
-                      <Link
-                        to="/Myorder"
-                        className="dropdown-item gap-2 d-flex align-items-center"
-                        onClick={() => setShowUserDropdown(false)}
-                      >
-                        <FiShoppingBag size={20} />Orders
-                      </Link>
-                      <Link
-                        to="#"
-                        className="dropdown-item gap-2 d-flex align-items-center"
-                        onClick={async () => {
-                          try {
-                            await dispatch(userLogout()).unwrap();
+                      {!isLoggedIn ? (
+                        <div className="dropdown-item gap-2 d-flex align-items-center"
+                          onClick={() => {
                             setShowUserDropdown(false);
-                            localStorage.removeItem('isVerified');
-                            toast.success('Logged out successfully');
-                            setShowLoginModal(true);
-                            setCurrentView('login');
-                            navigate('/main');
-                          } catch (error) {
-                            toast.error(error || 'Logout failed');
-                          }
-                        }}
-                      >
-                        <FaSignOutAlt size={20} />Logout
-                      </Link>
+                            handleLoginClick();
+                          }}
+                        >
+                          <span><FaSignInAlt size={20} /></span> Login
+                        </div>
+                      ) : (
+                        <>
+                          <Link
+                            to="/MyAccount"
+                            className="dropdown-item gap-2 d-flex align-items-center"
+                            onClick={() => setShowUserDropdown(false)}
+                          >
+                            <FaUserAlt size={20} />My Account
+                          </Link>
+                          <Link
+                            to="/MyAddresses"
+                            className="dropdown-item gap-2 d-flex align-items-center"
+                            onClick={() => setShowUserDropdown(false)}
+                          >
+                            <FaLocationDot size={20} />My Addresses
+                          </Link>
+                          <Link
+                            to="/Myorder"
+                            className="dropdown-item gap-2 d-flex align-items-center"
+                            onClick={() => setShowUserDropdown(false)}
+                          >
+                            <FiShoppingBag size={20} />Orders
+                          </Link>
+                          <Link
+                            to="#"
+                            className="dropdown-item gap-2 d-flex align-items-center"
+                            onClick={async () => {
+                              try {
+                                await dispatch(userLogout()).unwrap();
+                                setShowUserDropdown(false);
+                                localStorage.removeItem('isVerified');
+                                toast.success('Logged out successfully');
+                                setShowLoginModal(true);
+                                setCurrentView('login');
+                                navigate('/main');
+                              } catch (error) {
+                                toast.error(error || 'Logout failed');
+                              }
+                            }}
+                          >
+                            <FaSignOutAlt size={20} />Logout
+                          </Link>
+                        </>
+                      )}
                     </div>
                   )}
                 </div>
@@ -709,9 +716,9 @@ export default function SearchHeader() {
                                       {products
                                         .filter(product => product.subCategoryId === subcat._id)
                                         .map((product, idx) => (
-                                          <div 
-                                            key={idx} 
-                                            className="x_product_item db_product_name hover-underline my-1" 
+                                          <div
+                                            key={idx}
+                                            className="x_product_item db_product_name hover-underline my-1"
                                             onClick={(e) => {
                                               e.preventDefault();
                                               e.stopPropagation();
@@ -792,18 +799,18 @@ export default function SearchHeader() {
                               <h6 className="fw-bold">{subcat.subCategoryName}</h6>
                               <hr className="mt-0"></hr>
                               {/* // ... existing code ... */}
-{products
-  .filter(product => product.subCategoryId === subcat._id)
-  .map((product, idx) => (
-    <div 
-      key={idx} 
-      className="x_product_item db_product_name hover-underline my-1" 
-      onClick={() => handleProductClick(product)}
-    >
-      {product.productName}
-    </div>
-  ))}
-{/* // ... existing code ... */}
+                              {products
+                                .filter(product => product.subCategoryId === subcat._id)
+                                .map((product, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="x_product_item db_product_name hover-underline my-1"
+                                    onClick={() => handleProductClick(product)}
+                                  >
+                                    {product.productName}
+                                  </div>
+                                ))}
+                              {/* // ... existing code ... */}
                             </li>
                           ))}
                         </ul>
