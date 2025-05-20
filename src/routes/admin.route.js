@@ -23,29 +23,29 @@ import EditInventory from "../admin/components/EditInventory";
 import ViewInventory from "../admin/components/ViewInventory";
 import ViewProducts from "../admin/components/ViewProducts";
 import ASliderCaptcha from "../admin/components/ASliderCaptcha";
-
+ 
 // Create Protected Route component
 const ProtectedRoute = ({ children }) => {
   // Check if user is authenticated
   const isAuthenticated = localStorage.getItem("token") !== null;
-
+ 
   // If not authenticated, redirect to login page
   if (!isAuthenticated) {
     return <Navigate to="/seller/sell-on-login" replace />;
   }
-
+ 
   // If authenticated, render the children components
   return children;
 };
-
+ 
 // Create a route for authenticated users trying to access login/register pages
 const AuthRedirect = ({ children }) => {
   const isAuthenticated = localStorage.getItem("token") !== null;
   const steps = localStorage.getItem("filledSteps");
-
+ 
   console.log("Authenticated:", isAuthenticated);
   console.log("Filled Steps:", steps);
-
+ 
   // If already authenticated, check filledSteps
   // if (isAuthenticated) {
   //   // Make sure to compare as strings or convert to numbers
@@ -54,11 +54,11 @@ const AuthRedirect = ({ children }) => {
   //   }
   //   return <Navigate to="/seller/seller-gst" replace />;0
   // }
-
+ 
   // If not authenticated, render the login/register pages
   return children;
 };
-
+ 
 // List of all public auth routes that should redirect to profile if already logged in
 const publicAuthRoutes = [
   { path: "/seller/sell-on-login", element: <SellOnLogin /> },
@@ -69,7 +69,7 @@ const publicAuthRoutes = [
   { path: "/seller/seller-gst", element: <SellerGstDetails /> },
   { path: "/seller/admin-captcha", element: <ASliderCaptcha /> },
 ];
-
+ 
 const adminRoute = [
   // Public routes (login, register, password reset) - all with AuthRedirect protection
   ...publicAuthRoutes.map((route) => (
@@ -78,7 +78,7 @@ const adminRoute = [
       element={<AuthRedirect>{route.element}</AuthRedirect>}
     />
   )),
-
+ 
   // Protected routes (require authentication)
   <Route
     path="/seller"
@@ -110,5 +110,5 @@ const adminRoute = [
     <Route path="viewproducts/:id" element={<ViewProducts />} />
   </Route>,
 ];
-
+ 
 export default adminRoute;

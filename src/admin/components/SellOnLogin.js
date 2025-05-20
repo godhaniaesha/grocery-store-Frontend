@@ -5,7 +5,7 @@ import { IoEyeOff } from "react-icons/io5";
 import { MdRemoveRedEye } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-
+ 
 function SellOnLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -13,7 +13,7 @@ function SellOnLogin() {
   const [staps, setstaps] = useState(0);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+ 
   //   reset password states
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -37,7 +37,7 @@ function SellOnLogin() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -45,17 +45,17 @@ function SellOnLogin() {
         email: email,
         password: password,
       });
-
+ 
       // console.log("Login Response:", response.data);
-
+ 
       // Save data to localStorage
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("filledSteps", response.data.data.filledSteps);
       localStorage.setItem("userId", response.data.data._id);
-
+ 
       // Handle navigation based on filledSteps
       const filledSteps = response.data.data.filledSteps;
-
+ 
       if (filledSteps === 6 || filledSteps === "6") {
         navigate("/seller/home");
       } else {
@@ -67,9 +67,9 @@ function SellOnLogin() {
       setError("Invalid email or password");
     }
   };
-
+ 
   //   verification email js code
-
+ 
   const [verificationCode, setVerificationCode] = useState([
     "",
     "",
@@ -79,12 +79,12 @@ function SellOnLogin() {
     "",
   ]);
   const inputRefs = useRef([]);
-
+ 
   // Initialize the refs array
   useEffect(() => {
     inputRefs.current = inputRefs.current.slice(0, 6);
   }, []);
-
+ 
   const handleInputChange = (index, value) => {
     // Only allow single characters
     if (value.length > 1) {
@@ -99,14 +99,14 @@ function SellOnLogin() {
       inputRefs.current[index + 1]?.focus();
     }
   };
-
+ 
   const handleKeyDown = (index, e) => {
     // Handle backspace to go to previous input
     if (e.key === "Backspace" && !verificationCode[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
-
+ 
   const handleforgotPassword = async () => {
     try {
       const response = await axios.post(
@@ -120,7 +120,7 @@ function SellOnLogin() {
       console.error(error);
     }
   };
-
+ 
   const handleVerify = async () => {
     const code = verificationCode.join("");
     try {
@@ -139,7 +139,7 @@ function SellOnLogin() {
       console.error(error);
     }
   };
-
+ 
   const handleResetPassword = async () => {
     try {
       const response = await axios.put(
@@ -155,7 +155,7 @@ function SellOnLogin() {
       console.error(error);
     }
   };
-
+ 
   const handleResend = (e) => {
     e.preventDefault();
     // alert("Resending verification code...");
@@ -163,8 +163,8 @@ function SellOnLogin() {
       const response = axios.post("http://localhost:4000/api/resendEmailOtp", {
         email: email,
       });
-      // console.log("Resend verification code response", response); 
-      
+      // console.log("Resend verification code response", response);
+     
     } catch (error) {
       console.error(error);
     }
@@ -172,7 +172,7 @@ function SellOnLogin() {
   return (
     <>
       <Header />
-
+ 
       {/* login form  */}
       {staps == 0 && (
         <div className="k-login-form" style={{ marginTop: "100px" }}>
@@ -182,7 +182,7 @@ function SellOnLogin() {
               style={{ width: "100%", maxWidth: "500px" }}
             >
               <h3 className="text-center mb-4">Login to get Started</h3>
-
+ 
               <Form>
                 <Form.Group className="mb-3">
                   <Form.Label>Email Id</Form.Label>
@@ -195,7 +195,7 @@ function SellOnLogin() {
                     className="rounded k-input-bg-color"
                   />
                 </Form.Group>
-
+ 
                 <Form.Group className="mb-3">
                   <Form.Label>Password</Form.Label>
                   <InputGroup>
@@ -238,7 +238,7 @@ function SellOnLogin() {
                     Forgot Password?
                   </div>
                 </Form.Group>
-
+ 
                 <div className="mt-4">
                   <Button
                     type="submit"
@@ -262,7 +262,7 @@ function SellOnLogin() {
           </Container>
         </div>
       )}
-
+ 
       {/* forget password */}
       {staps == 1 && (
         <div className="k-login-form" style={{ marginTop: "100px" }}>
@@ -289,7 +289,7 @@ function SellOnLogin() {
                     className="rounded k-input-bg-color"
                   />
                 </Form.Group>
-
+ 
                 <div className="mt-4">
                   <Button
                     type="submit"
@@ -307,7 +307,7 @@ function SellOnLogin() {
           </Container>
         </div>
       )}
-
+ 
       {/* verify email */}
       {staps == 2 && (
         <div className="container">
@@ -345,7 +345,7 @@ function SellOnLogin() {
           </div>
         </div>
       )}
-
+ 
       {/* reset password */}
       {staps == 3 && (
         <Container className="d-flex justify-content-center align-items-center k-password-reset-container">
@@ -355,7 +355,7 @@ function SellOnLogin() {
               <p className="text-center text-muted mb-4 k-reset-pass-text">
                 Create a unique password different from your previous ones.
               </p>
-
+ 
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
                   <Form.Label>New Password</Form.Label>
@@ -381,7 +381,7 @@ function SellOnLogin() {
                     </Button>
                   </InputGroup>
                 </Form.Group>
-
+ 
                 <Form.Group className="mb-4">
                   <Form.Label>Confirm Password</Form.Label>
                   <InputGroup className="k-password-input-group">
@@ -408,8 +408,8 @@ function SellOnLogin() {
                     </Button>
                   </InputGroup>
                 </Form.Group>
-
-
+ 
+ 
                 <Button
                   type="submit"
                   className="w-100 mt-4 z_button"
@@ -425,5 +425,5 @@ function SellOnLogin() {
     </>
   );
 }
-
+ 
 export default SellOnLogin;

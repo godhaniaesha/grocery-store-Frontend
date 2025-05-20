@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import vegetables from '../image/z_accets/bg2.jpeg';
-import peppers from '../image/z_accets/peppers.jpeg';
-import greens from '../image/z_accets/bg3.jpeg';
-import tomatoes from '../image/z_accets/tomatoes.jpeg';
-import broccoli from '../image/z_accets/broccoli.jpeg';
+import vegetables from '../../image/z_accets/bg2.jpeg';
+import peppers from '../../image/z_accets/peppers.jpeg';
+import greens from '../../image/z_accets/bg3.jpeg';
+import tomatoes from '../../image/z_accets/tomatoes.jpeg';
+import broccoli from '../../image/z_accets/broccoli.jpeg';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
