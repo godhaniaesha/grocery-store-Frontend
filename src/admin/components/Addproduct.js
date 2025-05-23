@@ -7,12 +7,79 @@ import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProduct, getCategory, getProducts, getSingleProduct, removesingleproduct, updateProduct } from '../../redux/slices/sellerProductSlice';
 import { RiCloseCircleFill } from 'react-icons/ri';
+import { getAllSubcategories } from '../../redux/slices/Subcategory.slice';
 function Addproduct() {
     const { id } = useParams();
     const [fields, setFields] = useState([]); // Initially empty
     const productData123 = useSelector((state) => state.sellerProduct?.singleProduct);
     const [productData, setProductData] = useState([]);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [subcategories, setSubcategories] = useState([]);
+    const subcategoryData = useSelector((state) => state.subcategory.subcategories);
+    const [addVarient, setAddVarient] = useState([{ variantName: "", price: "", unit: "", quantity: "" }]);
+    const [images, setImages] = useState([]);
+
+    // Move formik initialization here, before the useEffect hooks
+    const formik = useFormik({
+        initialValues: {
+            category: '',
+            subcategory: '',
+            productName: "",
+            description: "",
+            image: [],
+            variants: addVarient.map(() => ({
+                price: "",
+                discount: "",
+                unit: "KG",
+                quantity: "",
+            })),
+            fields: fields.map(() => ({
+                title: "",
+                description: ""
+            }))
+        },
+        validationSchema: Yup.object({
+            category: Yup.string().required("Select category"),
+            subcategory: Yup.string().required("Select subcategory"),
+            productName: Yup.string().required("Enter product name"),
+            description: Yup.string().required("Enter description"),
+            variants: Yup.array().of(
+                Yup.object({
+                    price: Yup.number().required("Enter price").positive("Price must be positive"),
+                    quantity: Yup.number().required("Enter quantity").positive("Quantity must be positive"),
+                })
+            ),
+        }),
+        onSubmit: async (values) => {
+            if (productData.length > 0) {
+                dispatch(updateProduct(values)).then(() => { dispatch(getProducts()) });
+            } else {
+                dispatch(createProduct(values)).then(() => { dispatch(getProducts()) });
+            }
+            formik.setValues((prevValues) => ({
+                category: '',
+                productName: "",
+                description: "",
+                image: [],
+                variants: addVarient.map(() => ({
+                    price: "",
+                    discount: "",
+                    unit: "KG",
+                    quantity: "",
+                })),
+                fields: fields.map(() => ({
+                    title: "",
+                    description: ""
+                }))
+            }));
+            setAddVarient([{ variantName: "", price: "", unit: "", quantity: "" }])
+            setFields([]);
+            setImages([]);
+            navigate('/seller/product')
+        },
+    });
+
     useEffect(() => {
         if (id) {
             dispatch(getSingleProduct(id))
@@ -20,13 +87,21 @@ function Addproduct() {
         else {
             dispatch(removesingleproduct());
         }
-    }, [id])
-    // console.log('pro', productData);
+        dispatch(getAllSubcategories());
+    }, [id, dispatch])
+
+    useEffect(() => {
+        if (formik.values.category && subcategoryData) {
+            const filteredSubcategories = subcategoryData.filter(
+                sub => sub.categoryId === formik.values.category
+            );
+            setSubcategories(filteredSubcategories);
+        }
+    }, [formik.values.category, subcategoryData]);
+
     useEffect(() => {
         setProductData(productData123)
     }, [productData123])
-    const [addVarient, setAddVarient] = useState([{ variantName: "", price: "", unit: "", quantity: "" }]);
-
     const addMoreVarient = () => {
         setAddVarient([...addVarient, { price: "", discount: "", unit: "", quantity: "" }]);
         formik.setValues((prevValues) => ({
@@ -69,7 +144,6 @@ function Addproduct() {
             };
         });
     };
-    const [images, setImages] = useState([]);
 
     const handleImageChange = (event) => {
         const files = event.target.files;
@@ -92,63 +166,7 @@ function Addproduct() {
             image: filteredImages
         }));
     };
-    // form validation code is here !!
-    const formik = useFormik({
-        initialValues: {
-            category: '',
-            productName: "",
-            description: "",
-            image: [],
-            variants: addVarient.map(() => ({
-                price: "",
-                discount: "",
-                unit: "KG",
-                quantity: "",
-            })),
-            fields: fields.map(() => ({
-                title: "",
-                description: ""
-            }))
-        },
-        validationSchema: Yup.object({
-            category: Yup.string().required("Select category"),
-            productName: Yup.string().required("Enter product name"),
-            description: Yup.string().required("Enter description"),
-            variants: Yup.array().of(
-                Yup.object({
-                    price: Yup.number().required("Enter price").positive("Price must be positive"),
-                    quantity: Yup.number().required("Enter quantity").positive("Quantity must be positive"),
-                })
-            ),
-        }),
-        onSubmit: async (values) => {
-            if (productData.length > 0) {
-                dispatch(updateProduct(values)).then(() => { dispatch(getProducts()) });
-            } else {
-                dispatch(createProduct(values)).then(() => { dispatch(getProducts()) });
-            }
-            formik.setValues((prevValues) => ({
-                category: '',
-                productName: "",
-                description: "",
-                image: [],
-                variants: addVarient.map(() => ({
-                    price: "",
-                    discount: "",
-                    unit: "KG",
-                    quantity: "",
-                })),
-                fields: fields.map(() => ({
-                    title: "",
-                    description: ""
-                }))
-            }));
-            setAddVarient([{ variantName: "", price: "", unit: "", quantity: "" }])
-            setFields([]);
-            setImages([]);
-            navigate('/seller/product')
-        },
-    });
+
 
     useEffect(() => {
         if (productData.length > 0) {
@@ -190,7 +208,6 @@ function Addproduct() {
     }, [productData])
 
     // fetch catgeory data using redux 
-    const dispatch = useDispatch();
     const categoryData = useSelector((state) => state.sellerProduct.categoryData);
     useEffect(() => {
         dispatch(getCategory());
@@ -267,6 +284,30 @@ function Addproduct() {
                                             formik.errors.category ? (
                                             <small className="error text-capitalize" style={{ color: "red" }}>
                                                 {formik.errors.category}
+                                            </small>
+                                        ) : null}
+                                    </Form.Group>
+                                </div>
+                                <div className="col-lg-6 mb-3">
+                                    <Form.Group className='z_input_group'>
+                                        <Form.Label>Subcategory</Form.Label>
+                                        <Form.Select 
+                                            className='z_input' 
+                                            value={formik.values.subcategory} 
+                                            onChange={(e) => formik.setFieldValue("subcategory", e.target.value)}
+                                            disabled={!formik.values.category}
+                                        >
+                                            <option>Select</option>
+                                            {subcategories?.map((subcategory) => (
+                                                <option key={subcategory._id} value={subcategory._id}>
+                                                    {subcategory.subCategoryName}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                        {formik.touched.subcategory &&
+                                            formik.errors.subcategory ? (
+                                            <small className="error text-capitalize" style={{ color: "red" }}>
+                                                {formik.errors.subcategory}
                                             </small>
                                         ) : null}
                                     </Form.Group>

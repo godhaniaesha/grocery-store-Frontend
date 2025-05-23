@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import vegetables from '../image/z_accets/bg2.jpeg';
-import peppers from '../image/z_accets/peppers.jpeg';
-import greens from '../image/z_accets/bg3.jpeg';
-import tomatoes from '../image/z_accets/tomatoes.jpeg';
-import broccoli from '../image/z_accets/broccoli.jpeg';
+import tomatoes from '../image/img1.jpg';
+import vegetables from '../image/sc2.jpeg';
+import broccoli from '../image/sc3.jpeg';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -20,8 +18,6 @@ const SliderCaptcha = () => {
   // Array of all puzzle background images
   const puzzleImages = [
     vegetables,
-    peppers,
-    greens,
     tomatoes,
     broccoli
   ];
@@ -34,7 +30,6 @@ const SliderCaptcha = () => {
     // Alternative puzzle piece shape
     'path("M 31 40 H 17.5 l 1.47-3.34 c 0.21-0.48 0.32-0.99 0.32-1.52 c 0-2.1-1.71-3.81-3.81-3.81 s-3.81 1.71-3.81 3.81 c 0 0.53 0.11 1.04 0.32 1.52 l 1.46 3.34 H 0 V 8.68 h 12.32 c 0.02-0.04 0.04-0.07 0.04-0.1 c 0-0.01 0-0.01 0-0.01 c-0.12-0.1-0.21-0.18-0.33-0.3 c-0.9-0.93-1.39-2.13-1.39-3.4 C 10.64 2.18 12.82 0 15.51 0 S 20.37 2.18 20.37 4.87 c 0 1.27-0.49 2.47-1.38 3.38 l-0.3 0.27 c-0.01 0.03-0.02 0.05-0.02 0.05 c 0 0.04 0.01 0.07 0.04 0.1 h 12.3 v 12.31 c 0.03 0.02 0.08 0.03 0.12 0.03 c 0.07-0.08 0.16-0.19 0.3-0.32 c 0.93-0.9 2.13-1.39 3.39-1.39 c 2.68 0 4.87 2.18 4.87 4.87 s-2.18 4.87-4.87 4.87 c-1.27 0-2.47-0.49-3.38-1.38 l-0.27-0.29 c-0.05-0.01-0.11 0-0.16 0.03 C 31 20.74 31 40 31 40 z")',
     // Complex puzzle piece shape
-    'path("M 34.25 18.31 c-0.87 0-1.68 0.18-2.43 0.51 c-0.29 0.13-0.62 0.1-0.89-0.07 c-0.27-0.17-0.42-0.47-0.42-0.78 v-5.22 c 0-1.57-1.28-2.85-2.85-2.85 h-5.84 c-0.31 0-0.61-0.16-0.78-0.42 c-0.17-0.26-0.2-0.59-0.08-0.88 c 0.31-0.73 0.48-1.53 0.48-2.37 c 0-3.42-2.77-6.19-6.19-6.19 c-3.42 0-6.19 2.77-6.19 6.19 c 0 0.84 0.17 1.64 0.48 2.37 c 0.12 0.29 0.09 0.62-0.08 0.88 c-0.17 0.26-0.47 0.42-0.78 0.42 H 2.85 C 1.28 2.39 0 3.67 0 5.24 v 24.81 c 0 1.57 1.28 2.85 2.85 2.85 h 5.63 c 0.3 0 0.58-0.14 0.76-0.39 c 0.18-0.24 0.23-0.56 0.13-0.84 c-0.19-0.59-0.3-1.21-0.3-1.86 c 0-3.42 2.77-6.19 6.19-6.19 c 3.42 0 6.19 2.77 6.19 6.19 c 0 0.65-0.11 1.28-0.3 1.86 c-0.09 0.29-0.04 0.6 0.13 0.84 c 0.18 0.24 0.46 0.39 0.76 0.39 h 5.63 c 1.57 0 2.85-1.28 2.85-2.85 v-6.52 c 0-0.32 0.16-0.61 0.42-0.78 c 0.26-0.17 0.59-0.2 0.89-0.07 c 0.74 0.33 1.56 0.51 2.43 0.51 c 3.42 0 6.19-2.77 6.19-6.19 C 40.44 21.08 37.67 18.31 34.25 18.31 z")'
   ];
 
   useEffect(() => {
@@ -123,7 +118,8 @@ const SliderCaptcha = () => {
           bottom: 0,
           backgroundImage: `url(${currentImage})`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center'
+          backgroundPosition: 'center',
+          filter: "blur(2px)"
         }} />
 
         {/* Cut-out Area */}
