@@ -14,7 +14,7 @@ const Wishlist = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { wishlistItems, loading, error } = useSelector(state => state.wishlist);
+    const { wishlistItems = [], loading, error } = useSelector(state => state.wishlist);
     console.log(wishlistItems, "wishlistItems");
 
     const { variants } = useSelector(state => state.productveriant);
@@ -73,11 +73,7 @@ const Wishlist = () => {
         return <LoadingSpinner />;
     }
 
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-
-    if (wishlistItems.length === 0) {
+    if (error || !wishlistItems || wishlistItems.length === 0) {
         return (
             <div className="db_wishlist">
                 <div className="db_empty_wishlist">

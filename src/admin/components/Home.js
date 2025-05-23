@@ -537,15 +537,15 @@ const Home = () => {
                     <tr key={sellerData._id.sellerData}>
                       <td>{index + 1}</td>
                       <td>
-                        {sellerData.useraddress.firstName}{" "}
-                        {sellerData.useraddress.lastName}
+                        {(sellerData.useraddress?.firstName || "")}{" "}
+                        {(sellerData.useraddress?.lastName || "")}
                       </td>
-                      <td>{formattedDate(sellerData.createdAt)}</td>
-                      <td> {sellerData.paymentMethod}</td>
-                      <td>${sellerData.totalPrice}</td>
+                      <td>{formattedDate(sellerData.createdAt) || ""}</td>
+                      <td>{sellerData.paymentMethod || ""}</td>
+                      <td>${sellerData.totalPrice || ""}</td>
                       <td>
                         <span className={`${orderColor} ustatus`}>
-                          {sellerData.orderStatus}
+                          {sellerData.orderStatus || ""}
                         </span>
                       </td>
                     </tr>
