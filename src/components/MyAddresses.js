@@ -164,7 +164,7 @@ const MyAddresses = () => {
               <h5 className="text-secondary mb-3">No addresses found</h5>
               <Button
                 variant="success"
-                href="/add-address"
+                onClick={() => setShowAddModal(true)}
                 className="mt-3 add-new-btn"
                 style={{ backgroundColor: '#2c6145', borderColor: '#2c6145' }}
               >
