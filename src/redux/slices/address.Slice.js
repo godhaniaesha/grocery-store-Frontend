@@ -68,8 +68,11 @@ export const updateAddress = createAsyncThunk(
       const token = localStorage.getItem('token');
       const config = {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': 'http://localhost:3000'
+        },
+        withCredentials: true
       };
       const response = await axios.put(`http://localhost:4000/api/updateAddress/${addressId}`, addressData, config);
       return response.data;

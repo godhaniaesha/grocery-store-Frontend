@@ -350,11 +350,9 @@ export default function SearchHeader() {
   const handleRegisterSubmit = async (values, { setSubmitting }) => {
     try {
       await dispatch(createUser(values)).unwrap();
-      alert('ddd');
-      setShowLoginModal(false);
-      toast.success('Registration successful!');
+      setCurrentView('login');
+      toast.success('Registration successful! Please login to continue.');
     } catch (err) {
-      alert('ddd');
       console.error('Registration failed:', err);
       toast.error(err.message || 'Registration failed');
     }
