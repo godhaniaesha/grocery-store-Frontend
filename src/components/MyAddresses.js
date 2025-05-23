@@ -10,9 +10,10 @@ const MyAddresses = () => {
   const { addresses, loading, error } = useSelector((state) => state.address);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);  // નવું સ્ટેટ
+  const [showAddModal, setShowAddModal] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [addressToDelete, setAddressToDelete] = useState(null);
+  const [localAddresses, setLocalAddresses] = useState([]); // Local state for immediate UI updates
   const [newAddress, setNewAddress] = useState({
     saveAddressAs: '',
     firstName: '',
@@ -31,11 +32,21 @@ const MyAddresses = () => {
     dispatch(getUserAddresses());
   }, [dispatch]);
 
+  // Update local addresses when Redux state changes
+  useEffect(() => {
+    if (addresses) {
+      setLocalAddresses(addresses);
+    }
+  }, [addresses]);
+
   const handleAddAddress = async (e) => {
     e.preventDefault();
     try {
-      await dispatch(createAddress(newAddress)).unwrap();
+      const result = await dispatch(createAddress(newAddress)).unwrap();
+      // Add new address to local state immediately
+      setLocalAddresses(prev => [...prev, result]);
       setShowAddModal(false);
+      // Also refresh from server to ensure consistency
       dispatch(getUserAddresses());
       setNewAddress({
         saveAddressAs: '',
@@ -54,6 +65,7 @@ const MyAddresses = () => {
       console.error('Failed to add address:', error);
     }
   };
+
   const handleDeleteClick = (address) => {
     setAddressToDelete(address);
     setShowDeleteModal(true);
@@ -62,10 +74,19 @@ const MyAddresses = () => {
   const confirmDelete = async () => {
     try {
       await dispatch(deleteAddress(addressToDelete._id)).unwrap();
-      dispatch(getUserAddresses());
+      
+      // Immediately remove from local state for instant UI update
+      setLocalAddresses(prev => prev.filter(addr => addr._id !== addressToDelete._id));
+      
       setShowDeleteModal(false);
+      setAddressToDelete(null);
+      
+      // Optional: Refresh from server to ensure consistency
+      // dispatch(getUserAddresses());
     } catch (error) {
       console.error('Failed to delete address:', error);
+      // If delete fails, refresh the addresses to restore the correct state
+      dispatch(getUserAddresses());
     }
   };
 
@@ -77,14 +98,25 @@ const MyAddresses = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await dispatch(updateAddress({
+      const result = await dispatch(updateAddress({
         addressId: selectedAddress._id,
         addressData: selectedAddress
       })).unwrap();
+      
+      // Update local state immediately
+      setLocalAddresses(prev => 
+        prev.map(addr => 
+          addr._id === selectedAddress._id ? { ...addr, ...selectedAddress } : addr
+        )
+      );
+      
       setShowEditModal(false);
-      dispatch(getUserAddresses());
+      // Optional: Refresh from server to ensure consistency
+      // dispatch(getUserAddresses());
     } catch (error) {
       console.error('Failed to update address:', error);
+      // If update fails, refresh the addresses to restore the correct state
+      dispatch(getUserAddresses());
     }
   };
 
@@ -95,8 +127,6 @@ const MyAddresses = () => {
       [name]: value
     }));
   };
-
-
 
   const handleNewAddressChange = (e) => {
     const { name, value } = e.target;
@@ -110,8 +140,8 @@ const MyAddresses = () => {
     <Container className="py-4">
       <h2 className="mb-4 text-center">My Addresses</h2>
       <Row className="g-4">
-        {addresses && addresses.length > 0 ? (
-          addresses.map((address) => (
+        {localAddresses && localAddresses.length > 0 ? (
+          localAddresses.map((address) => (
             <Col key={address._id} xs={12} md={6} lg={4}>
               <div className="address-box">
                 <div className="address-label">
@@ -160,18 +190,25 @@ const MyAddresses = () => {
           ))
         ) : (
           <Col xs={12}>
-            <div className="text-center py-5">
-              <h5 className="text-secondary mb-3">No addresses found</h5>
+          <div className="db_empty_address">
+            <div className="db_empty_content">
+              <div className="db_empty_icon">
+                <FaMapMarkerAlt />
+              </div>
+              <h3>No Addresses Found</h3>
+              <p>Add your delivery address to start shopping with us</p>
               <Button
                 variant="success"
-                href="/add-address"
-                className="mt-3 add-new-btn"
+                onClick={() => setShowAddModal(true)}
+                className="db_shop_btn"
                 style={{ backgroundColor: '#2c6145', borderColor: '#2c6145' }}
               >
+                <FaMapMarkerAlt className="db_btn_icon" />
                 Add New Address
               </Button>
             </div>
-          </Col>
+          </div>
+        </Col>
         )}
       </Row>
 
@@ -484,7 +521,7 @@ const MyAddresses = () => {
           </Form>
         </Modal.Body>
       </Modal>
-      {addresses && addresses.length > 0 && (
+      {localAddresses && localAddresses.length > 0 && (
         <div className="text-center mt-4">
           <Button
             variant="success"
@@ -650,6 +687,65 @@ const MyAddresses = () => {
           color: #64748b;
           font-size: 0.9rem;
         }
+            .db_empty_address {
+              padding: 40px 20px;
+              text-align: center;
+              background: white;
+              border-radius: 16px;
+              box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+
+            .db_empty_content {
+              max-width: 400px;
+              margin: 0 auto;
+            }
+
+            .db_empty_icon {
+              width: 80px;
+              height: 80px;
+              background: rgba(44, 97, 69, 0.1);
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: 0 auto 24px;
+              color: #2c6145;
+              font-size: 32px;
+            }
+
+            .db_empty_content h3 {
+              color: #2c6145;
+              margin-bottom: 12px;
+              font-size: 24px;
+            }
+
+            .db_empty_content p {
+              color: #666;
+              margin-bottom: 24px;
+              font-size: 16px;
+            }
+
+            .db_shop_btn {
+              display: inline-flex;
+              align-items: center;
+              gap: 8px;
+              padding: 12px 24px;
+              font-size: 16px;
+              font-weight: 500;
+              border-radius: 8px;
+              transition: all 0.3s ease;
+            }
+
+            .db_shop_btn:hover {
+              background-color: #1e4431 !important;
+              border-color: #1e4431 !important;
+              transform: translateY(-2px);
+              box-shadow: 0 4px 12px rgba(44, 97, 69, 0.2);
+            }
+
+            .db_btn_icon {
+              font-size: 20px;
+            }
       `}</style>
     </Container>
   );
