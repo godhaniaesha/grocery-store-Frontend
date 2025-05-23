@@ -600,7 +600,6 @@ export default function AddcartDesign() {
                       >
                         Cancel
                       </button>
-                      {addresses.length > 0 && (
                         <button
                           type="button"
                           className="btn"
@@ -609,7 +608,6 @@ export default function AddcartDesign() {
                         >
                           {editingAddress ? 'Update Address' : 'Add Address'}
                         </button>
-                      )}
                     </div>
                   </div>
                 </div>
