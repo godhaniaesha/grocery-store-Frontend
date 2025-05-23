@@ -171,7 +171,6 @@ export default function AddcartDesign() {
     if (!address.firstName || !address.lastName || !address.phone || !address.email ||
       !address.address1 || !address.address2 || !address.postalCode ||
       !address.city || !address.state || !address.country || !address.saveAddressAs) {
-      alert('કૃપા કરી બધી એડ્રેસ ફીલ્ડ્સ ભરો');
       return;
     }
 
@@ -212,7 +211,7 @@ export default function AddcartDesign() {
       setEditingAddress(null);
       setShowAddressForm(false);
     } catch (error) {
-      alert(editingAddress ? 'એડ્રેસ અપડેટ કરવામાં ભૂલ થઈ છે' : 'Error saving address');
+      console.error('Error saving address:', error);
     }
   };
   // ... existing code ...

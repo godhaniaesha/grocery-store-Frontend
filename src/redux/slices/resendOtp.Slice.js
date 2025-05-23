@@ -32,8 +32,7 @@ export const resendOtp = createAsyncThunk(
   "resendOtp",
   async (email, { rejectWithValue }) => {
     // console.log("email", email);
-
-    alert("sjhas");
+    
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
