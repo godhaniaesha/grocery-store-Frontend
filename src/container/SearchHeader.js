@@ -44,8 +44,11 @@ export default function SearchHeader() {
     if (!token) {
       setShowLoginModal(true);
       setCurrentView('login');
+      if (window.location.pathname !== '/SliderCaptcha') {
+        navigate('/SliderCaptcha');
+      }
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     if (products?.length > 0) {
@@ -130,9 +133,6 @@ export default function SearchHeader() {
       if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
         setShowUserDropdown(false);
       }
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        setShowLoginModal(false);
-      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -168,9 +168,6 @@ export default function SearchHeader() {
     const handleClickOutside = (event) => {
       if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
         setShowUserDropdown(false);
-      }
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        setShowLoginModal(false);
       }
     };
 
@@ -826,9 +823,7 @@ export default function SearchHeader() {
       {showLoginModal && (
         <div className="modal-overlay">
           <div className="login-modal" ref={modalRef}>
-            <button className="close-btn" onClick={() => setShowLoginModal(false)}>
-              <FaTimesCircle />
-            </button>
+            
             <div className="container-fluid">
               <div className="row">
                 <div className="view-content">
