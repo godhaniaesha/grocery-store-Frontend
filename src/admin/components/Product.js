@@ -10,6 +10,7 @@ import '../../styles/sp_style.css'
 import { FiPlus } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProduct, getCategory, getProducts, getSingleProduct, updateProductStats } from '../../redux/slices/sellerProductSlice';
+import { getAllSubcategories } from '../../redux/slices/Subcategory.slice';
 
 function Product() {
     const [filterOff, setfilterOff] = useState(false);
@@ -27,23 +28,29 @@ function Product() {
         }));
     };
 
+
     const [deleteId, setDeleteId] = useState('');
     const [modalShow, setModalShow] = React.useState(false);
     const [updateId, setUpdateId] = useState('');
-    // redux and functionality code here
     const dispatch = useDispatch();
     const productData1 = useSelector((state) => state.sellerProduct.productData);
     const categoryData = useSelector((state) => state.sellerProduct.categoryData);
+    const subcategoryData = useSelector((state) => state.subcategory.subcategories);
+    // console.log(productData1,"categoryData");
+
     const [productData, setProductData] = useState([]);
     useEffect(() => {
         const product = productData1.flatMap((product, index) =>
+            // console.log(product.subcategoryData, "product")
             product.productVarientData
+
                 .filter(data => data.sellerId === localStorage.getItem('userId'))
                 .map((data, id) => ({
-                    id: id, // or `${product.id}-${id}` if you need it to be unique across products
+                    id: id,
                     image: product.images?.[0] ?? 'default.jpg',
                     productName: product.productName,
                     categoryName: product?.categoryData?.[0]?.categoryName ?? 'Unknown',
+                    subcategoryName: product?.subcategoryData?.[0]?.subCategoryName ?? 'Unknown',
                     unit: data.size,
                     status: data?.status || false,
                     price: data.price,
@@ -51,13 +58,12 @@ function Product() {
                 }))
         );
         setProductData(product)
-        // console.log('is callledd');
-    }, [productData1])
+    }, [productData1, subcategoryData])
     useEffect(() => {
         dispatch(getProducts());
         dispatch(getCategory());
-        // console.log('data',)
-    }, [])
+        dispatch(getAllSubcategories());
+    }, [dispatch])
 
 
     // const [searchQuery, setSearchQuery] = useState('');
@@ -200,6 +206,7 @@ function Product() {
                             <th>ID</th>
                             <th>Name</th>
                             <th>Category</th>
+                            <th>Subcategory</th>
                             <th>Unit</th>
                             <th>Price</th>
                             <th>Status</th>
@@ -217,6 +224,7 @@ function Product() {
                                     {ele?.productName}
                                 </td>
                                 <td>{ele?.categoryName}</td>
+                                <td>{ele?.subcategoryName}</td>
                                 <td>{ele?.unit}</td>
                                 <td>${ele?.price}</td>
                                 <td className="sp_status1">
@@ -231,12 +239,10 @@ function Product() {
                                         <Link to={'/seller/viewproducts/' + ele.variantId} className="sp_table_action d-flex justify-content-center align-items-center">
                                             <img src={require('../../img/s_img/view.png')} alt="View" />
                                         </Link>
-                                        <Link to={`/seller/Edit-product/` + ele.variantId} className="sp_table_action d-flex justify-content-center align-items-center" >
-                                            <img src={require('../../img/s_img/edit.png')} alt="Edit" />
-                                        </Link>
-                                        <Link className="sp_table_action d-flex justify-content-center align-items-center" onClick={() => { setModalShow(true), setDeleteId(ele.variantId) }}>
-                                            <img src={require('../../img/s_img/delete.png')} alt="Delete" />
-                                        </Link>
+                                        <Link to={`/seller/Edit-product/` + ele.variantId} className="sp_table_action d-flex justify-content-center align-items-center" />
+                                            <Link className="sp_table_action d-flex justify-content-center align-items-center" onClick={() => { setModalShow(true), setDeleteId(ele.variantId) }}>
+                                                <img src={require('../../img/s_img/delete.png')} alt="Delete" />
+                                            </Link>
                                     </div>
                                 </td>
                             </tr>
@@ -417,4 +423,4 @@ function Product() {
         </div>
     )
 }
-export default Product; 
+export default Product;

@@ -7,7 +7,9 @@ import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProduct, getCategory, getProducts, getSingleProduct, removesingleproduct, updateProduct } from '../../redux/slices/sellerProductSlice';
 import { RiCloseCircleFill } from 'react-icons/ri';
-import { getAllSubcategories } from '../../redux/slices/Subcategory.slice';
+// Remove this import
+// import { getAllSubcategories } from '../../redux/slices/Subcategory.slice';
+
 function Addproduct() {
     const { id } = useParams();
     const [fields, setFields] = useState([]); // Initially empty
@@ -15,16 +17,15 @@ function Addproduct() {
     const [productData, setProductData] = useState([]);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [images, setImages] = useState([]); // Add this line
     const [subcategories, setSubcategories] = useState([]);
     const subcategoryData = useSelector((state) => state.subcategory.subcategories);
     const [addVarient, setAddVarient] = useState([{ variantName: "", price: "", unit: "", quantity: "" }]);
-    const [images, setImages] = useState([]);
-
-    // Move formik initialization here, before the useEffect hooks
     const formik = useFormik({
         initialValues: {
             category: '',
-            subcategory: '',
+            // Remove subcategory field
+            // subcategory: '',
             productName: "",
             description: "",
             image: [],
@@ -41,7 +42,8 @@ function Addproduct() {
         },
         validationSchema: Yup.object({
             category: Yup.string().required("Select category"),
-            subcategory: Yup.string().required("Select subcategory"),
+            // Remove subcategory validation
+            // subcategory: Yup.string().required("Select subcategory"),
             productName: Yup.string().required("Enter product name"),
             description: Yup.string().required("Enter description"),
             variants: Yup.array().of(
@@ -59,6 +61,8 @@ function Addproduct() {
             }
             formik.setValues((prevValues) => ({
                 category: '',
+                // Remove subcategory reset
+                // subcategory: '',    
                 productName: "",
                 description: "",
                 image: [],
@@ -87,20 +91,22 @@ function Addproduct() {
         else {
             dispatch(removesingleproduct());
         }
-        dispatch(getAllSubcategories());
     }, [id, dispatch])
 
-    useEffect(() => {
-        if (formik.values.category && subcategoryData) {
-            const filteredSubcategories = subcategoryData.filter(
-                sub => sub.categoryId === formik.values.category
-            );
-            setSubcategories(filteredSubcategories);
-        }
-    }, [formik.values.category, subcategoryData]);
+    // Remove this entire useEffect
+    // useEffect(() => {
+    //     if (formik.values.category && subcategoryData) {
+    //         const filteredSubcategories = subcategoryData.filter(
+    //             sub => sub.categoryId === formik.values.category
+    //         );
+    //         setSubcategories(filteredSubcategories);
+    //     }
+    // }, [formik.values.category, subcategoryData]);
 
     useEffect(() => {
-        setProductData(productData123)
+        if (productData.length > 0) {
+            setProductData(productData123)
+        }
     }, [productData123])
     const addMoreVarient = () => {
         setAddVarient([...addVarient, { price: "", discount: "", unit: "", quantity: "" }]);
@@ -170,16 +176,16 @@ function Addproduct() {
 
     useEffect(() => {
         if (productData.length > 0) {
-            let numbers = productData[0].size.match(/\d+/g)?.join('') || ''; // Extract numbers
-            let chars = productData[0].size.match(/[a-zA-Z]+/g)?.join('') || ''; // Extract characters
+            let numbers = productData[0].size.match(/\d+/g)?.join('') || '';
+            let chars = productData[0].size.match(/[a-zA-Z]+/g)?.join('') || '';
             var fieldData = []
             if (productData[0].productData[0].specifications) {
                 var data = typeof productData[0].productData[0].specifications === "string"
                     ? JSON.parse(productData[0].productData[0].specifications)
                     : productData[0].productData[0].specifications;
                 fieldData = Object.keys(data).map((key) => ({
-                    title: key,   // Key as title
-                    description: data[key]  // Value as description
+                    title: key,
+                    description: data[key]
                 }))
             }
 
@@ -194,18 +200,12 @@ function Addproduct() {
                     unit: chars,
                     quantity: numbers,
                 }],
-                // fields: productData[0].productData[0].specifications.map((item,id) => ({
-                //         title: "",
-                //         description: item
-                //     }))
-
                 fields: fieldData,
             }));
             setFields(formik.values.fields)
             setImages(productData[0].productData[0].images)
-            // console.log(formik.values.fields);
         }
-    }, [productData])
+    }, [productData]);
 
     // fetch catgeory data using redux 
     const categoryData = useSelector((state) => state.sellerProduct.categoryData);

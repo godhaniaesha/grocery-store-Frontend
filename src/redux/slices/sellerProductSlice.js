@@ -32,6 +32,8 @@ export const getProducts = createAsyncThunk(
             }
         // console.log('is callled');
             const response = await axios.get('http://localhost:4000/api/allProducts', config);
+            console.log("is called", response.data);
+            
             return response.data;
         }
         catch (error) {
@@ -66,6 +68,7 @@ export const createProduct = createAsyncThunk(
             const token = localStorage.getItem('token');
             const formData = new FormData();
             formData.append('categoryId', productData.category);
+            formData.append('subCategoryId', productData.subcategory);
             formData.append('productName', productData.productName);
             formData.append('description', productData.description);
 
@@ -89,6 +92,8 @@ export const createProduct = createAsyncThunk(
                 }
             }
             const response = await axios.post('http://localhost:4000/api/createProduct', formData, config);
+            console.log(response);
+            
             const requests = productData.variants.map(variant => {
                 return axios.post('http://localhost:4000/api/createProductVarient', {
                     productId: response.data.data._id,
@@ -247,6 +252,7 @@ const productSlice = createSlice({
     initialState: {
         productData: [],
         categoryData: [],
+        subcategoryData: [],
         singleProduct: [],
         selectedProductId: null,
         viewProduct: [],
@@ -275,7 +281,7 @@ const productSlice = createSlice({
                 console.error(action.payload);
             })
             .addCase(createProduct.fulfilled, (state, action) => {
-                // state.categoryData = action?.payload?.data;
+                // state.subcategoryData = action?.payload?.data;
                 // console.log('Category fetched successfully', action.payload.data);
                 // handleAddVariant();
             }).addCase(getSingleProduct.fulfilled, (state, action) => {
