@@ -177,6 +177,16 @@ export default function SearchHeader() {
     };
   }, []);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const isVerified = localStorage.getItem('isVerified');
+    
+    // Only redirect to login if not verified and not on SliderCaptcha page
+    if (!isVerified && window.location.pathname !== '/SliderCaptcha') {
+      navigate('/SliderCaptcha');
+    }
+  }, [navigate]);
+
   const handleLoginClick = () => {
     setShowUserDropdown(false);
     setShowLoginModal(true);
@@ -349,9 +359,13 @@ export default function SearchHeader() {
 
   const handleRegisterSubmit = async (values, { setSubmitting }) => {
     try {
-      await dispatch(createUser(values)).unwrap();
-      setCurrentView('login');
-      toast.success('Registration successful! Please login to continue.');
+      const result = await dispatch(createUser(values)).unwrap();
+      if (result && !result.error) {
+        localStorage.setItem('isVerified', 'false');
+        navigate('/SliderCaptcha');
+        setShowLoginModal(false);
+        toast.success('Registration successful!');
+      }
     } catch (err) {
       console.error('Registration failed:', err);
       toast.error(err.message || 'Registration failed');

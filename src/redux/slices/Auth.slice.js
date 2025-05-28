@@ -20,6 +20,8 @@ export const createUser = createAsyncThunk(
   async (formData) => {
     try {
       const response = await axios.post('http://localhost:4000/api/createUser', formData);
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.data));
       return response.data;
     } catch (error) {
       throw error.response.data;
