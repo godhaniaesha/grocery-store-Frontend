@@ -276,6 +276,9 @@ export default function SearchHeader() {
     email: Yup.string()
       .email('Invalid email address')
       .required('Email is required'),
+    mobileNo: Yup.string()
+      .matches(/^[0-9]{10}$/, 'Mobile number must be exactly 10 digits')
+      .required('Mobile number is required'),
     password: Yup.string()
       .min(8, 'Password must be at least 8 characters')
       .matches(
@@ -288,9 +291,9 @@ export default function SearchHeader() {
   });
 
   const forgotPasswordSchema = Yup.object().shape({
-    email: Yup.string()
-      .email('Invalid email address')
-      .required('Email is required'),
+    mobileNo: Yup.string()
+      .matches(/^[0-9]{10}$/, 'Mobile number must be exactly 10 digits')
+      .required('Mobile number is required')
   });
 
   const otpSchema = Yup.object().shape({
@@ -358,8 +361,8 @@ export default function SearchHeader() {
 
   const handleForgotSubmit = async (values, { setSubmitting }) => {
     try {
-      await dispatch(generateOtp(values.email)).unwrap();
-      setEmail(values.email);
+      await dispatch(generateOtp(values.mobileNo)).unwrap();
+      setEmail(values.mobileNo);
       setCurrentView('otp');
       toast.success('OTP has been sent');
     } catch (err) {
@@ -371,7 +374,8 @@ export default function SearchHeader() {
 
   const handleOtpVerification = async (values, { setSubmitting }) => {
     try {
-      const result = await dispatch(verifyOtp({ email, otp: values.otp })).unwrap();
+      const resetUserId = localStorage.getItem('resetUserId');
+      const result = await dispatch(verifyOtp({ mobileNo: resetUserId, otp: values.otp })).unwrap();
       if (result.success) {
         setCurrentView('new-password');
         toast.success('OTP verification successful');
@@ -389,7 +393,7 @@ export default function SearchHeader() {
     try {
       const userId = localStorage.getItem('resetUserId');
       const result = await dispatch(resetPassword({
-        email: userId,
+        mobileNo: userId,
         password: values.password,
         confirmPassword: values.confirmPassword
       })).unwrap();
@@ -823,7 +827,7 @@ export default function SearchHeader() {
       {showLoginModal && (
         <div className="modal-overlay">
           <div className="login-modal" ref={modalRef}>
-            
+
             <div className="container-fluid">
               <div className="row">
                 <div className="view-content">
@@ -907,7 +911,7 @@ export default function SearchHeader() {
                   )}
 
                   {/* Forgot Password View - Email Form */}
-                  {currentView === 'forgot' && (
+                  {/* {currentView === 'forgot' && (
                     <>
                       <div className="col-md-6 login-section">
                         <h2>Reset your password</h2>
@@ -943,6 +947,59 @@ export default function SearchHeader() {
                                 />
                                 {errors.email && touched.email && (
                                   <div className="error-message">{errors.email}</div>
+                                )}
+                              </div>
+                              <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                                {isSubmitting ? 'Sending...' : 'Send OTP'}
+                              </button>
+                            </Form>
+                          )}
+                        </Formik>
+                      </div>
+                      <div className="col-md-6 new-customer-section">
+                        <h2>New Customer</h2>
+                        <p>Be part of our growing family of new customers! Join us today and unlock a world of exclusive benefits, offers, and personalized experiences.</p>
+                        <button className="register-btn" onClick={handleRegisterClick}>Register</button>
+                      </div>
+                    </>
+                  )} */}
+
+                  {currentView === 'forgot' && (
+                    <>
+                      <div className="col-md-6 login-section">
+                        <h2>Reset your password</h2>
+                        <p className="reset-text">We will send you an OTP to reset your password</p>
+                        <Formik
+                          initialValues={{ mobileNo: '' }}
+                          validationSchema={forgotPasswordSchema}
+                          onSubmit={handleForgotSubmit}
+                        >
+                          {({ errors, touched, values, handleChange, handleBlur, isSubmitting }) => (
+                            <Form>
+                              {error && (
+                                <div className="alert alert-danger" role="alert">
+                                  {error}
+                                </div>
+                              )}
+                              {loading && (
+                                <div className="text-center mb-3">
+                                  <div className="spinner-border text-primary" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                  </div>
+                                </div>
+                              )}
+                              <div className="form-group">
+                                <input
+                                  type="tel"
+                                  name="mobileNo"
+                                  placeholder="Mobile Number*"
+                                  className={`form-input ${errors.mobileNo && touched.mobileNo ? 'is-invalid' : ''}`}
+                                  value={values.mobileNo}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                />
+                                {errors.mobileNo && touched.mobileNo && (
+                                  <div className="error-message">{errors.mobileNo}</div>
                                 )}
                               </div>
                               <button type="submit" className="submit-btn" disabled={isSubmitting}>
@@ -1111,6 +1168,7 @@ export default function SearchHeader() {
                           initialValues={{
                             username: '',
                             email: '',
+                            mobileNo: '',
                             password: '',
                             terms: false
                           }}
@@ -1157,6 +1215,20 @@ export default function SearchHeader() {
                                 />
                                 {errors.email && touched.email && (
                                   <div className="error-message">{errors.email}</div>
+                                )}
+                              </div>
+                              <div className="form-group">
+                                <input
+                                  type="tel"
+                                  name="mobileNo"
+                                  placeholder="Mobile Number*"
+                                  className={`form-input ${errors.mobileNo && touched.mobileNo ? 'is-invalid' : ''}`}
+                                  value={values.mobileNo}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                />
+                                {errors.mobileNo && touched.mobileNo && (
+                                  <div className="error-message">{errors.mobileNo}</div>
                                 )}
                               </div>
                               <div className="form-group password-group">

@@ -8,7 +8,7 @@ import '../styles/AuthStyles.css';
 import { forgotPassword } from '../redux/slices/authSlice';
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState('');
+  const [mobileNo, setMobileNo] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLoading, error, forgotPasswordSuccess } = useSelector((state) => state.auth);
@@ -16,13 +16,13 @@ const ForgotPassword = () => {
   useEffect(() => {
     if (forgotPasswordSuccess) {
       navigate('/verify-forgot');
-      localStorage.setItem('ForgotEmail', email);
+      localStorage.setItem('ForgotMobile', mobileNo);
     }
   }, [forgotPasswordSuccess, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(forgotPassword(email));
+    dispatch(forgotPassword(mobileNo));
   };
 
   return (
@@ -32,18 +32,18 @@ const ForgotPassword = () => {
         <div className="auth-container">
           <div className="auth-form-container">
             <h4 className="auth-title">Forgot Password?</h4>
-            <p className="auth-subtitle">To recover your account, please enter your email below.</p>
+            <p className="auth-subtitle">To recover your account, please enter your mobile number below.</p>
 
             {error && <div className="alert alert-danger">{error}</div>}
 
             <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-4" controlId="formEmail">
-                <Form.Label>Email</Form.Label>
+              <Form.Group className="mb-4" controlId="formMobile">
+                <Form.Label>Mobile Number</Form.Label>
                 <Form.Control
-                  type="email"
-                  placeholder="Your Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="tel"
+                  placeholder="Your Mobile Number"
+                  value={mobileNo}
+                  onChange={(e) => setMobileNo(e.target.value)}
                   required
                 />
               </Form.Group>

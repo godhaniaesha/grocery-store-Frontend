@@ -12,7 +12,7 @@ const VerifyEmail = () => {
   const dispatch = useDispatch();
   const inputRefs = useRef([]);
   const { isLoading, error, success } = useSelector((state) => state.emailVerification);
-  const { registeredEmail } = useSelector((state) => state.user);
+  const { registeredMobile } = useSelector((state) => state.user);
 
   const handleChange = (index, value) => {
     if (/^[0-9]?$/.test(value)) {
@@ -39,7 +39,7 @@ const VerifyEmail = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const otpValue = otp.join('');
-    const result = await dispatch(verifyEmailOtp({ email: registeredEmail, otp: otpValue }));
+    const result = await dispatch(verifyEmailOtp({ mobileNo: registeredMobile, otp: otpValue }));
     if (result.payload && !result.error) {
       navigate('/HomeMain');
     }
@@ -48,7 +48,7 @@ const VerifyEmail = () => {
   const handleResend = async () => {
     dispatch(clearEmailVerificationState());
     setOtp(['', '', '', '', '', '']);
-    const result = await dispatch(resendEmailOtp({ email: registeredEmail }));
+    const result = await dispatch(resendEmailOtp({ mobileNo: registeredMobile }));
     if (result.error) {
       // Error is automatically handled by the reducer
       return;
@@ -62,8 +62,8 @@ const VerifyEmail = () => {
         <div className="auth-form-container">
           <h4 className="auth-title">Verify OTP</h4>
           <p className="auth-subtitle">
-            We've sent a code to <strong>{registeredEmail}</strong>.<br />
-            Please enter it to verify your email.
+            We've sent a code to <strong>{registeredMobile}</strong>.<br />
+            Please enter it to verify your mobile number.
           </p>
 
           <Form onSubmit={handleSubmit}>

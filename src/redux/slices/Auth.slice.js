@@ -70,9 +70,9 @@ export const mobileNoLogin = createAsyncThunk(
 // Verify OTP
 export const verifyOtp = createAsyncThunk(
   'auth/verifyOtp',
-  async ({ email, otp }) => {
+  async ({ mobileNo, otp }) => {
     try {
-      const response = await axios.post('http://localhost:4000/api/emailOtpVerify', { email, otp });
+      const response = await axios.post('http://localhost:4000/api/emailOtpVerify', { mobileNo, otp });
       return response.data;
     } catch (error) {
       throw error.response.data;
@@ -83,9 +83,9 @@ export const verifyOtp = createAsyncThunk(
 // Generate OTP
 export const generateOtp = createAsyncThunk(
   'auth/generateOtp',
-  async (email, { rejectWithValue }) => {
+  async (mobileNo, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:4000/api/forgotPassword', { email });
+      const response = await axios.post('http://localhost:4000/api/forgotPassword', { mobileNo });
       localStorage.setItem("resetUserId", response.data.userId);
       return response.data;
     } catch (error) {
@@ -136,12 +136,12 @@ export const staticResendOtp = createAsyncThunk(
 // Reset Password
 export const resetPassword = createAsyncThunk(
   'auth/resetPassword',
-  async ({ email, password, confirmPassword }, { rejectWithValue }) => {
+  async ({ mobileNo, password, confirmPassword }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
         `http://localhost:4000/api/resetPassword/`,
         {
-          email: email,
+          mobileNo: mobileNo,
           newPassword: password,
           confirmPassword: confirmPassword,
         }
