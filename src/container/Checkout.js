@@ -15,6 +15,8 @@ import wells from '../img/Kassets/Wells Fargo .png'
 import capital from '../img/Kassets/Capital One .png'
 import td from '../img/Kassets/TD.png'
 import order from '../img/Ak_images/orderconfirm.png'
+import Bob from '../img/Kassets/bob.png'
+
 import { useDispatch, useSelector } from 'react-redux';
 import { getallMyCarts, clearCart } from '../redux/slices/cart.Slice';
 import { createPayment } from '../redux/slices/checkout.Slice';
@@ -114,7 +116,7 @@ export default function Checkout()   {
         expiryDate: '',
         cvv: ''
     });
-    const [upiId, setUpiId] = useState('');
+    // const [upiId, setUpiId] = useState('');
     const [selectedBank, setSelectedBank] = useState('');
     const [validationErrors, setValidationErrors] = useState({});
 
@@ -136,21 +138,21 @@ export default function Checkout()   {
         return errors;
     };
 
-    const validateUpiPayment = () => {
-        const errors = {};
-        if (!upiId) {
-            errors.upiId = 'Please enter UPI ID';
-        } else if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+$/.test(upiId)) {
-            errors.upiId = 'Please enter a valid UPI ID';
-        }
-        return errors;
-    };
+    // const validateUpiPayment = () => {
+    //     const errors = {};
+    //     if (!upiId) {
+    //         errors.upiId = 'Please enter UPI ID';
+    //     } else if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+$/.test(upiId)) {
+    //         errors.upiId = 'Please enter a valid UPI ID';
+    //     }
+    //     return errors;
+    // };
 
-    const handleUpiValidation = () => {
-        const errors = validateUpiPayment();
-        setValidationErrors(errors);
-        return Object.keys(errors).length === 0;
-    };
+    // const handleUpiValidation = () => {
+    //     const errors = validateUpiPayment();
+    //     setValidationErrors(errors);
+    //     return Object.keys(errors).length === 0;
+    // };
 
     const validateNetBanking = () => {
         const errors = {};
@@ -329,14 +331,14 @@ export default function Checkout()   {
                                             <div className="g_payment_icons">
                                                 <img src={visa} alt="visa" className="g_card_icon" />
                                                 <img src={masterCard} alt="mastercard" className="g_card_icon" />
-                                                <img src={amex} alt="amex" className="g_card_icon" />
-                                                <img src={discover} alt="discover" className="g_card_icon" />
+                                                {/* <img src={amex} alt="amex" className="g_card_icon" />
+                                                <img src={discover} alt="discover" className="g_card_icon" /> */}
                                             </div>
                                         </div>
                                     </label>
                                 
                                     {/* UPI Option */}
-                                    <label className={`g_payment_option ${selected === 'UPI' ? 'g_selected' : ''}`}>
+                                    {/* <label className={`g_payment_option ${selected === 'UPI' ? 'g_selected' : ''}`}>
                                         <input
                                             type="radio"
                                             name="payment"
@@ -358,7 +360,7 @@ export default function Checkout()   {
                                                 <img src={phonepay} alt="phonepay" className="g_upi_icon" />
                                             </div>
                                         </div>
-                                    </label>
+                                    </label> */}
                                 
                                     {/* Net Banking Option */}
                                     <label className={`g_payment_option ${selected === 'Net Banking' ? 'g_selected' : ''}`}>
@@ -377,10 +379,12 @@ export default function Checkout()   {
                                         <div className="g_payment_label_container">
                                             <span className="g_payment_label">Net Banking</span>
                                             <div className="g_payment_icons">
-                                                <img src={citi} alt="citi" className="g_bank_icon" />
+                                                {/* <img src={citi} alt="citi" className="g_bank_icon" />
                                                 <img src={wells} alt="wells fargo" className="g_bank_icon" />
-                                                <img src={capital} alt="capital one" className="g_bank_icon" />
-                                                <img src={td} alt="td" className="g_bank_icon" />
+                                                <img src={capital} alt="capital one" className="g_bank_icon" />*/}
+                                                <img src={td} alt="td" className="g_bank_icon" /> 
+                                                <img src={Bob} alt="td" className="g_bank_icon" /> 
+
                                             </div>
                                         </div>
                                     </label>

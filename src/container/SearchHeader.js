@@ -1176,7 +1176,7 @@ export default function SearchHeader() {
                   {/* Register View */}
                   {currentView === 'register' && (
                     <>
-                      <div className="col-md-6 login-section">
+                      <div className="col-md-6 reg_sec login-section ">
                         <h2 className="mb-3">Register</h2>
                         <Formik
                           initialValues={{

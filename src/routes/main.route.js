@@ -22,6 +22,7 @@ import Myorder from '../container/Myorder';
 import MyAddresses from '../components/MyAddresses';
 import Thankspopup from '../container/Thankspopup';
 import SliderCaptcha from '../container/SliderCaptcha';
+import Invoice from '../components/Invoice';
 
 const MainRoutes = () => {
   const [loading, setLoading] = useState(true);
@@ -113,6 +114,7 @@ const MainRoutes = () => {
             <Route path="/Myorder" element={<Myorder />} />
             <Route path="/MyAddresses" element={<MyAddresses />} />
             <Route path="/Thankspopup" element={<Thankspopup />} />
+            <Route path="/Invoice" element={<Invoice />} />
             
             {/* Redirect root to Main for verified users */}
             <Route path="/" element={<Navigate to="/Main" />} />

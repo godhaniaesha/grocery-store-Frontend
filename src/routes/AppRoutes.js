@@ -8,6 +8,7 @@ import Register from '../components/Register';
 import VerifyEmail from '../components/VerifyEmail';
 import Home from '../components/Home';
 import Button from '../components/Button';
+import Invoice from '../components/Invoice';
 
 const AppRoutes = () => {
   return (
@@ -25,6 +26,8 @@ const AppRoutes = () => {
 
         {/* Krupali */}
         <Route path="/home" element={<Home />} />
+        
+
         {/* <Route path="/button" element={<Button />} /> */}
         
 

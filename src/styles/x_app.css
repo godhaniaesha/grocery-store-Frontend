@@ -3135,6 +3135,9 @@
 
 
 /* custom redio */
+.x_header {
+  background-color: #2c6145;
+}
 .x_radio {
   padding: 6px;
   border-radius: 50px;
@@ -3190,3 +3193,11 @@
 }
 
 /* end model */
+
+.reg_sec .form-options {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: left !important ;
+  margin-bottom: 20px;
+}
