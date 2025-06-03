@@ -331,7 +331,7 @@ const handleShow = (product) => {
                                         </div>
                                     </div>
                                     <div className="Z_black-ribbon">
-                                        -{product.discount}
+                                        {product.discount}
                                     </div>
                                 </div>
                                 <div className="z_card-body">

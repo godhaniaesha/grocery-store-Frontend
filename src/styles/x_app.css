@@ -3201,3 +3201,194 @@
   align-items: left !important ;
   margin-bottom: 20px;
 }
+
+/* invoice */
+
+/* ...existing code... */
+
+/* Green theme */
+.x_invoice .x_header {
+  /* background: linear-gradient(90deg, #43a047 0%, #66bb6a 100%) !important; */
+  background-color: #2c6145 !important;
+  color: #fff !important;
+}
+.x_invoice .x_table th {
+  background: #e8f5e9 !important;
+  color: #2c6145  !important;
+}
+.x_invoice .badge.bg-success {
+  background: #43a047 !important;
+}
+.x_invoice .btn-success {
+  background: #2c6145 !important;
+  border-color: #388e3c !important;
+}
+/* .x_invoice .btn-warning {
+  background: #81c784 !important;
+  border-color: #66bb6a !important;
+  color: #2e7d32 !important;
+} */
+ .x_invoice .btn-warning {
+    background: #fff !important;
+    border-color: #2c6145 !important;
+    color: #2c6145 !important;
+}
+.x_invoice .list-group-item {
+  background: #e8f5e95e !important;
+}
+.x_invoice .x_note {
+  background: #e8f5e9 !important;
+  color: #2c6145  !important;
+  border-color: #2c6145  !important;
+}
+
+.x_p_pad p {
+  margin-bottom: 0.5rem !important;
+}
+/* Print styles */
+/* @media print {
+  body, .x_invoice, .container {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .x_invoice .x_header, .x_note {
+    background: #e8f5e9 !important;
+    color: #2e7d32 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .x_invoice .btn-success, .btn-warning, .d-flex.gap-2 {
+    display: none !important;
+  }
+  .x_invoice .shadow, .rounded, .bg-white, .bg-light {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+  }
+  .x_invoice .table th, .table td {
+    background: #fff !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .x_invoice .badge.bg-success {
+    background: #43a047 !important;
+    color: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+} */
+ /* ...existing code... */
+
+/* Print only .x_invoice content and hide buttons */
+/* ...existing styles... */
+
+/* Print only .x_invoice, hide everything else */
+@media print {
+  html, body {
+    background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    margin: auto !important;
+    padding: 0 !important;
+    width: 100%;
+    height: 100%;
+
+  }
+  body * {
+    visibility: hidden !important;
+  }
+  .x_invoice, .x_invoice * {
+    visibility: visible !important;
+  }
+  .x_invoice {
+    position: absolute !important;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    min-height: 100vh !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    page-break-inside: avoid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .x_invoice .btn,
+  .x_invoice .d-flex.gap-2 {
+    display: none !important;
+  }
+  .container, .shadow, .rounded, .bg-white, .bg-light {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .table th, .table td, .table-light {
+    background: #e8f5e9 !important;
+    color: #2e7d32 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .badge.bg-success {
+    background: #43a047 !important;
+    color: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .alert-danger, .x_note {
+    background: #e8f5e9 !important;
+    
+    color: #2e7d32 !important;
+    border-color: #43a047 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  /* Prevent page breaks inside invoice */
+  .x_invoice, .x_invoice * {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+
+/* pdf */
+/* Hide .no-print-pdf for print and PDF export */
+/* Hide buttons for print and PDF */
+@media print {
+  .no-print-pdf {
+    display: none !important;
+  }
+}
+
+/* Hide for html2pdf.js PDF export */
+
+/* @media screen {
+  .no-print-pdf {
+    display: flex !important;
+  }
+} */
+
+
+/* Table formatting for PDF/print and screen */
+.x_table th, .x_table td {
+  vertical-align: middle;
+  text-align: left;
+  padding: 10px 8px;
+  border: 1px solid #b2dfdb !important;
+  font-size: 15px;
+}
+.x_table thead th {
+  background: #e8f5e9 !important;
+  color: #2e7d32 !important;
+  font-weight: bold;
+}
+.x_table tbody tr:nth-child(even) {
+  background: #f1f8e9 !important;
+}
+.x_table img {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+/* ...existing code... */

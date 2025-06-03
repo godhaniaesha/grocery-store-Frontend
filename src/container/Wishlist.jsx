@@ -136,7 +136,7 @@ const Wishlist = () => {
                                 </div>
                                 {variant && (
                                     <div className="Z_black-ribbon">
-                                        -{variant.discount}
+                                        {variant.discount}
                                     </div>
                                 )}
                             </div>

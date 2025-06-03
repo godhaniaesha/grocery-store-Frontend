@@ -205,6 +205,8 @@ export default function Checkout()   {
 
                 const paymentResult = await response.json();
                 console.log('Payment record created:', paymentResult);
+                localStorage.setItem('paymentId',paymentResult.data._id );
+
 
                 // Show success modal and wait before navigation
                 setShow(true);
@@ -212,7 +214,8 @@ export default function Checkout()   {
                 // Set a timeout to allow users to see the modal
                 setTimeout(() => {
                     setShow(false);
-                    navigate('/Main');
+                    navigate('/Invoice');
+                    
                     localStorage.removeItem('orderId');
                     localStorage.removeItem('activePage');
                     localStorage.removeItem("appliedCoupon");

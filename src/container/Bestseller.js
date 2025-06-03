@@ -27,7 +27,7 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
- 
+
 function Bestseller(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,15 +41,15 @@ function Bestseller(props) {
   const [modalShow, setModalShow] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [currentIndex, setCurrentIndex] = useState(0);
- 
+
   useEffect(() => {
     dispatch(fetchProducts());
     dispatch(fetchProductVariants({}));
     dispatch(fetchCategories());
     dispatch(getWishlistItems());
-    
+
   }, [dispatch]);
- 
+
   const handleClose = () => {
     setModalShow(false);
     setTimeout(() => {
@@ -57,14 +57,14 @@ function Bestseller(props) {
       setQuantity(1);
     }, 200);
   };
- 
+
   const handleShow = (product) => {
     const variant = variants?.find(v => v.productId === product._id);
-    const existingCartItem = cartItems?.find(item => 
-      item.productId === product._id && 
+    const existingCartItem = cartItems?.find(item =>
+      item.productId === product._id &&
       item.productVarientId === variant?._id
     );
-    
+
     // Set initial quantity based on cart or default to 1
     setQuantity(existingCartItem?.quantity || 1);
     setSelectedProduct({
@@ -74,14 +74,14 @@ function Bestseller(props) {
     setShowModal(true);
     setTimeout(() => setModalShow(true), 100);
   };
- 
+
   const handleQuantityChange = (value) => {
     const newQuantity = quantity + value;
     if (newQuantity >= 1 && newQuantity <= 10) {
       setQuantity(newQuantity);
     }
   };
- 
+
   // Function to navigate to the next slide
   const handleNext = () => {
     if (currentIndex < products.length - 1) {
@@ -90,7 +90,7 @@ function Bestseller(props) {
       setCurrentIndex(0); // Loop back to the beginning
     }
   };
- 
+
   // Function to navigate to the previous slide
   const handlePrev = () => {
     if (currentIndex > 0) {
@@ -99,7 +99,7 @@ function Bestseller(props) {
       setCurrentIndex(products.length - 1); // Loop to the end
     }
   };
- 
+
   // Auto slide functionality
   React.useEffect(() => {
     const interval = setInterval(() => {
@@ -107,7 +107,7 @@ function Bestseller(props) {
     }, 3000);
     return () => clearInterval(interval);
   }, [currentIndex]);
- 
+
   const renderStars = (rating) => {
     return [...Array(5)].map((_, index) => (
       <FaStar
@@ -116,13 +116,13 @@ function Bestseller(props) {
       />
     ));
   };
- 
+
   // Function to get the current visible products (6 at a time)
   // આ ફંક્શન્સ હટાવી શકાય છે કારણ કે હવે Swiper તેને મેનેજ કરશે
   // handleNext, handlePrev, currentIndex અને auto slide functionality ને હટાવી દો
   const getVisibleProducts = () => {
     if (!products || products.length === 0) return [];
-    
+
     return products
       .filter(product => variants?.some(v => v.productId === product._id))
       .map(product => {
@@ -134,7 +134,7 @@ function Bestseller(props) {
         };
       });
   };
- 
+
   const isInWishlist = (productId) => {
     return wishlistItems?.some(item => item.productId === productId);
   };
@@ -142,23 +142,23 @@ function Bestseller(props) {
   if (productLoading || variantLoading) {
     return <LoadingSpinner></LoadingSpinner>;
   }
- 
+
   // Add cart handling functions
   const handleAddToCart = async (product) => {
-    try {  
+    try {
       const variant = variants?.find(v => v.productId === product._id);
       if (!variant) {
         toast.error("Product variant not found");
         return;
       }
-      const existingCartItem = cartItems?.find(item => 
-        item.productId === product._id && 
+      const existingCartItem = cartItems?.find(item =>
+        item.productId === product._id &&
         item.productVarientId === variant._id
       );
-      
+
       if (existingCartItem) {
         const newQuantity = existingCartItem.quantity + quantity;
-        
+
         if (newQuantity > 10) {
           toast.warning("Maximum 10 items allowed in cart");
           return;
@@ -179,14 +179,14 @@ function Bestseller(props) {
         })).unwrap();
         toast.success("Item added to cart successfully");
       }
-      
+
       await dispatch(getallMyCarts());
       handleClose();
     } catch (error) {
       console.error("Cart operation failed:", error);
       toast.error(error.message || "કાર્ટમાં ઉમેરવામાં નિષ્ફળ");
     }
-};
+  };
 
 
 
@@ -221,7 +221,7 @@ function Bestseller(props) {
 
 
           </div>
- 
+
           <div className="position-relative">
             <Swiper
               modules={[Navigation, Autoplay]}
@@ -266,20 +266,20 @@ function Bestseller(props) {
                       />
                       <div className="z_hover-overlay">
                         <div className="z_hover-icons">
-                          <button 
+                          <button
                             className="z_hover-icon-btn"
                             onClick={() => handleAddToCart(product)}
                           >
                             <FaShoppingCart />
                           </button>
-                          <button 
+                          <button
                             className={`z_hover-icon-btn ${isInWishlist(product._id) ? 'active' : ''}`}
                             onClick={() => handleAddToWishlist(product._id)}
                           >
-                            <FaHeart style={{color: isInWishlist(product._id) ? 'red' : 'inherit'}} />
+                            <FaHeart style={{ color: isInWishlist(product._id) ? 'red' : 'inherit' }} />
                           </button>
                           <button
-                            className="z_hover-icon-btn"
+                            className="z_hover-icon-btn z_eye"
                             onClick={() => handleShow(product)}
                           >
                             <FaEye />
@@ -297,7 +297,7 @@ function Bestseller(props) {
                           (4.5)
                         </span>
                       </div>
-                      <Card.Title 
+                      <Card.Title
                         className="z_product-title"
                         onClick={() => {
                           localStorage.setItem('selectedProductId', product._id);
@@ -323,16 +323,16 @@ function Bestseller(props) {
             </Swiper>
           </div>
         </div>
- 
-        <Modal show={showModal} onHide={handleClose} size="lg" centered>
+
+        <Modal show={showModal} onHide={handleClose} size="lg" centered className="p-0">
           <Modal.Body className="p-0 position-relative">
             {selectedProduct && (
               <>
                 <button onClick={handleClose} className="z_modal-close-btn">
                   <FaTimes className="z_modal-close-icon" />
                 </button>
-                <div className="row g-0">
-                  <div className="col-md-6 position-relative">
+                <div className="row g-0 p-0">
+                  <div className="col-md-6 position-relative p-0">
                     <div className="modal-img-wrapper">
                       <img
                         src={`http://localhost:4000/${selectedProduct.images?.[0]}`}
@@ -347,14 +347,14 @@ function Bestseller(props) {
                   <div className="col-md-6">
                     <div className="z_modal-content">
                       <h4 className="mb-3">{selectedProduct.productName}</h4>
- 
+
                       {/* <div className="z_rating-container mb-4">
                         {renderStars(4.5)}
                         <span className="z_rating-text ms-2">
                           (4.5 customer review)
                         </span>
                       </div> */}
- 
+
                       <div className="mb-4">
                         <div className="d-flex align-items-center gap-2">
                           <span className="h5 mb-0">
@@ -365,11 +365,11 @@ function Bestseller(props) {
                           </span>
                         </div>
                       </div>
- 
+
                       <p className="text-muted mb-4">
                         {selectedProduct.description}
                       </p>
- 
+
                       {/* // In the Modal section, update the quantity display: */}
                       <div className="z_modal-quantity-container">
                         <div className="z_modal-quantity-selector">
@@ -380,7 +380,7 @@ function Bestseller(props) {
                           >
                             <FaMinus size={12} />
                           </button>
- 
+
                           <div className="d-flex flex-column align-items-center">
                             <span className="z_modal-quantity-number">
                               {quantity}
@@ -391,7 +391,7 @@ function Bestseller(props) {
                               // </small>
                             )} */}
                           </div>
- 
+
                           <button
                             className="z_modal-quantity-btn"
                             onClick={() => handleQuantityChange(1)}
@@ -400,8 +400,8 @@ function Bestseller(props) {
                             <FaPlus size={12} />
                           </button>
                         </div>
- 
-                        <button 
+
+                        <button
                           className="z_modal-add-cart-btn"
                           onClick={() => handleAddToCart(selectedProduct)}
                         >
@@ -409,7 +409,7 @@ function Bestseller(props) {
                           <FaShoppingCart className="z_cart-icon" />
                         </button>
                       </div>
- 
+
                       <div className="z_modal-details">
                         <div className="z_modal-details-item">
                           <span className="z_modal-details-label">SKU:</span>
@@ -443,5 +443,5 @@ function Bestseller(props) {
     </>
   );
 }
- 
+
 export default Bestseller;

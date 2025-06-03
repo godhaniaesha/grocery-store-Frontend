@@ -1,58 +1,92 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import '../styles/x_app.css';
-
+import html2pdf from "html2pdf.js";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPayment } from "../redux/slices/payment.Slice";
 
 const Invoice = () => {
+  const [isdisplay, setIsDisplay] = useState(true);
+  const navigate = useNavigate();
+ const id= localStorage.getItem('paymentId')
+  const dispatch = useDispatch();
+  const { payment, loading, error } = useSelector((state) => state.payment);
+
+  useEffect(() => {
+    if (id) dispatch(fetchPayment(id));
+  }, [id, dispatch]);
+
+  const downloadPDF = () => {
+    const invoiceElement = document.querySelector('.x_invoice');
+    const btns = invoiceElement.querySelector('.no-print-pdf');
+    setIsDisplay(false);
+    if (btns) btns.style.display = 'none';
+
+    const opt = {
+      margin: 0,
+      filename: 'invoice.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(invoiceElement).save().then(() => {
+      if (btns) btns.style.display = '';
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    });
+  };
+
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!payment) return <div>No payment data found.</div>;
+
+
+  // Extract dynamic data
+  const user = payment.userData[0];
+  const order = payment.orderData[0];
+  const items = order.items;
+  const products = payment.productData;
+
+  // Helper to get product details by productId
+  const getProduct = (productId) =>
+    products.find((p) => p._id === productId);
+
   return (
     <div className="x_invoice bg-light p-4">
       <div className="container bg-white shadow p-4 rounded">
         {/* Header */}
         <div className="x_header d-flex flex-column flex-md-row justify-content-between align-items-center bg-info text-white p-3 rounded">
           <div>
-            <img src="/logo.png" alt="Logo" height="40" />
-            <h5 className="mt-2">Larkon Admin.</h5>
+            <span className="fw-bold fs-4">FreshMart</span>
             <p className="mb-0">1729 Bangor St, Houlton, ME, USA</p>
             <p className="mb-0">Phone: +1(142)-532-9109</p>
           </div>
           <div className="text-end">
-            <p>
-              <strong>Invoice:</strong> #INV-075826790
-            </p>
-            <p>
-              <strong>Issue Date:</strong> 23 April 2024
-            </p>
-            <p>
-              <strong>Due Date:</strong> 26 April 2024
-            </p>
-            <p>
-              <strong>Amount:</strong> $737.00
-            </p>
+            <p><strong>Date:</strong> {new Date(payment.createdAt).toLocaleDateString()}</p>
+            <p><strong>Amount:</strong> ${order.totalAmount}</p>
             <p>
               <strong>Status:</strong>{" "}
-              <span className="badge bg-success">Paid</span>
+              <span className="badge bg-success">{payment.paymentStatus}</span>
             </p>
           </div>
         </div>
 
         {/* Info Sections */}
         <div className="row mt-4">
-          <div className="col-md-6">
+          <div className="col-md-6 x_p_pad">
             <h6>Issue From :</h6>
-            <p>
-              <strong>Larkon Admin.INC</strong>
-            </p>
-            <p>2437 Romano Street Cambridge, MA 02141</p>
+            <p><strong>FreshMart Admin.INC</strong></p>
             <p>Phone: +1(781)-417-2004</p>
-            <p>Email: JulianeKuhn@jourrapide.com</p>
+            <p>Email: freshmartstore@gamil.com</p>
           </div>
-          <div className="col-md-6 text-md-end">
+          <div className="col-md-6 text-md-end x_p_pad">
             <h6>Issue For :</h6>
-            <p>
-              <strong>Gaston Lapierre</strong>
-            </p>
-            <p>1344 Hershell Hollow Road WA 98168, USA</p>
-            <p>Phone: +1(123)-732-760-5760</p>
-            <p>Email: hello@dundermuffin.com</p>
+            <p><strong>{user.email}</strong></p>
+            <p>Phone: {user.mobileNo}</p>
+            <p>Email: {user.email}</p>
           </div>
         </div>
 
@@ -61,58 +95,32 @@ const Invoice = () => {
           <table className="table x_table table-bordered align-middle">
             <thead className="table-light">
               <tr>
-                <th>Product Name</th>
+                <th>Product</th>
                 <th>Quantity</th>
                 <th>Price</th>
-                <th>Tax</th>
-                <th>Total</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>
-                  <img src="/tshirt.png" width="40" alt="T-shirt" /> Men Black Slim Fit T-shirt
-                  <br />
-                  <small>Size : M</small>
-                </td>
-                <td>1</td>
-                <td>$80.00</td>
-                <td>$3.00</td>
-                <td>$83.00</td>
-              </tr>
-              <tr>
-                <td>
-                  <img src="/pant.png" width="40" alt="Pant" /> Dark Green Cargo Pant
-                  <br />
-                  <small>Size : M</small>
-                </td>
-                <td>3</td>
-                <td>$110.00</td>
-                <td>$4.00</td>
-                <td>$330.00</td>
-              </tr>
-              <tr>
-                <td>
-                  <img src="/wallet.png" width="40" alt="Wallet" /> Men Dark Brown Wallet
-                  <br />
-                  <small>Size : S</small>
-                </td>
-                <td>1</td>
-                <td>$132.00</td>
-                <td>$5.00</td>
-                <td>$137.00</td>
-              </tr>
-              <tr>
-                <td>
-                  <img src="/kids.png" width="40" alt="Kids T-shirt" /> Kid’s Yellow T-shirt
-                  <br />
-                  <small>Size : S</small>
-                </td>
-                <td>2</td>
-                <td>$110.00</td>
-                <td>$5.00</td>
-                <td>$223.00</td>
-              </tr>
+              {items.map((item, idx) => {
+                const product = getProduct(item.productId);
+                return (
+                  <tr key={item._id || idx}>
+                    <td>
+                      {product && product.images && product.images[0] && (
+                        <img
+                          src={`http://localhost:4000/public/${product.images[0].replace('public\\', '')}`}
+                          alt={product.productName}
+                          width={40}
+                          style={{ marginRight: 8, verticalAlign: 'middle' }}
+                        />
+                      )}
+                      {product ? product.productName : item.productId}
+                    </td>
+                    <td>{item.quantity}</td>
+                    <td>{item.price}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -122,16 +130,16 @@ const Invoice = () => {
           <div className="col-md-5">
             <ul className="list-group">
               <li className="list-group-item d-flex justify-content-between">
-                <span>Sub Total:</span> <strong>$777.00</strong>
+                <span>Sub Total:</span> <strong>${order.totalAmount}</strong>
               </li>
               <li className="list-group-item d-flex justify-content-between">
-                <span>Discount:</span> <strong>-$60.00</strong>
+                <span>Discount:</span> <strong>-$0.00</strong>
               </li>
               <li className="list-group-item d-flex justify-content-between">
-                <span>Estimated Tax (15.5%):</span> <strong>$20.00</strong>
+                <span>Estimated Tax:</span> <strong>$0.00</strong>
               </li>
               <li className="list-group-item d-flex justify-content-between">
-                <span>Grand Amount:</span> <strong>$737.00</strong>
+                <span>Grand Amount:</span> <strong>${order.totalAmount}</strong>
               </li>
             </ul>
           </div>
@@ -139,16 +147,16 @@ const Invoice = () => {
 
         {/* Footer */}
         <div className="alert alert-danger mt-4 x_note">
-          <strong>Note:</strong> All accounts are to be paid within 7 days from receipt of invoice. To be paid by cheque or credit card or direct payment online. If not paid within 7 days the credits details supplied as confirmation of work undertaken will be charged the agreed quoted fee noted above.
+          <strong>Note:</strong> All accounts are to be paid within 7 days from receipt of invoice. To be paid by cheque or credit card or direct payment online. If payment isn't received within 7 days, the quoted fee will be charged to the credit details on file.
         </div>
 
         {/* Buttons */}
-        <div className="d-flex justify-content-end gap-2">
-          <button className="btn btn-success" onClick={() => window.print()}>
-            Print
-          </button>
-          <button className="btn btn-warning">Submit</button>
-        </div>
+        {isdisplay && (
+          <div className="d-flex justify-content-end gap-2 no-print-pdf">
+            <button className="btn btn-warning" onClick={() => window.print()}>Print</button>
+            <button className="btn btn-success" onClick={downloadPDF}>Download</button>
+          </div>
+        )}
       </div>
     </div>
   );

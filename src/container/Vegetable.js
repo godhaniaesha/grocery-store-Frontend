@@ -596,24 +596,24 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
 
     return (
         <>
-        <section className="Z_banner z_sm_db">
-                    <Container>
-                        <Row className="justify-content-end">
-                            <Col md={6} className="d-flex align-items-center">
-                                <div className="Z_banner_content text-end">
-                                    <h2>Premium Grocery Store</h2>
-                                    <p>Discover our selection of high-quality nuts, dried fruits, seeds, spices, and grains</p>
-                                    <Link to="/Vegetable" className="order-now-btn">
-                                        Order Now
-                                        <span>
-                                            <FaChevronRight />
-                                        </span>
-                                    </Link>
-                                </div>
-                            </Col>
-                        </Row>
-                    </Container>
-                </section>
+            <section className="Z_banner z_sm_db">
+                <Container>
+                    <Row className="justify-content-end">
+                        <Col md={6} className="d-flex align-items-center">
+                            <div className="Z_banner_content text-end">
+                                <h2>Premium Grocery Store</h2>
+                                <p>Discover our selection of high-quality nuts, dried fruits, seeds, spices, and grains</p>
+                                <Link to="/Vegetable" className="order-now-btn">
+                                    Order Now
+                                    <span>
+                                        <FaChevronRight />
+                                    </span>
+                                </Link>
+                            </div>
+                        </Col>
+                    </Row>
+                </Container>
+            </section>
             <div className='a_header_container'>
                 {/* Banner Section */}
                 <section className="Z_banner z_lg_db">
@@ -656,47 +656,48 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                             className="z_category-swiper"
                         >
                             {categories.map((category, index) => (
-                               <SwiperSlide key={index}>
-                               <div className="db_card text-center h-100" 
-                               style={{   border: selectedCategory === category._id ? '1px solid #2c6145' : '1px solid transparent',
-                                           }}>
-                                   <div
-                                       className={`z_category-card d-flex flex-column justify-content-center align-items-center ${selectedCategory === category._id ? 'active-category' : ''}`}
-                                       onClick={() => {
-                                           localStorage.removeItem('selectedSubCategoryIdfromheader');
-                           
-                                           if (selectedCategory === category._id) {
-                                               localStorage.removeItem('selectedCategoryId');
-                                               setSelectedCategory('');
-                                               dispatch(fetchProducts({}));
-                                           } else {
-                                               setSelectedCategory(category._id);
-                                               localStorage.setItem('selectedCategoryId', category._id);
-                                               localStorage.removeItem('searchQuery');
-                                               localStorage.removeItem('selectedSubCategoryIdfromheader');
-                                               dispatch(fetchProducts({ categoryId: category._id }));
-                                           }
-                                       }}
-                                       style={{
-                                           cursor: 'pointer',
-                                           borderRadius: '50%',
-                                           padding: '10px',
-                                           transition: 'all 0.3s ease',
-                                           height: '150px',
-                                           display: 'flex',
-                                           flexDirection: 'column',
-                                           justifyContent: 'center',
-                                           backgroundColor: 'transparent',
-                                        
-                                       }}
-                                   >
-                                       <div className="db_icon">{getCategoryIcon(category.categoryName)}</div>
-                                       <h6 className="db_card_title mb-0">
-                                           {category.categoryName?.length > 17 ? `${category.categoryName.substring(0, 17)}...` : category.categoryName}
-                                       </h6>
-                                   </div>
-                               </div>
-                           </SwiperSlide>
+                                <SwiperSlide key={index}>
+                                    <div className="db_card text-center h-100"
+                                        style={{
+                                            border: selectedCategory === category._id ? '1px solid #2c6145' : '1px solid transparent',
+                                        }}>
+                                        <div
+                                            className={`z_category-card d-flex flex-column justify-content-center align-items-center ${selectedCategory === category._id ? 'active-category' : ''}`}
+                                            onClick={() => {
+                                                localStorage.removeItem('selectedSubCategoryIdfromheader');
+
+                                                if (selectedCategory === category._id) {
+                                                    localStorage.removeItem('selectedCategoryId');
+                                                    setSelectedCategory('');
+                                                    dispatch(fetchProducts({}));
+                                                } else {
+                                                    setSelectedCategory(category._id);
+                                                    localStorage.setItem('selectedCategoryId', category._id);
+                                                    localStorage.removeItem('searchQuery');
+                                                    localStorage.removeItem('selectedSubCategoryIdfromheader');
+                                                    dispatch(fetchProducts({ categoryId: category._id }));
+                                                }
+                                            }}
+                                            style={{
+                                                cursor: 'pointer',
+                                                borderRadius: '50%',
+                                                padding: '10px',
+                                                transition: 'all 0.3s ease',
+                                                height: '150px',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                justifyContent: 'center',
+                                                backgroundColor: 'transparent',
+
+                                            }}
+                                        >
+                                            <div className="db_icon">{getCategoryIcon(category.categoryName)}</div>
+                                            <h6 className="db_card_title mb-0">
+                                                {category.categoryName?.length > 17 ? `${category.categoryName.substring(0, 17)}...` : category.categoryName}
+                                            </h6>
+                                        </div>
+                                    </div>
+                                </SwiperSlide>
                             ))}
 
                         </Swiper>
@@ -1009,72 +1010,78 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                             </div>
                         )}
                     </div>
-                    <Modal show={showModal} onHide={handleClose} size="lg" centered>
+
+                    <Modal show={showModal} onHide={handleClose} size="lg" centered className="p-0">
                         <Modal.Body className="p-0 position-relative">
                             {selectedProduct && (
-                                //    console.log(selectedProduct)
                                 <>
                                     <button onClick={handleClose} className="z_modal-close-btn">
                                         <FaTimes className="z_modal-close-icon" />
                                     </button>
-                                    <div className="row g-0">
-                                        <div className="col-md-6 position-relative">
+                                    <div className="row g-0 p-0">
+                                        <div className="col-md-6 position-relative p-0">
                                             <div className="modal-img-wrapper">
                                                 <img
-                                                    src={
-                                                        Array.isArray(selectedProduct.image)
-                                                            ? `http://localhost:4000/${selectedProduct.image[0]}`
-                                                            : `http://localhost:4000/${selectedProduct.image}`
-                                                    }
-                                                    alt={selectedProduct.name}
+                                                    src={`http://localhost:4000/${selectedProduct.images?.[0]}`}
+                                                    alt={selectedProduct.productName}
                                                     className="z_modal-product-img"
                                                 />
-                                                <span className="z_modal-discount-badge">{selectedProduct.discount}</span>
-
-                                                {/* {selectedProduct.discount > 0 && (
-                                                    <span className="z_modal-discount-badge">
-                                                        {selectedProduct.discount}
-                                                    </span>
-                                                )} */}
+                                                <span className="z_modal-discount-badge">
+                                                    {selectedProduct.variantDiscount}
+                                                </span>
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="z_modal-content">
-                                                <h4 className="mb-3">{selectedProduct.name}</h4>
+                                                <h4 className="mb-3">{selectedProduct.productName}</h4>
+
                                                 {/* <div className="z_rating-container mb-4">
-                                                    <span className="z_rating-text ms-2 py-1 px-2" style={{ border: "1px solid green", borderRadius: "25px" }}>{selectedProduct.discount} Off</span>
-                                                </div> */}
+                        {renderStars(4.5)}
+                        <span className="z_rating-text ms-2">
+                          (4.5 customer review)
+                        </span>
+                      </div> */}
+
                                                 <div className="mb-4">
                                                     <div className="d-flex align-items-center gap-2">
-                                                        <span className="h5 mb-0">{selectedProduct.price}</span>
+                                                        <span className="h5 mb-0">
+                                                            ${selectedProduct.variantPrice?.toFixed(2) || '0.00'}
+                                                        </span>
                                                         <span className="text-decoration-line-through text-muted">
-                                                            {selectedProduct.discountPrice}
+                                                            ${((selectedProduct.variantPrice || 0) * 1.2).toFixed(2)}
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <p className="text-muted mb-4">{selectedProduct.description}</p>
+
+                                                <p className="text-muted mb-4">
+                                                    {selectedProduct.description}
+                                                </p>
+
+                                                {/* // In the Modal section, update the quantity display: */}
                                                 <div className="z_modal-quantity-container">
                                                     <div className="z_modal-quantity-selector">
                                                         <button
                                                             className="z_modal-quantity-btn"
-                                                            onClick={() => handleModalQuantityChange(-1)}
+                                                            onClick={() => handleQuantityChange(-1)}
                                                             disabled={quantity === 1}
                                                         >
                                                             <FaMinus size={12} />
                                                         </button>
+
                                                         <div className="d-flex flex-column align-items-center">
                                                             <span className="z_modal-quantity-number">
                                                                 {quantity}
                                                             </span>
-                                                            {/* {selectedProduct.quantity > 0 && (
-                                                                <small className="text-muted" style={{fontSize: '0.75rem'}}>
-                                                                    In Cart: {selectedProduct.quantity}
-                                                                </small>
-                                                            )} */}
+                                                            {/* {selectedProduct.cartQuantity > 0 && (
+                              // <small className="text-muted" style={{fontSize: '0.75rem'}}>
+                              //    {selectedProduct.cartQuantity}
+                              // </small>
+                            )} */}
                                                         </div>
+
                                                         <button
                                                             className="z_modal-quantity-btn"
-                                                            onClick={() => handleModalQuantityChange(1)}
+                                                            onClick={() => handleQuantityChange(1)}
                                                             disabled={quantity === 10}
                                                         >
                                                             <FaPlus size={12} />
@@ -1093,18 +1100,23 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                 <div className="z_modal-details">
                                                     <div className="z_modal-details-item">
                                                         <span className="z_modal-details-label">SKU:</span>
-                                                        <span className="z_modal-details-value">{selectedProduct.id || '9852434'}</span>
+                                                        <span className="z_modal-details-value">
+                                                            {selectedProduct._id || "9852434"}
+                                                        </span>
                                                     </div>
                                                     <div className="z_modal-details-item">
-                                                        {/* <span className="z_modal-details-label">Category:</span>
-                                                        <span className="z_modal-details-value">Body & Bath</span> */}
-                                                        <div className="product-category mb-2">
-                                                            <strong>Category:</strong> {selectedProduct?.categoryName}
-                                                        </div>
+                                                        <span className="z_modal-details-label">
+                                                            Category:
+                                                        </span>
+                                                        <span className="z_modal-details-value">
+                                                            {categories.find(cat => cat._id === selectedProduct.categoryId)?.categoryName || 'Uncategorized'}
+                                                        </span>
                                                     </div>
                                                     <div className="z_modal-details-item">
                                                         <span className="z_modal-details-label">Brand:</span>
-                                                        <span className="z_modal-details-value">Premium Collection</span>
+                                                        <span className="z_modal-details-value">
+                                                            {selectedProduct.brand || 'Premium Collection'}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>

@@ -24,7 +24,7 @@ function Recommended() {
 
     const { categories } = useSelector(state => state.category);
     const { products } = useSelector(state => state.product);
-    
+
     const { variants } = useSelector(state => state.productveriant);
     const { cartItems = [] } = useSelector(state => state.addcart || {});
     const { wishlistItems } = useSelector(state => state.wishlist);
@@ -95,11 +95,11 @@ function Recommended() {
     const handleShow = (product) => {
         const variant = variants?.find(v => v.productId === product.id);
         const existingCartItem = cartItems?.find(item =>
-            item.productId === product.id 
+            item.productId === product.id
         );
 
-        console.log(cartItems,"existingCartItem");
-        
+        console.log(cartItems, "existingCartItem");
+
         setQuantity(existingCartItem?.quantity || 1);
 
         setSelectedProduct(product);
@@ -145,7 +145,7 @@ function Recommended() {
                 item.productVarientId === variant._id
             );
 
-            const newQuantity =  quantity;
+            const newQuantity = quantity;
 
             if (existingCartItem) {
                 await dispatch(updateCart({
@@ -238,10 +238,10 @@ function Recommended() {
                                         {renderStars(product.rating)}
                                         <span className="z_rating-text">({product.rating})</span>
                                     </div>
-                                    <Card.Title className="z_product-title"  style={{ cursor: "pointer" }} onClick={() => {
-                                                localStorage.setItem('selectedProductId', product.id);
-                                                navigate(`/product-details/${product.id}`);
-                                            }}>{product.title}</Card.Title>
+                                    <Card.Title className="z_product-title" style={{ cursor: "pointer" }} onClick={() => {
+                                        localStorage.setItem('selectedProductId', product.id);
+                                        navigate(`/product-details/${product.id}`);
+                                    }}>{product.title}</Card.Title>
                                     <Card.Text className="z_product-subtitle">{product.subtitle}</Card.Text>
                                     <div className="z_price-container">
                                         <span className="z_current-price">${product.price.toFixed(2)}</span>
@@ -254,51 +254,87 @@ function Recommended() {
                 </div>
             </div>
 
-            <Modal show={showModal} onHide={handleClose} size="lg" centered>
+            <Modal show={showModal} onHide={handleClose} size="lg" centered className="p-0">
                 <Modal.Body className="p-0 position-relative">
                     {selectedProduct && (
                         <>
                             <button onClick={handleClose} className="z_modal-close-btn">
                                 <FaTimes className="z_modal-close-icon" />
                             </button>
-                            <div className="row g-0">
-                                <div className="col-md-6">
+                            <div className="row g-0 p-0">
+                                <div className="col-md-6 position-relative p-0">
                                     <div className="modal-img-wrapper">
                                         <img
-                                            src={`http://localhost:4000/${selectedProduct.image}`}
-                                            alt={selectedProduct.title}
+                                            src={`http://localhost:4000/${selectedProduct.images?.[0]}`}
+                                            alt={selectedProduct.productName}
                                             className="z_modal-product-img"
                                         />
-                                        <span className="z_modal-discount-badge">{selectedProduct.variantDiscount}</span>
+                                        <span className="z_modal-discount-badge">
+                                            {selectedProduct.variantDiscount}
+                                        </span>
                                     </div>
                                 </div>
                                 <div className="col-md-6">
                                     <div className="z_modal-content">
-                                        <h4 className="mb-3">{selectedProduct.title}</h4>
+                                        <h4 className="mb-3">{selectedProduct.productName}</h4>
+
+                                        {/* <div className="z_rating-container mb-4">
+                                    {renderStars(4.5)}
+                                    <span className="z_rating-text ms-2">
+                                      (4.5 customer review)
+                                    </span>
+                                  </div> */}
 
                                         <div className="mb-4">
                                             <div className="d-flex align-items-center gap-2">
-                                                <span className="h5 mb-0">${selectedProduct.price.toFixed(2)}</span>
+                                                <span className="h5 mb-0">
+                                                    ${selectedProduct.variantPrice?.toFixed(2) || '0.00'}
+                                                </span>
                                                 <span className="text-decoration-line-through text-muted">
-                                                    ${selectedProduct.originalPrice.toFixed(2)}
+                                                    ${((selectedProduct.variantPrice || 0) * 1.2).toFixed(2)}
                                                 </span>
                                             </div>
                                         </div>
 
-                                        <p className="text-muted mb-4">{selectedProduct.description}</p>
+                                        <p className="text-muted mb-4">
+                                            {selectedProduct.description}
+                                        </p>
 
+                                        {/* // In the Modal section, update the quantity display: */}
                                         <div className="z_modal-quantity-container">
                                             <div className="z_modal-quantity-selector">
-                                                <button onClick={() => handleQuantityChange(-1)} className="z_modal-quantity-btn" disabled={quantity === 1}>
+                                                <button
+                                                    className="z_modal-quantity-btn"
+                                                    onClick={() => handleQuantityChange(-1)}
+                                                    disabled={quantity === 1}
+                                                >
                                                     <FaMinus size={12} />
                                                 </button>
-                                                <span className="z_modal-quantity-number">{quantity}</span>
-                                                <button onClick={() => handleQuantityChange(1)} className="z_modal-quantity-btn" disabled={quantity === 10}>
+
+                                                <div className="d-flex flex-column align-items-center">
+                                                    <span className="z_modal-quantity-number">
+                                                        {quantity}
+                                                    </span>
+                                                    {/* {selectedProduct.cartQuantity > 0 && (
+                                          // <small className="text-muted" style={{fontSize: '0.75rem'}}>
+                                          //    {selectedProduct.cartQuantity}
+                                          // </small>
+                                        )} */}
+                                                </div>
+
+                                                <button
+                                                    className="z_modal-quantity-btn"
+                                                    onClick={() => handleQuantityChange(1)}
+                                                    disabled={quantity === 10}
+                                                >
                                                     <FaPlus size={12} />
                                                 </button>
                                             </div>
 
-                                            <button className="z_modal-add-cart-btn" onClick={() => handleAddToCart(selectedProduct)}>
+                                            <button
+                                                className="z_modal-add-cart-btn"
+                                                onClick={() => handleAddToCart(selectedProduct)}
+                                            >
                                                 Add to cart
                                                 <FaShoppingCart className="z_cart-icon" />
                                             </button>
@@ -307,15 +343,23 @@ function Recommended() {
                                         <div className="z_modal-details">
                                             <div className="z_modal-details-item">
                                                 <span className="z_modal-details-label">SKU:</span>
-                                                <span className="z_modal-details-value">{selectedProduct.id}</span>
+                                                <span className="z_modal-details-value">
+                                                    {selectedProduct._id || "9852434"}
+                                                </span>
                                             </div>
                                             <div className="z_modal-details-item">
-                                                <span className="z_modal-details-label">Category:</span>
-                                                <span className="z_modal-details-value">{selectedProduct.subtitle}</span>
+                                                <span className="z_modal-details-label">
+                                                    Category:
+                                                </span>
+                                                <span className="z_modal-details-value">
+                                                    {categories.find(cat => cat._id === selectedProduct.categoryId)?.categoryName || 'Uncategorized'}
+                                                </span>
                                             </div>
                                             <div className="z_modal-details-item">
                                                 <span className="z_modal-details-label">Brand:</span>
-                                                <span className="z_modal-details-value">Premium Collection</span>
+                                                <span className="z_modal-details-value">
+                                                    {selectedProduct.brand || 'Premium Collection'}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
