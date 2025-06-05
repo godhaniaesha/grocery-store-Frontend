@@ -216,45 +216,48 @@ function SellerGstDetails() {
     }
   };
 
-  const handleVerifyOTP = async () => {
-    const enteredOTP = otpDigits.join("");
+// ... existing code ...
+const handleVerifyOTP = async () => {
+  const enteredOTP = otpDigits.join("");
+  console.log(enteredOTP, phone, "enteredOTP");
 
-    if (enteredOTP.length !== 6) {
-      setError("Please enter all 6 digits of the OTP");
-      return;
-    }
-    setIsLoading(true);
-    setError("");
+  if (enteredOTP.length !== 6) {
+    setError("Please enter all 6 digits of the OTP");
+    return;
+  }
+  setIsLoading(true);
+  setError("");
 
-    try {
-      const response = await axios.post(
-        "http://localhost:4000/api/emailOtpVerify",
-        {
-          email: currentUser.email,
-          otp: enteredOTP,
-          filledSteps: activeStep,
-        }
-      );
-
-      // console.log("OTP verification response:", response);
-
-      if (response.data.success) {
-        setIsVerified(true);
-        setActiveStep(2);
-        getUsers();
-      } else {
-        setError("Invalid OTP. Please try again.");
+  try {
+    const response = await axios.post(
+      "http://localhost:4000/api/emailOtpVerify",
+      {
+        phone: currentUser.mobileNo, // Changed from email to phone
+        otp: enteredOTP,
+        filledSteps: activeStep,
       }
-    } catch (error) {
-      console.error("OTP verification error:", error);
-      setError(
-        error.response?.data?.message ||
-          "Verification failed. Please try again."
-      );
-    } finally {
-      setIsLoading(false);
+    );
+
+    // console.log("OTP verification response:", response);
+
+    if (response.data.success) {
+      setIsVerified(true);
+      setActiveStep(2);
+      getUsers();
+    } else {
+      setError("Invalid OTP. Please try again.");
     }
-  };
+  } catch (error) {
+    console.error("OTP verification error:", error);
+    setError(
+      error.response?.data?.message ||
+        "Verification failed. Please try again."
+    );
+  } finally {
+    setIsLoading(false);
+  }
+};
+// ... existing code ...
 
   const handleResendOTP = async () => {
     setError("");
@@ -280,7 +283,7 @@ function SellerGstDetails() {
     setSubmitSuccess(false);
     setSubmitError(null);
 
-    try {
+    try { 
       const updatedFormData = { ...formData, ...values };
       setFormData(updatedFormData);
 
@@ -716,7 +719,7 @@ function SellerGstDetails() {
             <Col sm={12}>
               <div className="k-brand-details-container">
                 <div className="k-brand-title text-center">
-                  <h4 className="fw-semibold">Brand Details</h4>
+                  <h4 className="fw-semibold mt-4">Brand Details</h4>
                   <p className="k-text-gray">
                     Your store name will be visible to all buyers of FastKart
                   </p>

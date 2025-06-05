@@ -86,6 +86,7 @@ function SellerRegister() {
   };
 
   const handleVerifyPhone = async () => {
+    alert("OTP verification code");
     const code = verificationCodePhone.join("");
     try {
       const response = await axios.post(

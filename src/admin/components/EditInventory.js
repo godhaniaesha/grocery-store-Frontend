@@ -176,7 +176,7 @@ const EditInventory = () => {
                     />
                   </div>
                 </div>
-                <div className="text-end my-4">
+                <div className="text-sm-end text-center my-4">
                   <Link type="button" className="ucancelbtn" to={"/seller/inventory"}>
                     Cancel
                   </Link>

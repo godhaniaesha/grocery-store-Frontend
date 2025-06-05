@@ -91,11 +91,13 @@
     margin: 20px auto;
     padding: 25px 15px;
   }
+
   .k-code-input {
     width: 40px;
     height: 40px;
     font-size: 16px;
   }
+
   .k-code-input-container {
     gap: 8px;
   }
@@ -198,7 +200,7 @@
   border: 1px solid #2e9a40;
 }
 
-.k-steper button > span.active {
+.k-steper button>span.active {
   background-color: green !important;
   height: 5px;
   width: 5px;
@@ -226,18 +228,21 @@
   border: 1px solid gray;
 }
 
-.k-steper button > span {
+.k-steper button>span {
   background-color: gray !important;
   height: 5px;
   width: 5px;
   border-radius: 50%;
 }
+
 #RFS-Connector {
   border: 1px solid transparent;
 }
+
 #RFS-Connector.completed {
   border-color: green !important;
 }
+
 #RFS-Connector.active {
   border-color: #0C6C44 !important;
 }
@@ -407,9 +412,11 @@
   .k-agreement-group {
     font-size: 12px;
   }
+
   .k-gst-in .form-control {
     width: 100%;
   }
+
   .k-virify-btn {
     width: 100% !important;
   }
@@ -425,7 +432,7 @@
 
 /* Header Styles */
 .k-header {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .k-title {
@@ -766,7 +773,7 @@
   }
 
   .k-order-date {
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .k-price-details-card {
@@ -781,7 +788,7 @@
 /* order history panding page css stapper */
 .k-order-stepper {
   width: 100%;
-  max-width: 500px;
+  /* max-width: 500px; */
   margin: 0 auto;
   border-radius: 0;
 }
@@ -979,25 +986,38 @@
 
 }
 
+@media (max-width: 425px) {
+  .k-order-info {
+    align-items: start;
+    flex-direction: column;
+  }
+}
+
 .stock-status {
   padding: 5px 10px;
   border-radius: 5px;
-  color: white; /* Default text color */
+  color: white;
+  /* Default text color */
   width: 50%;
 }
 
 .low-stock {
-  background-color: #f2ebdf; /* Light red */
-  color: #df8600; /* Dark red */
+  background-color: #f2ebdf;
+  /* Light red */
+  color: #df8600;
+  /* Dark red */
 }
 
 .critical {
-  background-color: #ffe9e9; /* Light pink */
-  color: #ff0000; /* Dark red */
+  background-color: #ffe9e9;
+  /* Light pink */
+  color: #ff0000;
+  /* Dark red */
 }
 
 .sufficient {
-  background-color: #e7f4ee; /* Light green */
-  color: #0d894f; /* Dark green */
+  background-color: #e7f4ee;
+  /* Light green */
+  color: #0d894f;
+  /* Dark green */
 }
-

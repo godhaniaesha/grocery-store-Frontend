@@ -175,11 +175,13 @@
 .uupdate_button:hover {
   background-color: #1b5e20;
 }
+
 .umain_section {
   display: flex;
   justify-content: space-between;
   gap: 30px;
 }
+
 @media (min-width: 768px) {
   .uprofile_container {
     flex-direction: row;
@@ -194,6 +196,7 @@
   .uedit_container {
     flex: 2;
   }
+
   .umain_section {
     gap: 30px;
   }
@@ -267,6 +270,7 @@
 }
 
 @media (max-width: 600px) {
+
   /* .upass_container {
     padding: 20px;
   } */
@@ -277,15 +281,28 @@
   .uedit_container {
     margin-top: 20px;
   }
+
   .uinput_containerpass input[type="password"] {
     padding: 10px;
   }
+
   .uinput_containerpass input[type="text"] {
     padding: 10px;
   }
+
   .umain_section {
     display: block;
     gap: 10px;
+  }
+
+  .uedit_container {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 375px) {
+  .uedit_container {
+    padding: 10px;
   }
 }
 
@@ -329,6 +346,14 @@
 
   .udetail_value {
     font-size: 15px;
+  }
+
+  .uform_group {
+    flex-direction: column;
+  }
+
+  .ustat_box {
+    border-radius: 0px !important;
   }
 }
 
@@ -737,6 +762,7 @@
   font-size: 16px;
   margin-bottom: 25px;
 }
+
 .upassword_input::placeholder {
   font-size: 14px;
 }
@@ -923,6 +949,7 @@
   font-size: 22px;
   font-weight: bold;
   color: #111;
+  text-align: left;
 }
 
 .ustat_change {
@@ -955,9 +982,11 @@
   /* display: flex; */
   justify-content: center;
 }
+
 .usetdetail_w {
   width: 35%;
 }
+
 .uset_content {
   display: flex;
   align-items: center;
@@ -970,9 +999,11 @@
   .uset_content {
     display: inherit;
   }
+
   .uset_w {
     width: 100%;
   }
+
   .usetdetail_w {
     width: 100%;
     padding: 20px;
@@ -1082,7 +1113,7 @@
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0px 4px 28px 0px #6f6f6f14;
-  margin: 30px;
+  margin: 5px 30px;
 }
 
 .uInventory_title {
@@ -1122,7 +1153,7 @@
 .ucancelbtn {
   border: 1px solid #0f0f0f80;
   color: #0f0f0f80;
-  padding: 12px 50px;
+  padding: 10px 41px;
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
@@ -1134,7 +1165,7 @@
   background-color: #2e7d32;
   color: white;
   border: none;
-  padding: 13px 60px;
+  padding: 11px 41px;
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
@@ -1144,19 +1175,23 @@
 .uaddbtn:hover {
   background-color: #1b5e20;
 }
+
 @media (min-width: 768px) {
   .addInventory_container {
     flex: 2;
   }
 }
+
 @media (max-width: 425px) {
   .ucancelbtn {
     padding: 12px 20px;
   }
+
   .uaddbtn {
     padding: 12px 35px;
   }
 }
+
 .uinventory_form_field select {
   width: 100%;
   padding: 12px;
@@ -1219,11 +1254,16 @@
   .uproduct_card {
     max-width: inherit;
   }
+
+  .sp_filter_off {
+    width: 75% !important;
+  }
 }
 
 @media (min-width: 426px) and (max-width: 767px) {
   .uproduct_card {
     max-width: inherit;
+    margin-bottom: 12px;
     display: flex;
   }
 
@@ -1231,6 +1271,7 @@
     width: 100%;
     align-self: center;
   }
+
   .uproduct_image {
     width: 50%;
   }
@@ -1421,10 +1462,20 @@
   }
 }
 
+@media (max-width: 320px) {
+  .ucancelbtn {
+    margin-right: 15px;
+  }
+
+  .uaddbtn {
+    padding: 12px 27px;
+  }
+}
+
 /* view products css */
 .umain_container {
   margin: 0 auto;
-  padding: 20px;
+  padding: 30px;
 }
 
 .uviewP_header {
@@ -1563,10 +1614,12 @@
 .wd {
   margin: 30px;
 }
+
 .recharts-wrapper {
   margin: auto;
   width: 100%;
 }
+
 .recharts-wrapper tspan {
   font-size: 8px;
 }
@@ -1575,6 +1628,7 @@
   .ustats_container {
     margin: 0px 10px;
   }
+
   .wd {
     margin: 10px;
   }
@@ -1582,4 +1636,18 @@
   .uorder_table_container {
     margin: 10px;
   }
+}
+
+.password-field-container {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.upassword_input::placeholder {
+  color: #999;
+  font-size: 14px;
+}
+
+.upassword_input:focus {
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
 }

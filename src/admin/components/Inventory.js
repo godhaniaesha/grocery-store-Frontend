@@ -87,16 +87,16 @@ function Inventory() {
 
   return (
     <div className="sp_container">
-      <div className="d-lg-flex justify-content-between align-item-center">
-        <div>
+      <div className="d-xl-flex justify-content-between align-item-center">
+        <div className="mb-md-2 mb-3">
           <h4>Inventory</h4>
           <Link to={"/seller/home"} className="sp_text_grey">
             Dashboard
           </Link>{" "}
           / <Link>Inventory</Link>
         </div>
-        <div className="d-sm-flex align-items-center justify-sm-content-start justify-content-end">
-          <div className="sp_search flex-fill">
+        <div className="sp_filter_both mt-md-2 d-flex d-sm-flex align-items-center justify-sm-content-start justify-content-end">
+          <div className="sp_search">
             <BiSearch className="sp_sear_icon" />
             <input
               type="text"
@@ -155,7 +155,7 @@ function Inventory() {
                   <td>{item.productVarientData?.[0]?.size}</td>
                   <td>{item.quantity}</td>
                   <td>
-                    <div
+                    <span
                       className={`stock-status text-center ${
                         item.quantity <= 10
                           ? "critical"
@@ -169,7 +169,7 @@ function Inventory() {
                         : item.quantity <= 30
                         ? "low-stock"
                         : "Sufficient"}
-                    </div>
+                    </span>
                   </td>
                   <td className="sp_td_action">
                     <div className="d-flex align-items-center">
@@ -298,10 +298,10 @@ function Inventory() {
       >
         <Modal.Body className="px-5 py-5">
           <h5 className="text-center">Delete Product?</h5>
-          <p className="sp_text_grey px-5 text-center fs-5">
+          <p className="sp_text_grey text-center fs-5">
             Are you sure you want to delete Product?
           </p>
-          <div className="d-flex align-items-center justify-content-between pt-4">
+          <div className="d-flex align-items-center justify-content-evenly pt-4">
             <div className="sp_filter_btn" onClick={() => setModalShow(false)}>
               Cancel
             </div>

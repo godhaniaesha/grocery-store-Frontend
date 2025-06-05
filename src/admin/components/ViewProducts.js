@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import view_products1 from "../../img/u_images/view_products1.png";
 import view_products2 from "../../img/u_images/view_products2.png";
 import view_products3 from "../../img/u_images/view_products3.png";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { viewProduct } from "../../redux/slices/sellerProductSlice";
 
@@ -27,9 +27,11 @@ const ViewProducts = () => {
     <>
       <div className="umain_container u-bg-color" >
         <div className="uviewP_header">
-          <h1>Product</h1>
-          <div className="uviewP_breadcrumb">
-            <a href="#">Dashboard</a> / <a href="#">Products</a> / View Products
+          {/* <h1>Product</h1> */}
+          <div><h4>Product</h4>
+            <Link to={'/seller/home'}>Dashboard</Link> /
+            <Link to={'/seller/product'}>Product</Link> /
+            <Link>View Product</Link>
           </div>
         </div>
         {data.map((ele, index) => {

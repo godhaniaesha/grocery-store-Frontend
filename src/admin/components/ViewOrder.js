@@ -235,7 +235,7 @@ function ViewOrder() {
                     <div className="k-payment-content p-3">
                       <div className="k-payment-row align-items-center">
                         <span className="k-payment-label">Payment Status</span>
-                        <p className="k-payment-success m-0">
+                        <p className="k-payment-success m-0 p-0">
                           {orderData.paymentStatus}
                         </p>
                       </div>

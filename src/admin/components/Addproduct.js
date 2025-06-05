@@ -7,25 +7,31 @@ import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProduct, getCategory, getProducts, getSingleProduct, removesingleproduct, updateProduct } from '../../redux/slices/sellerProductSlice';
 import { RiCloseCircleFill } from 'react-icons/ri';
-// Remove this import
-// import { getAllSubcategories } from '../../redux/slices/Subcategory.slice';
+import { getAllSubcategories } from '../../redux/slices/Subcategory.slice';
 
 function Addproduct() {
     const { id } = useParams();
-    const [fields, setFields] = useState([]); // Initially empty
-    const productData123 = useSelector((state) => state.sellerProduct?.singleProduct);
-    const [productData, setProductData] = useState([]);
+    const [fields, setFields] = useState([]);
+    const singleProductFromRedux = useSelector((state) => state.sellerProduct?.singleProduct);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [images, setImages] = useState([]); // Add this line
-    const [subcategories, setSubcategories] = useState([]);
-    const subcategoryData = useSelector((state) => state.subcategory.subcategories);
-    const [addVarient, setAddVarient] = useState([{ variantName: "", price: "", unit: "", quantity: "" }]);
+    const [images, setImages] = useState([]);
+    const [addVarient, setAddVarient] = useState([{ variantName: "", price: "", unit: "KG", quantity: "" }]);
+    const [isDataLoaded, setIsDataLoaded] = useState(false); // Track if data is loaded
+
+    // Fetch category and subcategory data
+    const categoryData = useSelector((state) => state.sellerProduct.categoryData);
+    const subcategoriesData = useSelector((state) => state.sellerProduct.subcategories);
+
+    useEffect(() => {
+        dispatch(getCategory());
+        dispatch(getAllSubcategories());
+    }, [dispatch]);
+
     const formik = useFormik({
         initialValues: {
             category: '',
-            // Remove subcategory field
-            // subcategory: '',
+            subcategory: '',
             productName: "",
             description: "",
             image: [],
@@ -34,16 +40,15 @@ function Addproduct() {
                 discount: "",
                 unit: "KG",
                 quantity: "",
-            })),
+            })) || [],
             fields: fields.map(() => ({
                 title: "",
                 description: ""
-            }))
+            })) || []
         },
         validationSchema: Yup.object({
             category: Yup.string().required("Select category"),
-            // Remove subcategory validation
-            // subcategory: Yup.string().required("Select subcategory"),
+            subcategory: Yup.string().required("Select subcategory"),
             productName: Yup.string().required("Enter product name"),
             description: Yup.string().required("Enter description"),
             variants: Yup.array().of(
@@ -54,67 +59,144 @@ function Addproduct() {
             ),
         }),
         onSubmit: async (values) => {
-            if (productData.length > 0) {
-                dispatch(updateProduct(values)).then(() => { dispatch(getProducts()) });
-            } else {
-                dispatch(createProduct(values)).then(() => { dispatch(getProducts()) });
+            const formData = new FormData();
+            
+            Object.keys(values).forEach(key => {
+                if (key === 'image') {
+                    values.image.forEach(file => {
+                        if (file instanceof File) {
+                            formData.append('image', file);
+                        }
+                    });
+                } else if (key === 'variants' || key === 'fields') {
+                    formData.append(key, JSON.stringify(values[key]));
+                } else {
+                    formData.append(key, values[key]);
+                }
+            });
+
+            const existingImageUrls = images.filter(img => typeof img === 'string');
+            if (existingImageUrls.length > 0) {
+                formData.append('existingImages', JSON.stringify(existingImageUrls));
             }
-            formik.setValues((prevValues) => ({
-                category: '',
-                // Remove subcategory reset
-                // subcategory: '',    
-                productName: "",
-                description: "",
-                image: [],
-                variants: addVarient.map(() => ({
-                    price: "",
-                    discount: "",
-                    unit: "KG",
-                    quantity: "",
-                })),
-                fields: fields.map(() => ({
-                    title: "",
-                    description: ""
-                }))
-            }));
-            setAddVarient([{ variantName: "", price: "", unit: "", quantity: "" }])
+
+            if (id) {
+                dispatch(updateProduct({ id, productData: formData })).then(() => { 
+                    dispatch(getProducts()) 
+                });
+            } else {
+                dispatch(createProduct(formData)).then(() => { 
+                    dispatch(getProducts()) 
+                });
+            }
+
+            formik.resetForm();
+            setAddVarient([{ variantName: "", price: "", unit: "KG", quantity: "" }]);
             setFields([]);
             setImages([]);
-            navigate('/seller/product')
+            navigate('/seller/product');
         },
     });
 
+    // Effect to fetch single product data when ID is present
     useEffect(() => {
         if (id) {
-            dispatch(getSingleProduct(id))
-        }
-        else {
+            // Always fetch single product when id exists (even on page reload)
+            dispatch(getSingleProduct(id));
+            setIsDataLoaded(false); // Reset data loaded flag
+        } else {
+            // Clear product data when no id (add mode)
             dispatch(removesingleproduct());
+            setIsDataLoaded(true); // Set as loaded for add mode
+            // Reset form for add mode
+            formik.resetForm();
+            setAddVarient([{ variantName: "", price: "", unit: "KG", quantity: "" }]);
+            setFields([]);
+            setImages([]);
         }
-    }, [id, dispatch])
+    }, [id, dispatch]);
 
-    // Remove this entire useEffect
-    // useEffect(() => {
-    //     if (formik.values.category && subcategoryData) {
-    //         const filteredSubcategories = subcategoryData.filter(
-    //             sub => sub.categoryId === formik.values.category
-    //         );
-    //         setSubcategories(filteredSubcategories);
-    //     }
-    // }, [formik.values.category, subcategoryData]);
-
+    // Effect to populate formik values when singleProductFromRedux is available
     useEffect(() => {
-        if (productData.length > 0) {
-            setProductData(productData123)
+        if (id && singleProductFromRedux && !isDataLoaded) {
+            console.log("Data to fill edit form:", singleProductFromRedux); // Log the data
+            const product = singleProductFromRedux[0];
+            if (product) {
+                let numbers = product.size.match(/\d+/g)?.join('') || '';
+                let chars = product.size.match(/[a-zA-Z]+/g)?.join('') || '';
+                let fieldData = [];
+
+                if (product.productData[0].specifications) {
+                    const data = typeof product.productData[0].specifications === "string"
+                        ? JSON.parse(product.productData[0].specifications)
+                        : product.productData[0].specifications;
+                    
+                    fieldData = Object.keys(data).map((key) => ({
+                        title: key,
+                        description: data[key]
+                    }));
+                }
+
+                // Set form values
+                formik.setValues({
+                    category: product.productData[0].categoryId,
+                    subcategory: product.productData[0].subCategoryId || '', // Ensure subcategory is set
+                    productName: product.productData[0].productName,
+                    description: product.productData[0].description,
+                    image: [], // Keep empty for edit mode
+                    variants: [{
+                        price: product.price,
+                        discount: product.discount || 0,
+                        unit: chars,
+                        quantity: numbers,
+                    }],
+                    fields: fieldData,
+                });
+                console.log(product.productData[0].subCategoryId,"sxfgdfgdgd");
+                
+
+                // Set component state
+                setAddVarient([{
+                    variantName: "",
+                    price: product.price,
+                    unit: chars,
+                    quantity: numbers,
+                }]);
+
+                setFields(fieldData);
+                setImages(product.productData[0].images);
+                setIsDataLoaded(true); // Mark data as loaded
+            }
         }
-    }, [productData123])
+    }, [singleProductFromRedux, id, isDataLoaded]);
+
+    // Show loading if we're in edit mode but data isn't loaded yet
+    if (id && !isDataLoaded) {
+        return (
+            <section className='sp_container x_err'>
+                <div className="d-xl-flex justify-content-between align-item-center">
+                    <div>
+                        <h4>Product</h4>
+                        <Link to={'/seller/home'}>Dashboard</Link> /
+                        <Link to={'/seller/product'}>Product</Link> /
+                        <Link>Loading...</Link>
+                    </div>
+                </div>
+                <div className='sp_table p-4 bg-white shadow-sm rounded text-center'>
+                    <p>Loading product data...</p>
+                </div>
+            </section>
+        );
+    }
+
     const addMoreVarient = () => {
-        setAddVarient([...addVarient, { price: "", discount: "", unit: "", quantity: "" }]);
+        setAddVarient([...addVarient, { price: "", discount: "", unit: "KG", quantity: "" }]);
         formik.setValues((prevValues) => ({
             ...prevValues,
             variants: [...prevValues.variants, { price: "", quantity: "", unit: "KG" }],
         }));
-    }
+    };
+
     const removeVarient = (index) => {
         const updatedAddVarient = [...addVarient];
         updatedAddVarient.splice(index, 1);
@@ -129,6 +211,7 @@ function Addproduct() {
             };
         });
     };
+
     const addMoreFields = () => {
         setFields([...fields, { title: "", description: "" }]);
         formik.setValues((prevValues) => ({
@@ -136,6 +219,7 @@ function Addproduct() {
             fields: [...prevValues.fields, { title: "", description: "" }],
         }));
     };
+
     const removeFields = (index) => {
         const updatedFields = [...fields];
         updatedFields.splice(index, 1);
@@ -154,82 +238,44 @@ function Addproduct() {
     const handleImageChange = (event) => {
         const files = event.target.files;
         if (files.length > 0) {
-            const imageArray = [...images, ...Array.from(files).map((file) => URL.createObjectURL(file))];
+            const newImageFiles = Array.from(files);
+            const imageArray = [...images, ...newImageFiles.map((file) => URL.createObjectURL(file))];
             setImages(imageArray);
-            formik.setValues((prevValues) => ({
-                ...prevValues,
-                image: [...prevValues.image, event.target.files],
-            }));
+            formik.setFieldValue("image", [...formik.values.image, ...newImageFiles]);
         }
     };
+
     const handleDeleteImage = (e, index) => {
         e.preventDefault();
         const filteredImages = images.filter((_, i) => i !== index);
         setImages(filteredImages);
-
-        formik.setValues((prevValues) => ({
-            ...prevValues,
-            image: filteredImages
-        }));
+        
+        const filteredFormikImages = formik.values.image.filter((_, i) => i !== index);
+        formik.setFieldValue("image", filteredFormikImages);
     };
 
-
-    useEffect(() => {
-        if (productData.length > 0) {
-            let numbers = productData[0].size.match(/\d+/g)?.join('') || '';
-            let chars = productData[0].size.match(/[a-zA-Z]+/g)?.join('') || '';
-            var fieldData = []
-            if (productData[0].productData[0].specifications) {
-                var data = typeof productData[0].productData[0].specifications === "string"
-                    ? JSON.parse(productData[0].productData[0].specifications)
-                    : productData[0].productData[0].specifications;
-                fieldData = Object.keys(data).map((key) => ({
-                    title: key,
-                    description: data[key]
-                }))
-            }
-
-            formik.setValues((prevValues) => ({
-                category: productData[0].productData[0].categoryId,
-                productName: productData[0].productData[0].productName,
-                description: productData[0].productData[0].description,
-                image: productData[0].productData[0].images,
-                variants: [{
-                    price: productData[0].price,
-                    discount: productData[0].discount || 0,
-                    unit: chars,
-                    quantity: numbers,
-                }],
-                fields: fieldData,
-            }));
-            setFields(formik.values.fields)
-            setImages(productData[0].productData[0].images)
-        }
-    }, [productData]);
-
-    // fetch catgeory data using redux 
-    const categoryData = useSelector((state) => state.sellerProduct.categoryData);
-    useEffect(() => {
-        dispatch(getCategory());
-    }, [])
+    const selectedSubcategory = subcategoriesData?.find(
+        sub => sub._id === formik.values.subcategory
+    );
+      const selectedSubcategoryName = selectedSubcategory ? selectedSubcategory.subCategoryName : '';
+      console.log(selectedSubcategoryName,"selectedSubcategoryName");
+      
     return (
-        <section className='sp_container'>
-            <div className="d-lg-flex justify-content-between align-item-center">
+        <section className='sp_container x_err'>
+            <div className="d-xl-flex justify-content-between align-item-center">
                 <div><h4>Product</h4>
                     <Link to={'/seller/home'}>Dashboard</Link> /
                     <Link to={'/seller/product'}>Product</Link> /
-                    <Link>{productData.length <= 0 ? 'Add Product' : 'Edit Product'}</Link>
+                    <Link>{id ? 'Edit Product' : 'Add Product'}</Link>
                 </div>
             </div>
-
             <div className='sp_table p-4 bg-white shadow-sm rounded'>
                 <Form onSubmit={formik.handleSubmit}>
                     <div className="row flex-wrap">
-                        <div className="col-xl-12 col-lg-12 col-xxl-3 text-center">
+                        <div className="col-xl-12 col-lg-12 col-xxl-3 text-center x_p0">
                             <div
-                                className={`${images.length <= 0 ? "z_uploadbox flex-column" : 'flex-wrap'} p-4 d-flex   align-items-center justify-content-center`}
+                                className={`${images.length <= 0 ? "z_uploadbox flex-column" : 'flex-wrap'} p-4 d-flex align-items-center justify-content-center`}
                                 onClick={() => { images.length <= 0 ? document.getElementById("fileInput").click() : '' }} >
-
                                 <input
                                     id="fileInput"
                                     type="file"
@@ -238,14 +284,11 @@ function Addproduct() {
                                     className="d-none"
                                     onChange={handleImageChange}
                                 />
-                                {/* {console.log('images', images)} */}
                                 {images.length > 0 ? (
                                     <>
                                         {images.map((img, index) => (
-
-                                            <div className='sp_uploadimg'
-                                            >
-                                                {img.includes('public') ? <img key={index} src={'http://localhost:4000/' + img} alt={`Upload ${index}`} className="m-2" /> : <img key={index} src={img} alt={`Upload ${index}`} className="m-2" />}
+                                            <div className='sp_uploadimg' key={index}>
+                                                {img.includes('public') ? <img src={'http://localhost:4000/' + img} alt={`Upload ${index}`} className="m-2" /> : <img src={img} alt={`Upload ${index}`} className="m-2" />}
                                                 <RiCloseCircleFill className='sp_icon' onClick={(e) => { handleDeleteImage(e, index) }} />
                                             </div>
                                         ))}
@@ -268,16 +311,21 @@ function Addproduct() {
                                 ) : null}
                             </div>
                         </div>
-
-                        <div className="col-xl-12 col-lg-12 col-xxl-9">
+                        <div className="col-xl-12 col-lg-12 col-xxl-9 ">
                             <div className="row">
-                                <div className="col-lg-6 mb-3">
+                                <div className="col-lg-6 mb-3 x_p0">
                                     <Form.Group className='z_input_group'>
                                         <Form.Label>Category</Form.Label>
-                                        <Form.Select className='z_input' value={formik.values.category} onChange={(e) => formik.setFieldValue("category", e.target.value)}>
-                                            <option>Select</option>
+                                        <Form.Select
+                                            className='z_input'
+                                            name="category"
+                                            value={formik.values.category}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                        >
+                                            <option value="">Select</option>
                                             {categoryData?.map((category) => {
-                                                return (<option value={category._id}>{category.categoryName}</option>)
+                                                return (<option key={category._id} value={category._id}>{category.categoryName}</option>)
                                             })}
                                         </Form.Select>
                                         {formik.touched.category &&
@@ -288,21 +336,25 @@ function Addproduct() {
                                         ) : null}
                                     </Form.Group>
                                 </div>
-                                <div className="col-lg-6 mb-3">
+                                <div className="col-lg-6 mb-3 x_p0">
                                     <Form.Group className='z_input_group'>
                                         <Form.Label>Subcategory</Form.Label>
-                                        <Form.Select 
-                                            className='z_input' 
-                                            value={formik.values.subcategory} 
-                                            onChange={(e) => formik.setFieldValue("subcategory", e.target.value)}
-                                            disabled={!formik.values.category}
+                                        
+                                        <Form.Select
+                                            className='z_input'
+                                            name="subcategory"
+                                            value={formik.values.subcategory}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
                                         >
-                                            <option>Select</option>
-                                            {subcategories?.map((subcategory) => (
-                                                <option key={subcategory._id} value={subcategory._id}>
-                                                    {subcategory.subCategoryName}
-                                                </option>
-                                            ))}
+                                            <option value="">{selectedSubcategoryName || 'Select'}</option>
+                                            {subcategoriesData
+                                                ?.filter(sub => sub.categoryId === formik.values.category)
+                                                .map((subcategory) => (
+                                                    <option key={subcategory._id} value={subcategory._id}>
+                                                        {subcategory.subCategoryName}
+                                                    </option>
+                                                ))}
                                         </Form.Select>
                                         {formik.touched.subcategory &&
                                             formik.errors.subcategory ? (
@@ -312,10 +364,18 @@ function Addproduct() {
                                         ) : null}
                                     </Form.Group>
                                 </div>
-                                <div className="col-lg-6 mb-3">
+                                <div className="col-lg-6 mb-3 x_p0">
                                     <Form.Group className='z_input_group'>
                                         <Form.Label>Product Name</Form.Label>
-                                        <Form.Control className='z_input' value={formik.values.productName} onChange={(e) => formik.setFieldValue("productName", e.target.value)} type="text" placeholder="Product name" />
+                                        <Form.Control
+                                            className='z_input'
+                                            name="productName"
+                                            value={formik.values.productName}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            type="text"
+                                            placeholder="Product name"
+                                        />
                                         {formik.touched.productName &&
                                             formik.errors.productName ? (
                                             <small className="error text-capitalize" style={{ color: "red" }}>
@@ -324,10 +384,19 @@ function Addproduct() {
                                         ) : null}
                                     </Form.Group>
                                 </div>
-                                <div className="col-md-12 mb-3">
+                                <div className="col-md-12 mb-3 x_p0">
                                     <Form.Group className='z_input_group'>
                                         <Form.Label>Product Description</Form.Label>
-                                        <Form.Control className='z_textarea' value={formik.values.description} onChange={(e) => formik.setFieldValue("description", e.target.value)} as="textarea" rows={3} placeholder="Enter description..." />
+                                        <Form.Control
+                                            className='z_textarea'
+                                            name="description"
+                                            value={formik.values.description}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            as="textarea"
+                                            rows={3}
+                                            placeholder="Enter description..."
+                                        />
                                         {formik.touched.description &&
                                             formik.errors.description ? (
                                             <small className="error text-capitalize" style={{ color: "red" }}>
@@ -336,26 +405,27 @@ function Addproduct() {
                                         ) : null}
                                     </Form.Group>
                                 </div>
-                                <div className="col-md-12 mb-3 d-flex justify-content-end">
-                                    {productData.length <= 0 && (
+                                <div className="col-md-12 mb-3 d-flex justify-content-end x_p0">
+                                    {!id && (
                                         <Link to="#" className="z_add_more" onClick={addMoreVarient}>
-                                            Add Product
+                                            Add Product Variant
                                         </Link>
                                     )}
                                 </div>
-                                {/* {console.log("values", formik.values)} */}
                                 {addVarient.map((variant, index) => (
-                                    <div key={index} className="row">
-                                        {index === 0 ? '' :
-                                            <span className='text-end' onClick={() => { removeVarient(index) }}><RiCloseCircleFill className='sp_icon' onClick={(e) => { handleDeleteImage(e, index) }} /></span>
+                                    <div key={index} className="row p-0 m-auto">
+                                        {index === 0 && id ? '' :
+                                            <span className='text-end' onClick={() => { removeVarient(index) }}><RiCloseCircleFill className='sp_icon' /></span>
                                         }
-                                        <div className="col-lg-6 mb-3">
+                                        <div className="col-lg-6 mb-3 x_p0">
                                             <Form.Group className='z_input_group'>
                                                 <Form.Label>Price</Form.Label>
                                                 <Form.Control
                                                     className='z_input'
+                                                    name={`variants[${index}].price`}
                                                     value={formik.values.variants[index]?.price || ""}
-                                                    onChange={(e) => formik.setFieldValue(`variants[${index}].price`, e.target.value)}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
                                                     type="text"
                                                     placeholder="Price"
                                                 />
@@ -367,19 +437,21 @@ function Addproduct() {
                                                 ) : null}
                                             </Form.Group>
                                         </div>
-                                        <div className="col-lg-6 mb-3">
+                                        <div className="col-lg-6 mb-3 x_p0">
                                             <Form.Group className='z_input_group'>
                                                 <Form.Label>Discount (optional)</Form.Label>
                                                 <Form.Control
                                                     className='z_input'
+                                                    name={`variants[${index}].discount`}
                                                     value={formik.values.variants[index]?.discount || ""}
-                                                    onChange={(e) => formik.setFieldValue(`variants[${index}].discount`, e.target.value)}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
                                                     type="text"
                                                     placeholder="Discount"
                                                 />
                                             </Form.Group>
                                         </div>
-                                        <div className="col-lg-6 mb-3">
+                                        <div className="col-lg-6 mb-3 x_p0">
                                             <Form.Group className="z_input_group">
                                                 <Form.Label>Unit</Form.Label>
                                                 <div className="d-flex">
@@ -387,7 +459,7 @@ function Addproduct() {
                                                         <label key={unit} className="x_radio-wrapper me-3">
                                                             <input
                                                                 type="radio"
-                                                                name={`unit-${index}`}
+                                                                name={`variants[${index}].unit`}
                                                                 className="x_radio-input"
                                                                 checked={formik.values.variants[index]?.unit === unit}
                                                                 onChange={() => formik.setFieldValue(`variants[${index}].unit`, unit)}
@@ -399,13 +471,15 @@ function Addproduct() {
                                                 </div>
                                             </Form.Group>
                                         </div>
-                                        <div className="col-lg-6 mb-3">
+                                        <div className="col-lg-6 mb-3 x_p0">
                                             <Form.Group className='z_input_group'>
                                                 <Form.Label>Quantity</Form.Label>
                                                 <Form.Control
                                                     className='z_input'
+                                                    name={`variants[${index}].quantity`}
                                                     value={formik.values.variants[index]?.quantity || ""}
-                                                    onChange={(e) => formik.setFieldValue(`variants[${index}].quantity`, e.target.value)}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
                                                     type="text"
                                                     placeholder="Quantity"
                                                 />
@@ -419,44 +493,44 @@ function Addproduct() {
                                         </div>
                                     </div>
                                 ))}
-
-                                <div className="col-md-12 mb-3 d-flex justify-content-between">
+                                <div className="col-md-12 mb-3 d-flex justify-content-between x_p0">
                                     <span className="text-dark">More Details</span>
-                                    {productData.length <= 0 && (
+                                    {!id && (
                                         <Link to="#" className="z_add_more" onClick={addMoreFields}>
                                             Add More
                                         </Link>
                                     )}
                                 </div>
-
                                 {formik.values.fields.map((field, index) => (
                                     <React.Fragment key={index}>
-                                        {productData.length <= 0 && (
-                                            <span className='text-end' onClick={() => { removeFields(index) }}><RiCloseCircleFill className='sp_icon' onClick={(e) => { handleDeleteImage(e, index) }} /></span>
-
+                                        {!id && (
+                                            <span className='text-end' onClick={() => { removeFields(index) }}><RiCloseCircleFill className='sp_icon' /></span>
                                         )}
-
-                                        <div className="col-lg-6 mb-3">
+                                        <div className="col-lg-6 mb-3 x_p0">
                                             <Form.Group className="z_input_group">
                                                 <Form.Label>Title</Form.Label>
                                                 <Form.Control
                                                     className="z_input"
                                                     type="text"
                                                     placeholder="Title"
+                                                    name={`fields[${index}].title`}
                                                     value={formik.values.fields[index]?.title || ""}
-                                                    onChange={(e) => formik.setFieldValue(`fields[${index}].title`, e.target.value)}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
                                                 />
                                             </Form.Group>
                                         </div>
-                                        <div className="col-lg-6 mb-3">
+                                        <div className="col-lg-6 mb-3 x_p0">
                                             <Form.Group className="z_input_group">
                                                 <Form.Label>Description</Form.Label>
                                                 <Form.Control
                                                     className="z_input"
                                                     type="text"
                                                     placeholder="Description"
+                                                    name={`fields[${index}].description`}
                                                     value={formik.values.fields[index]?.description || ""}
-                                                    onChange={(e) => formik.setFieldValue(`fields[${index}].description`, e.target.value)}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
                                                 />
                                             </Form.Group>
                                         </div>
@@ -465,10 +539,9 @@ function Addproduct() {
                             </div>
                         </div>
                     </div>
-                    <div className="d-flex justify-content-end gap-3 mt-4">
-
-                        <Button variant="border" className="border px-5 text-secondary z_btn" onClick={() => { navigate('/seller/product') }}>Cancel</Button>
-                        <Button type='submit' className='z_button z_add_btn px-5 fw-bold' variant="success" >{productData.length <= 0 ? 'Add' : 'Update'}</Button>
+                    <div className="d-flex justify-content-end gap-3 mt-4 ">
+                        <Button variant="border" className="border text-secondary z_btn" onClick={() => { navigate('/seller/product') }}>Cancel</Button>
+                        <Button type='submit' className='z_button z_add_btn fw-bold' variant="success" >{id ? 'Update' : 'Add'}</Button>
                     </div>
                 </Form>
             </div>

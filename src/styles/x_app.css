@@ -522,6 +522,11 @@
   font-size: 14px;
   color: #0f0f0f;
 }
+@media screen and (max-width: 1024px) {
+.x_radio-wrapper {
+  gap: 4px;
+  padding: 6px 10px;}
+}
 
 @media screen and (max-width: 768px) {
   .filter-section {
@@ -3392,3 +3397,36 @@
   margin-right: 8px;
 }
 /* ...existing code... */
+
+/* error solve  */
+@media screen and (max-width: 375px) {
+.x_p0 {
+  padding: 0!important;
+}
+.x_err .z_btn {
+  padding: 6px 27px;
+}
+.x_err .z_button {
+  padding: 0px;
+  min-width: 110px;
+}
+}
+@media screen and (max-width: 1199px) {
+.x_chart_pt {
+  margin-top: 20px;
+}
+.x_none_10 {
+  display: none;
+}
+}
+@media screen and (max-width: 768px) {
+  .x_none_10 {
+    display: none;
+  }
+  }
+
+  @media screen and (max-width: 425px) {
+  .x_none_425{
+    display: none;
+  }
+}

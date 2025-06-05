@@ -154,7 +154,7 @@ function Order() {
   return (
     <>
       <div className="sp_container">
-        <div className="d-lg-flex justify-content-between align-item-center">
+        <div className="d-xl-flex justify-content-between align-item-center">
           <div>
             <h4>Orders</h4>
             <Link to={"/seller/home"} className="sp_text_grey">
@@ -162,7 +162,8 @@ function Order() {
             </Link>{" "}
             / <Link>Orders</Link>
           </div>
-          <div className="d-sm-flex align-items-center justify-sm-content-start justify-content-end">
+          <div className="sp_filter_both mt-md-2 d-flex d-sm-flex align-items-center justify-sm-content-start justify-content-end">
+            
             <div className="sp_search">
               <BiSearch className="sp_sear_icon" />
               <input

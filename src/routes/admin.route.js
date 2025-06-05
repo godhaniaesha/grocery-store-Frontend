@@ -99,16 +99,13 @@ const adminRoute = [
     <Route path="Add-product" element={<Addproduct />} />
     <Route path="view-order/:id" element={<ViewOrder />} />
     <Route path="view-order-rejected" element={<ViewOrderRejected />} />
-    <Route
-      path="view-order-history-panding/:id"
-      element={<ViewOrderHistoryPanding />}
-    />
+    <Route path="view-order-history-panding/:id" element={<ViewOrderHistoryPanding />} />
     <Route path="home" element={<Home />} />
     <Route path="addinventory" element={<AddInventory />} />
     <Route path="editinventory/:id" element={<EditInventory />} />
     <Route path="viewinventory/:id" element={<ViewInventory />} />
     <Route path="viewproducts/:id" element={<ViewProducts />} />
-  </Route>,
+  </Route>
 ];
 
 export default adminRoute;

@@ -47,7 +47,7 @@
   min-height: 100vh;
   width: 300px;
   min-width: 300px;
-  background-color: #27391C;
+  background-color: #2c6145;
 }
 
 .sp_logo {
@@ -89,7 +89,7 @@
   margin-left: 20px;
 }
 
-.sp_side_icon {
+.sp_side_icon {                                                                                                        
   width: 24px;
   min-width: 24px;
   display: flex;
@@ -103,7 +103,8 @@
 
 .sp_header {
   width: 100%;
-  height: 80px;
+  height: 60px;
+  /* height: 80px; */
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
   padding: 10px;
 }
@@ -161,7 +162,7 @@
 
 /* product page css */
 .sp_container {
-  padding: 40px;
+  padding: 33px;
   background-color: #f9f9f9;
   min-height: calc(100vh - 80px);
 }
@@ -184,7 +185,7 @@
   outline: none;
   background-color: transparent;
   width: 100%;
-  margin-bottom: 5px;
+  /* margin-bottom: 5px; */
 }
 
 .sp_filter_btn {
@@ -614,7 +615,7 @@
   .sp_sidebar {
     width: 100%;
     height: 100%;
-    background-color: #27391C;
+    background-color: #2c6145;
     padding: 30px 20px;
   }
 }
@@ -641,10 +642,14 @@
     flex-grow: fill;
   }
 
-  .sp_filter_btn {
-    width: 48%;
-    margin: 0px;
+  .sp_filter_both{
     margin-top: 10px;
+    gap: 5px;
+  }
+
+  .sp_filter_btn {
+    /* width: 48%; */
+    margin: 0px;
   }
   .sp_filter_btn1 {
     width: 100% !important;
@@ -657,6 +662,9 @@
   .sp_add_btn1 {
     width: 100%;
   }
+
+  .sp_pagination {
+    margin: auto;}
 }
 
 @media (max-width: 1480px) {
@@ -679,9 +687,9 @@
   .ustats_container {
     flex-direction: row !important;
   }
-  .udivider {
+  /* .udivider {
     display: block;
-  }
+  } */
 }
 @media (max-width: 576px) {
   .ustat_box {

@@ -27,6 +27,7 @@ const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
+  const [showPassword3, setShowPassword3] = useState(false);
   const [users, setusers] = useState([]);
   const [address, setAddress] = useState(null);
   const [user, setUser] = useState(null);
@@ -429,8 +430,8 @@ const Profile = () => {
                       typeof formik.values.image === "string"
                         ? `http://localhost:4000/${formik.values.image}`
                         : formik.values.image instanceof File
-                        ? URL.createObjectURL(formik.values.image)
-                        : ""
+                          ? URL.createObjectURL(formik.values.image)
+                          : ""
                     }
                     alt="Not Available"
                   />
@@ -464,9 +465,8 @@ const Profile = () => {
 
             <div className="umenu_card flex-fill pt-4">
               <div
-                className={`umenu_item ${
-                  activeItem === "Password" ? "active" : ""
-                }`}
+                className={`umenu_item ${activeItem === "Password" ? "active" : ""
+                  }`}
                 onClick={() => toggleSectionTaxDetails("Password")}
               >
                 <div className="umenu_icon">
@@ -521,9 +521,8 @@ const Profile = () => {
               </div>
 
               <div
-                className={`umenu_item ${
-                  activeItem === "Bank Details" ? "active" : ""
-                }`}
+                className={`umenu_item ${activeItem === "Bank Details" ? "active" : ""
+                  }`}
                 onClick={() => toggleSectionTaxDetails("Bank Details")}
               >
                 <div className="umenu_icon">
@@ -552,9 +551,8 @@ const Profile = () => {
               </div>
 
               <div
-                className={`umenu_item ${
-                  activeItem === "editAddress" ? "active" : ""
-                }`}
+                className={`umenu_item ${activeItem === "editAddress" ? "active" : ""
+                  }`}
                 onClick={() => toggleSectionTaxDetails("editAddress")}
               >
                 <div className="umenu_icon">
@@ -578,9 +576,8 @@ const Profile = () => {
               </div>
 
               <div
-                className={`umenu_item ${
-                  activeItem === "deleteAccount" ? "active" : ""
-                }`}
+                className={`umenu_item ${activeItem === "deleteAccount" ? "active" : ""
+                  }`}
                 onClick={() => toggleSectionTaxDetails("deleteAccount")}
               >
                 <div className="umenu_icon">
@@ -647,6 +644,7 @@ const Profile = () => {
                       <input
                         type="text"
                         id="firstName"
+                        placeholder="Enter your first name"
                         {...formik.getFieldProps("firstName")}
                       />
                       {formik.touched.firstName && formik.errors.firstName ? (
@@ -664,6 +662,7 @@ const Profile = () => {
                       <input
                         type="text"
                         id="lastName"
+                        placeholder="Enter your last name"
                         {...formik.getFieldProps("lastName")}
                       />
                       {formik.touched.lastName && formik.errors.lastName ? (
@@ -682,6 +681,7 @@ const Profile = () => {
                       <input
                         type="text"
                         id="mobile"
+                        placeholder="Enter your mobile number"
                         {...formik.getFieldProps("mobile")}
                       />
                       {formik.touched.mobile && formik.errors.mobile ? (
@@ -699,6 +699,7 @@ const Profile = () => {
                       <input
                         type="email"
                         id="email"
+                        placeholder="Enter your email"
                         {...formik.getFieldProps("email")}
                       />
                       {formik.touched.email && formik.errors.email ? (
@@ -731,7 +732,18 @@ const Profile = () => {
                   >
                     Change Password
                   </h1>
-                  <form onSubmit={passwordFormik.handleSubmit}>
+                  <form onSubmit={(e) => {
+                    e.preventDefault();
+                    passwordFormik.handleSubmit(e);
+                    if (Object.keys(passwordFormik.errors).length === 0) {
+                      // Reset form after successful submission
+                      passwordFormik.resetForm();
+                      // Reset password visibility states
+                      setShowPassword(false);
+                      setShowPassword1(false);
+                      setShowPassword2(false);
+                    }
+                  }}>
                     <div className="uform_grouppass">
                       <label className="upasslabel" htmlFor="current-password">
                         Current Password
@@ -751,7 +763,7 @@ const Profile = () => {
                         </span>
                       </div>
                       {passwordFormik.touched.currentPassword &&
-                      passwordFormik.errors.currentPassword ? (
+                        passwordFormik.errors.currentPassword ? (
                         <div
                           className="error"
                           style={{ color: "red", fontSize: "14px" }}
@@ -780,7 +792,7 @@ const Profile = () => {
                         </span>
                       </div>
                       {passwordFormik.touched.newPassword &&
-                      passwordFormik.errors.newPassword ? (
+                        passwordFormik.errors.newPassword ? (
                         <div
                           className="error"
                           style={{ color: "red", fontSize: "14px" }}
@@ -809,7 +821,7 @@ const Profile = () => {
                         </span>
                       </div>
                       {passwordFormik.touched.confirmPassword &&
-                      passwordFormik.errors.confirmPassword ? (
+                        passwordFormik.errors.confirmPassword ? (
                         <div
                           className="error"
                           style={{ color: "red", fontSize: "14px" }}
@@ -1072,7 +1084,7 @@ const Profile = () => {
                       {...editBankD.getFieldProps("accountNumber")}
                     />
                     {editBankD.touched.accountNumber &&
-                    editBankD.errors.accountNumber ? (
+                      editBankD.errors.accountNumber ? (
                       <div
                         className="error"
                         style={{ color: "red", fontSize: "14px" }}
@@ -1094,7 +1106,7 @@ const Profile = () => {
                       {...editBankD.getFieldProps("confirmAccountNumber")}
                     />
                     {editBankD.touched.confirmAccountNumber &&
-                    editBankD.errors.confirmAccountNumber ? (
+                      editBankD.errors.confirmAccountNumber ? (
                       <div
                         className="error"
                         style={{ color: "red", fontSize: "14px" }}
@@ -1137,7 +1149,7 @@ const Profile = () => {
             )}
 
             {showTaxdetails === "editAddress" && (
-              <div className="editA_container">
+              <div className="editA_container p-0">
                 <h1
                   className="editAhead"
                   style={{
@@ -1163,7 +1175,7 @@ const Profile = () => {
                       {...addressFormik.getFieldProps("buildingNumber")}
                     />
                     {addressFormik.touched.buildingNumber &&
-                    addressFormik.errors.buildingNumber ? (
+                      addressFormik.errors.buildingNumber ? (
                       <div
                         className="error"
                         style={{ color: "red", fontSize: "14px" }}
@@ -1182,7 +1194,7 @@ const Profile = () => {
                       {...addressFormik.getFieldProps("locality")}
                     />
                     {addressFormik.touched.locality &&
-                    addressFormik.errors.locality ? (
+                      addressFormik.errors.locality ? (
                       <div
                         className="error"
                         style={{ color: "red", fontSize: "14px" }}
@@ -1201,7 +1213,7 @@ const Profile = () => {
                       {...addressFormik.getFieldProps("landmark")}
                     />
                     {addressFormik.touched.landmark &&
-                    addressFormik.errors.landmark ? (
+                      addressFormik.errors.landmark ? (
                       <div
                         className="error"
                         style={{ color: "red", fontSize: "14px" }}
@@ -1221,7 +1233,7 @@ const Profile = () => {
                         {...addressFormik.getFieldProps("pincode")}
                       />
                       {addressFormik.touched.pincode &&
-                      addressFormik.errors.pincode ? (
+                        addressFormik.errors.pincode ? (
                         <div
                           className="error"
                           style={{ color: "red", fontSize: "14px" }}
@@ -1240,7 +1252,7 @@ const Profile = () => {
                         {...addressFormik.getFieldProps("city")}
                       />
                       {addressFormik.touched.city &&
-                      addressFormik.errors.city ? (
+                        addressFormik.errors.city ? (
                         <div
                           className="error"
                           style={{ color: "red", fontSize: "14px" }}
@@ -1260,7 +1272,7 @@ const Profile = () => {
                       {...addressFormik.getFieldProps("state")}
                     />
                     {addressFormik.touched.state &&
-                    addressFormik.errors.state ? (
+                      addressFormik.errors.state ? (
                       <div
                         className="error"
                         style={{ color: "red", fontSize: "14px" }}
@@ -1318,16 +1330,34 @@ const Profile = () => {
                   To continue, Please enter your password.
                 </p>
 
-                <form onSubmit={DeleteFormik.handleSubmit}>
+                <form onSubmit={DeleteFormik.handleSubmit} className="uform_grouppass">
                   <label className="upassword_label">Password</label>
-                  <input
+                  {/* <input
                     type="password"
                     className="upassword_input"
                     placeholder="Enter Password"
                     {...DeleteFormik.getFieldProps("currentPassword")}
-                  />
+                  /> */}
+                  <div className="uinput_containerpass">
+                    <input
+                      type={showPassword3 ? "text" : "password"}
+                      id="current-password"
+                      className="upassword_input"
+                      placeholder="Enter Password"
+                      {...passwordFormik.getFieldProps("currentPassword")}
+                    />
+                    <span
+                      style={{
+                        top: '30%',
+                      }}
+                      className="ueye_iconpass"
+                      onClick={() => setShowPassword3(!showPassword3)}
+                    >
+                      {showPassword3 ? <FaEye /> : <IoIosEyeOff />}
+                    </span>
+                  </div>
                   {DeleteFormik.touched.currentPassword &&
-                  DeleteFormik.errors.currentPassword ? (
+                    DeleteFormik.errors.currentPassword ? (
                     <div
                       className="error"
                       style={{ color: "red", fontSize: "14px" }}

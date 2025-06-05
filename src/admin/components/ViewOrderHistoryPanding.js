@@ -269,7 +269,7 @@ function ViewOrderHistoryPanding() {
                             Payment Status
                           </span>
                           <span
-                            className="k-payment-value text-truncate"
+                            className="k-payment-value text-truncate p-0"
                             style={{ color: "green" }}
                           >
                             {orderData.paymentStatus}

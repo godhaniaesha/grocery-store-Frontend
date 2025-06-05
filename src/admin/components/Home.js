@@ -181,7 +181,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="udivider"></div>
+          <div className="udivider "></div>
 
           <div className="ustat_box">
             <div className="text-start">
@@ -227,7 +227,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="udivider"></div>
+          <div className="udivider x_none_10"></div>
 
           <div className="ustat_box">
             <div className="text-start">
@@ -281,9 +281,9 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="udivider"></div>
+          <div className="udivider "></div>
 
-          <div className="ustat_box">
+          <div className="ustat_box ">
             <div className="text-start">
               <div className="ustat_title">Total Delivered</div>
               <div className="ustat_number">{sellerData?.deliveredOrders}</div>
@@ -403,7 +403,8 @@ const Home = () => {
                 style={{
                   fontSize: "20px",
                   fontWeight: "bold",
-                  marginBottom: "25px",
+                  marginBottom: "20px",
+                  marginTop: "5px",
                 }}
               >
                 Category
@@ -440,11 +441,11 @@ const Home = () => {
             style={{
               width: "100%",
               maxWidth: "1000px",
-              margin: "auto",
               padding: "20px",
               backgroundColor: "white",
               boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
             }}
+            className="x_chart_pt"
           >
             <h2
               style={{
@@ -500,7 +501,7 @@ const Home = () => {
           >
             Recent Order
           </h4>
-          <div className="sp_table d-flex justify-content-between flex-column" >
+          <div className="sp_table d-flex justify-content-between flex-column mt-0 mb-3" style={{minHeight :"auto"}} >
             <table >
               <thead>
                 <tr>

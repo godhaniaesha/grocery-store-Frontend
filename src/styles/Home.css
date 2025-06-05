@@ -184,6 +184,9 @@
   .swiper-pagination {
     top: 90% !important;
   }
+  .z_button {
+  padding: 10px 10px;
+  }
 }
 
 @media only screen and (max-width: 375px) {
@@ -986,9 +989,9 @@
     max-width: 286px;
   }
 
-  .x_radio-custom {
+  /* .x_radio-custom {
     width: 33px;
-  }
+  } */
 
   .z_cancel_address {
     padding: 8px 43px !important;
@@ -1004,9 +1007,9 @@
     max-width: 230px;
   }
 
-  .x_radio-custom {
+  /* .x_radio-custom {
     width: 42px;
-  }
+  } */
 
   .z_cancel_address {
     padding: 5px 17px !important;

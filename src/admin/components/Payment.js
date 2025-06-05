@@ -159,7 +159,7 @@ function Payment() {
 
   return (
     <div className="sp_container">
-      <div className="d-lg-flex justify-content-between align-item-center ">
+      <div className="d-xl-flex justify-content-between align-item-center ">
         <div>
           <h4>Payment</h4>
           <Link className="sp_text_grey" to={"/seller/home"}>
@@ -167,8 +167,8 @@ function Payment() {
           </Link>{" "}
           / <Link>Payment </Link>
         </div>
-        <div className="d-sm-flex align-items-center justify-sm-content-start justify-content-end">
-          <div className="sp_search flex-fill">
+        <div className="sp_filter_both d-flex d-sm-flex align-items-center justify-sm-content-start justify-content-end">
+          <div className="sp_search">
             <BiSearch className="sp_sear_icon" />
             <input
               type="text"

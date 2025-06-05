@@ -179,8 +179,8 @@ function Product() {
                 <div><h4>Product</h4>
                     <Link className='sp_text_grey' to={'/seller/home'}>Dashboard</Link> / <Link>Product</Link>
                 </div>
-                <div className="d-sm-flex align-items-center justify-sm-content-start justify-content-end">
-                    <div className="sp_search flex-fill">
+                <div className="sp_filter_both d-flex d-sm-flex align-items-center justify-sm-content-start justify-content-end">
+                    <div className="sp_search">
                         <BiSearch className="sp_sear_icon" />
                         <input
                             type="text"
@@ -239,10 +239,26 @@ function Product() {
                                         <Link to={'/seller/viewproducts/' + ele.variantId} className="sp_table_action d-flex justify-content-center align-items-center">
                                             <img src={require('../../img/s_img/view.png')} alt="View" />
                                         </Link>
-                                        <Link to={`/seller/Edit-product/` + ele.variantId} className="sp_table_action d-flex justify-content-center align-items-center" />
-                                            <Link className="sp_table_action d-flex justify-content-center align-items-center" onClick={() => { setModalShow(true), setDeleteId(ele.variantId) }}>
-                                                <img src={require('../../img/s_img/delete.png')} alt="Delete" />
-                                            </Link>
+                                        {/* <Link to={`/seller/Edit-product/` + ele.variantId} className="sp_table_action d-flex justify-content-center align-items-center" >
+                                            <img
+                                                src={require("../../img/s_img/edit.png")}
+                                                alt="Edit Icon"
+                                            />
+                                        </Link> */}
+                                        {/* // ... existing code ... */}
+                                        <Link
+                                            to={`/seller/Edit-product/` + ele.variantId}
+                                            className="sp_table_action d-flex justify-content-center align-items-center"
+                                            onClick={() => {
+                                                console.log('Edit row data:', ele); // Log the row data
+                                            }}
+                                        >
+                                            <img src={require("../../img/s_img/edit.png")} alt="Edit Icon" />
+                                        </Link>
+{/* // ... existing code ... */}
+                                        <Link className="sp_table_action d-flex justify-content-center align-items-center" onClick={() => { setModalShow(true), setDeleteId(ele.variantId) }}>
+                                            <img src={require('../../img/s_img/delete.png')} alt="Delete" />
+                                        </Link>
                                     </div>
                                 </td>
                             </tr>
@@ -401,11 +417,11 @@ function Product() {
                 </Modal.Header> */}
                 <Modal.Body className='px-5 py-5'>
                     <h5 className='text-center'>Delete Product?</h5>
-                    <p className='sp_text_grey px-5 text-center fs-5'>
+                    <p className='sp_text_grey  text-center fs-5'>
                         Are you sure you want to delete
                         Product?
                     </p>
-                    <div className="d-flex  align-items-center justify-content-between pt-4">
+                    <div className="d-flex  align-items-center justify-content-evenly pt-4">
                         <div className="sp_filter_btn" onClick={() => setModalShow(false)}>Cancle</div>
                         <Link onClick={() => {
                             handleDeteleProduct()

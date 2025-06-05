@@ -11,17 +11,19 @@ function Sidebar({ isOpen, onClose }) {
     const location = useLocation(); //
     useEffect(() => {
       setActiveSidebar(location.pathname);
+      console.log("Active Sidebar", activeSidebar);
+      
         
     }, [location.pathname]);
 
     // console.log("Set active sidebar", activeSidebar);
     return (
         <>
-            <section className='sp_sidebar_main'>
+            <section className='sp_sidebar_main text-white'>
                 {isOpen ?
-                    <Offcanvas show={isOpen} onHide={onClose} responsive="lg" className='d-lg-none sp_off_canvas'>
-                        <Offcanvas.Header closeButton style={{ backgroundColor: '#27391C' }}>
-                            <Offcanvas.Title><h2 className='sp_logo'>LOGO</h2>
+                    <Offcanvas show={isOpen} onHide={onClose} responsive="lg" className='d-lg-none sp_off_canvas text-white'>
+                        <Offcanvas.Header closeButton style={{ backgroundColor: '#2c6145' }}>
+                            <Offcanvas.Title><h2 className='sp_logo mb-0'>LOGO</h2>
                             </Offcanvas.Title>
                         </Offcanvas.Header>
                         <Offcanvas.Body className='p-0 border-top'>
@@ -39,7 +41,7 @@ function Sidebar({ isOpen, onClose }) {
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link to={'/seller/product'} onClick={onClose}   className={(activeSidebar === '/seller/product' || activeSidebar === '/seller/Add-product' || activeSidebar.startsWith('/seller/Edit-product/') ) ? 'sp_active': ''}>
+                                        <Link to={'/seller/product'} onClick={onClose}   className={(activeSidebar === '/seller/product' || activeSidebar === '/seller/Add-product' || activeSidebar.startsWith('/seller/Edit-product/') || activeSidebar.startsWith('/seller/viewproducts') ) ? 'sp_active': ''}>
                                             <div className='sp_side_icon'>
 
                                                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +100,7 @@ function Sidebar({ isOpen, onClose }) {
                         </Offcanvas.Body>
                     </Offcanvas>
                     : <div className='sp_sidebar d-none h-100'>
-                        <h2 className='sp_logo'>LOGO</h2>
+                        <h2 className='sp_logo mb-0'>LOGO</h2>
                         <ul className='list-unstyled sp_side_menu'>
                             <li>
                                 <Link to={'/seller/home'} className={activeSidebar === '/seller/home' ? 'sp_active' : ''}>

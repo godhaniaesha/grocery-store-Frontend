@@ -92,20 +92,25 @@ const Invoice = () => {
 
         {/* Product Table */}
         <div className="table-responsive mt-4">
-          <table className="table x_table table-bordered align-middle">
+          <table className="table x_table table-bordered align-middle" style={{ borderCollapse: 'collapse', width: '100%' }}>
             <thead className="table-light">
               <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Price</th>
+                <th style={{ padding: '8px', border: '1px solid #dee2e6' }}>Product</th>
+                <th style={{ padding: '8px', border: '1px solid #dee2e6' }}>Size</th>
+                <th style={{ padding: '8px', border: '1px solid #dee2e6' }}>Quantity</th>
+                <th style={{ padding: '8px', border: '1px solid #dee2e6' }}>Price</th>
+                <th style={{ padding: '8px', border: '1px solid #dee2e6' }}>Total</th>
+
               </tr>
             </thead>
             <tbody>
               {items.map((item, idx) => {
+                console.log(item,"item");
+                
                 const product = getProduct(item.productId);
                 return (
                   <tr key={item._id || idx}>
-                    <td>
+                    <td style={{ padding: '8px', border: '1px solid #dee2e6' }}>
                       {product && product.images && product.images[0] && (
                         <img
                           src={`http://localhost:4000/public/${product.images[0].replace('public\\', '')}`}
@@ -116,8 +121,11 @@ const Invoice = () => {
                       )}
                       {product ? product.productName : item.productId}
                     </td>
-                    <td>{item.quantity}</td>
-                    <td>{item.price}</td>
+                    <td style={{ padding: '8px', border: '1px solid #dee2e6' }}>{item.size}</td>
+                    <td style={{ padding: '8px', border: '1px solid #dee2e6' }}>{item.quantity}</td>
+                    <td style={{ padding: '8px', border: '1px solid #dee2e6' }}>{item.price}</td>
+                    <td style={{ padding: '8px', border: '1px solid #dee2e6' }}>{item.quantity * item.price}</td>
+
                   </tr>
                 );
               })}

@@ -13,6 +13,8 @@ const VerifyOTP = () => {
   const inputRefs = useRef([]);
   const registeredEmail = useSelector((state) => state.user.registeredEmail);
   const tempUserData = JSON.parse(sessionStorage.getItem('tempUserData') || '{}');
+  console.log("registeredEmail",registeredEmail);
+  
   const userEmail = registeredEmail || tempUserData.email;
   const { error, success } = useSelector((state) => state.emailVerification);
 
@@ -40,6 +42,7 @@ const VerifyOTP = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+ 
     const otpValue = otp.join('');
     try {
       const result = await dispatch(verifyEmailOtp({
