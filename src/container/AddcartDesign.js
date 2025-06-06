@@ -655,7 +655,7 @@ export default function AddcartDesign() {
                           {addresses.map((addr) => (
                             <div key={addr._id} className="">
                               <div
-                                className={`border rounded p-3 address-card ${selectedAddress?._id === addr._id ? 'selected-address' : ''}`}
+                                className={`border rounded p-md-3 p-1 address-card ${selectedAddress?._id === addr._id ? 'selected-address' : ''}`}
                                 onClick={() => handleSelectAddress(addr)}
                                 style={{
                                   cursor: 'pointer',
@@ -685,7 +685,7 @@ export default function AddcartDesign() {
                                   </div>
                                   <div className="d-flex flex-column gap-2">
                                     <button
-                                      className="btn btn-sm"
+                                      className="btn btn-sm d-flex align-items-center gap-1 x_addr_btn"
                                       style={{ borderColor: "#dc3545", color: "#dc3545" }}
                                       onClick={(e) => {
                                         e.stopPropagation();
@@ -693,7 +693,7 @@ export default function AddcartDesign() {
                                       }}
                                     >
                                       <FaTrash size={14} className='me-1 mb-1' />
-                                      Delete
+                                      <p className='x_sm_non mb-0'>Delete</p>
                                     </button>
                                   </div>
                                 </div>
@@ -821,13 +821,13 @@ export default function AddcartDesign() {
                           >
                             <div className="d-flex align-items-center justify-content-center gap-2">
                               <button
-                                className="btn btn-sm btn-outline-secondary rounded-circle p-1"
+                                className="btn btn-sm btn-outline-secondary rounded-circle p-md-1  x_btn_inc"
                                 onClick={() =>
                                   updateQuantity(item._id, "decrease")
                                 }
                                 style={{ width: "32px", height: "32px" }}
                               >
-                                <Minus size={16} />
+                               <p className='x_mar_b mb-1 mb-md-0'> <Minus size={16} /></p>
                               </button>
                               <input
                                 type="text"
@@ -837,13 +837,13 @@ export default function AddcartDesign() {
                                 readOnly
                               />
                               <button
-                                className="btn btn-sm btn-outline-secondary rounded-circle p-1"
+                                className="btn btn-sm btn-outline-secondary rounded-circle p-md-1 x_btn_inc"
                                 onClick={() =>
                                   updateQuantity(item._id, "increase")
                                 }
                                 style={{ width: "32px", height: "32px" }}
                               >
-                                <Plus size={16} />
+                                <p className='x_mar_b mb-1 mb-md-0'> <Plus size={16} /></p>
                               </button>
                             </div>
                           </td>

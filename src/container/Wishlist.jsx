@@ -83,10 +83,10 @@ const Wishlist = () => {
                         </div>
                         <h3>Your Wishlist is Empty</h3>
                         <p>Add items that you like to your wishlist and review them anytime</p>
-                        <Link to="/vegetable" className="db_shop_btn">
+                        {/* <Link to="/vegetable" className="db_shop_btn">
                             <FaShoppingCart className="db_btn_icon" />
                             Start Shopping
-                        </Link>
+                        </Link> */}
                     </div>
                 </div>
             </div>

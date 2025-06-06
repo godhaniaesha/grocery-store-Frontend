@@ -32,7 +32,7 @@ function Myorder(props) {
                 {orderLoading || productLoading ? (
                     <div><LoadingSpinner></LoadingSpinner></div>
                 ) : userOrders && userOrders.data ? (
-                    userOrders.data.map((order) => (
+                    userOrders.data.slice().reverse().map((order) => (
                         <div key={order._id} className="x_order_card my-4 p-3 p-md-4 bg-white rounded shadow">
                             <div className="x_order_header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
                                 <div>

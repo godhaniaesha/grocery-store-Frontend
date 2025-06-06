@@ -139,6 +139,18 @@ const MyAddresses = () => {
   return (
     <Container className="py-4">
       <h2 className="mb-4 text-center">My Addresses</h2>
+      {localAddresses && localAddresses.length > 0 && (
+        <div className="text-center my-4">
+          <Button
+            variant="success"
+            onClick={() => setShowAddModal(true)}
+            className="mt-3 add-new-btn"
+            style={{ backgroundColor: '#2c6145', borderColor: '#2c6145' }}
+          >
+            Add New Address
+          </Button>
+        </div>
+      )}
       <Row className="g-4">
         {localAddresses && localAddresses.length > 0 ? (
           localAddresses.map((address) => (
@@ -521,18 +533,7 @@ const MyAddresses = () => {
           </Form>
         </Modal.Body>
       </Modal>
-      {localAddresses && localAddresses.length > 0 && (
-        <div className="text-center mt-4">
-          <Button
-            variant="success"
-            onClick={() => setShowAddModal(true)}
-            className="mt-3 add-new-btn"
-            style={{ backgroundColor: '#2c6145', borderColor: '#2c6145' }}
-          >
-            Add New Address
-          </Button>
-        </div>
-      )}
+      
 
       <style jsx>{`
         .address-box {

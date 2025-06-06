@@ -437,20 +437,20 @@ export default function Checkout()   {
                                             </h4>
                                             <div className="g_item_controls">
                                                 <div className="g_quantity_control">
-                                                    <button
+                                                    {/* <button
                                                         className="g_qty_btn g_qty_minus"
                                                         onClick={() => handleQuantityChange(item._id, item.quantity - 1)}
-                                                    >-</button>
+                                                    >-</button> */}
                                                     <input
                                                         type="text"
                                                         value={item.quantity}
                                                         readOnly
                                                         className="g_qty_input"
                                                     />
-                                                    <button
+                                                    {/* <button
                                                         className="g_qty_btn g_qty_plus"
                                                         onClick={() => handleQuantityChange(item._id, item.quantity + 1)}
-                                                    >+</button>
+                                                    >+</button> */}
                                                 </div>
                                                 <span className="g_item_price">
                                                     ${((item.productVarientData?.[0]?.price || 0) * (item.quantity || 0)).toFixed(2)}

@@ -57,7 +57,7 @@ function Recommended() {
                 const variant = variants.find(v => v.productId === product._id);
                 const price = variant?.price || 0;
                 const discountPrice = variant?.discountPrice || price;
-                const discountPercentage = price > 0 ? Math.round(((price - discountPrice) / price) * 100) : 0;
+                const discountPercentage = variant?.discount || 0;
 
                 return {
                     id: product._id,
@@ -68,7 +68,7 @@ function Recommended() {
                     categoryId: product.categoryId || null,
                     price: price,
                     originalPrice: discountPrice,
-                    variantDiscount: `${discountPercentage}%`,
+                    variantDiscount: `${discountPercentage}`,
                     rating: 4.5,
                     description: product.description || '',
                     stockStatus: variant?.stockStatus ?? true

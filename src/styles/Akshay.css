@@ -1011,3 +1011,13 @@
     background: linear-gradient(135deg, #2c6145 0%, #1e4431 100%);
     border: none;
 }
+
+@media screen and (max-width: 375px) {
+    .g_coupon_section {
+        display: block !important;
+    }
+
+    .g_coupon_input {
+        display: block !important;
+    }
+}
