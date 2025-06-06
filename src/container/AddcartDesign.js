@@ -392,11 +392,11 @@ export default function AddcartDesign() {
         <div className="col-lg-8 mb-md-4 mb-2">
           <div className="card shadow-sm mb-4">
             <div className="card-body p-md-4 p-2">
-              <div className="d-flex justify-content-between align-items-center mb-4">
-                <h5 className="fw-bold mb-0">Shipping Address</h5>
+              <div className="d-md-flex justify-content-between d-block align-items-center mb-3">
+                <h5 className="fw-bold mb-md-0 mb-2 text-nowrap x_ship_tex">Shipping Address</h5>
                 <div>
                   <button
-                    className="btn x_btn_gradient  me-2"
+                    className="btn x_btn_gradient  me-2 x_btn_gradient_m"
                     onClick={() => setShowAddressForm(true)}
                   >
                     <FaPlus className="me-1" /> Add New Address
@@ -750,7 +750,7 @@ export default function AddcartDesign() {
                       <th scope="col" className="fw-bold py-3 ps-4" style={{ width: "40%", minWidth: "300px", borderBottom: "2px solid #2c6145" }}>Products</th>
                       <th scope="col" className="text-center fw-bold py-3" style={{ width: "15%", minWidth: "80px", borderBottom: "2px solid #2c6145" }}>Price</th>
                       <th scope="col" className="text-center fw-bold py-3" style={{ width: "30%", minWidth: "120px", borderBottom: "2px solid #2c6145" }}>Quantity</th>
-                      <th scope="col" className="text-end fw-bold py-3 pe-4" style={{ width: "15%", minWidth: "100px", borderBottom: "2px solid #2c6145" }}>Total Price</th>
+                      <th scope="col" className="text-end fw-bold py-3 pe-4 text-nowrap" style={{ width: "15%", minWidth: "100px", borderBottom: "2px solid #2c6145" }}>Total Price</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1007,7 +1007,7 @@ export default function AddcartDesign() {
         <div className="col-lg-4">
           <div className="card shadow-sm">
             <div className="card-body p-md-4 p-2">
-              <h4 className="fw-bold mb-md-4 mb-2">Order Summary</h4>
+              <h4 className="fw-bold mb-md-4 mb-2 x_fs">Order Summary</h4>
 
               <div className="d-flex justify-content-between mb-3">
                 <span>Subtotal</span>
@@ -1146,7 +1146,7 @@ export default function AddcartDesign() {
 
               <div className="border-top pt-3 mt-3">
                 <div className="d-flex justify-content-between mb-md-3 mb-2">
-                  <h5 className="fw-bold">Total</h5>
+                  <h5 className="fw-bold x_fs">Total</h5>
                   <h5 className="fw-bold">{formatPrice(getTotal())}</h5>
                 </div>
 

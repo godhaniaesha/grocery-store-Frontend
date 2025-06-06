@@ -3424,7 +3424,21 @@
     display: none;
   }
   }
-
+  @media screen and (max-width: 576px) {
+    .x_ship_tex{
+      margin-bottom: 2px !important;
+      font-size: 18px !important;
+    }
+    .x_btn_gradient{
+      font-size: 16px  !important;
+    }
+    .x_fs {
+      font-size: 18px  !important;
+    }
+    .x_btn_gradient_m{
+      margin-bottom: 2px;
+    }
+  }
   @media screen and (max-width: 425px) {
   .x_none_425{
     display: none;

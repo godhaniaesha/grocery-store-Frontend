@@ -72,9 +72,9 @@ export const mobileNoLogin = createAsyncThunk(
 // Verify OTP
 export const verifyOtp = createAsyncThunk(
   'auth/verifyOtp',
-  async ({ mobileNo, otp }) => {
+  async ({ phone, otp }) => {
     try {
-      const response = await axios.post('http://localhost:4000/api/emailOtpVerify', { mobileNo, otp });
+      const response = await axios.post('http://localhost:4000/api/emailOtpVerify', { phone, otp });
       return response.data;
     } catch (error) {
       throw error.response.data;

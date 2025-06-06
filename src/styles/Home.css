@@ -1457,6 +1457,7 @@
   transform: translateX(5px);
 }
 
+
 @media (max-width: 768px) {
   .Z_banner {
     padding: 60px 0;
@@ -1495,6 +1496,7 @@
   .Z_banner_content h1 {
     font-size: 28px;
   }
+  
 
   .Z_banner_content p {
     font-size: 14px;
@@ -1504,8 +1506,6 @@
     padding: 10px 20px;
     font-size: 14px;
   }
-
- 
 
 }
 
@@ -2487,8 +2487,12 @@
     text-align: left !important;
   }
 }
-
-
+@media (max-width: 576px) {
+.Z_banner_content  {
+  text-align: center !important;
+  padding-top: 5rem;
+}
+}
 .Z_coupon_box {
   padding: 10px;
 }

@@ -41,7 +41,7 @@ function Sidebar({ isOpen, onClose }) {
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link to={'/seller/product'} onClick={onClose}   className={(activeSidebar === '/seller/product' || activeSidebar === '/seller/Add-product' || activeSidebar.startsWith('/seller/Edit-product/') || activeSidebar.startsWith('/seller/viewproducts') ) ? 'sp_active': ''}>
+                                        <Link to={'/seller/product'} onClick={onClose}   className={(activeSidebar === '/seller/product' || activeSidebar === '/seller/Add-product' || activeSidebar.startsWith('/seller/Edit-product/') || activeSidebar.startsWith('/seller/viewproducts/') ) ? 'sp_active': ''}>
                                             <div className='sp_side_icon'>
 
                                                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -113,7 +113,7 @@ function Sidebar({ isOpen, onClose }) {
                                 </Link>
                             </li>
                             <li>
-                                <Link to={'/seller/product'} className={(activeSidebar === '/seller/product' || activeSidebar === '/seller/Add-product' || activeSidebar.startsWith('/seller/Edit-product/') ) ? 'sp_active': ''}>
+                                <Link to={'/seller/product'} className={(activeSidebar === '/seller/product' || activeSidebar === '/seller/Add-product' || activeSidebar.startsWith('/seller/Edit-product/') || activeSidebar.startsWith('/seller/viewproducts/') ) ? 'sp_active': ''}>
                                     <div className='sp_side_icon'>
 
                                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -132,7 +132,6 @@ function Sidebar({ isOpen, onClose }) {
                                             <path d="M14.3 3.19922H13V5.14922C13 6.22432 12.1251 7.09922 11.05 7.09922H4.55C3.4749 7.09922 2.6 6.22432 2.6 5.14922V3.19922H1.3C0.5837 3.19922 0 3.78292 0 4.49922V20.0992C0 20.8285 0.5707 21.3992 1.3 21.3992H14.3C15.0293 21.3992 15.6 20.8285 15.6 20.0992V4.49922C15.6 3.76992 15.0293 3.19922 14.3 3.19922ZM7.6102 14.7094L5.0102 17.3094C4.88789 17.431 4.72245 17.4992 4.55 17.4992C4.37755 17.4992 4.21211 17.431 4.0898 17.3094L2.7898 16.0094C2.5363 15.7559 2.5363 15.3438 2.7898 15.0903C3.0433 14.8368 3.4554 14.8368 3.7089 15.0903L4.55 15.9301L6.6898 13.7903C6.9433 13.5368 7.3554 13.5368 7.6089 13.7903C7.8624 14.0438 7.8637 14.4546 7.6102 14.7094ZM7.6102 9.50942L5.0102 12.1094C4.88789 12.231 4.72245 12.2992 4.55 12.2992C4.37755 12.2992 4.21211 12.231 4.0898 12.1094L2.7898 10.8094C2.5363 10.5559 2.5363 10.1438 2.7898 9.89032C3.0433 9.63682 3.4554 9.63682 3.7089 9.89032L4.55 10.7301L6.6898 8.59032C6.9433 8.33682 7.3554 8.33682 7.6089 8.59032C7.8624 8.84382 7.8637 9.25462 7.6102 9.50942ZM12.35 16.1992H9.75C9.3912 16.1992 9.1 15.908 9.1 15.5492C9.1 15.1904 9.3912 14.8992 9.75 14.8992H12.35C12.7088 14.8992 13 15.1904 13 15.5492C13 15.908 12.7088 16.1992 12.35 16.1992ZM12.35 10.9992H9.75C9.3912 10.9992 9.1 10.708 9.1 10.3492C9.1 9.99042 9.3912 9.69922 9.75 9.69922H12.35C12.7088 9.69922 13 9.99042 13 10.3492C13 10.708 12.7088 10.9992 12.35 10.9992Z" fill="white" />
                                         </svg>
                                     </div>
-
                                     <h5>Orders</h5>
                                 </Link>
                             </li>

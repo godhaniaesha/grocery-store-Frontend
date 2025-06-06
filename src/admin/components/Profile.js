@@ -17,6 +17,7 @@ import { getuserData } from "../../redux/slices/sellerDashboard";
 import { useNavigate } from "react-router-dom";
 import { deleteAcc } from "../../redux/slices/deleteAcc.Slice";
 import { resendOtp, sendOtp } from "../../redux/slices/resendOtp.Slice";
+import { verifyOtp } from "../../redux/slices/Auth.slice";
 const Profile = () => {
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showTaxdetails, setShowTaxDetails] = useState("");
@@ -31,6 +32,8 @@ const Profile = () => {
   const [users, setusers] = useState([]);
   const [address, setAddress] = useState(null);
   const [user, setUser] = useState(null);
+  const [otpValues, setOtpValues] = useState(Array(6).fill("")); // <-- Add this state
+
 
   var otp = "";
   const navigate = useNavigate();
@@ -77,37 +80,24 @@ const Profile = () => {
   };
 
   const handleBackspace = (e, index) => {
-    if (e.key === "Backspace" && index > 0 && e.target.value === "") {
+    if (e.key === "Backspace" && index > 0 && otpValues[index] === "") {
       inputsRef.current[index - 1].focus();
     }
   };
-
+  
   const handleOTPInput = (e, index) => {
     const value = e.target.value;
-    if (value.length === 0) {
-      otp = "";
-    } else {
-      otp = otp + value;
-    }
-    if (value.length === 1) {
-      if (index < inputsRef.current.length - 1) {
-        inputsRef.current[index + 1].focus();
-      }
-    }
-    const allFilled = [...inputsRef.current].every(
-      (input) => input.value.length === 1
-    );
-    if (allFilled) {
-      if (parseInt(otp) === userData?.otp) {
-        setstep(3);
-      } else {
-        alert("Invalid OTP");
-        otp = "";
-        inputsRef.current.forEach((input) => (input.value = ""));
-      }
+    if (!/^\d*$/.test(value)) return; // Only allow digits
+  
+    const newOtpValues = [...otpValues];
+    newOtpValues[index] = value;
+    setOtpValues(newOtpValues);
+  
+    // Move focus to next input if value entered
+    if (value.length === 1 && index < inputsRef.current.length - 1) {
+      inputsRef.current[index + 1].focus();
     }
   };
-
   const getUser = async () => {
     try {
       var token = localStorage.getItem("token");
@@ -324,7 +314,41 @@ const Profile = () => {
       }
     },
   });
+// Place this inside your component
 
+  
+debugger;
+ // ...existing code...
+ const handleSubmitOtp = async () => {
+  const otp = otpValues.join("");
+  if (otp.length === 6) {
+    const result = await dispatch(
+      verifyOtp({
+        otp,
+        phone: userData?.mobileNo,
+      })
+    );
+    // If OTP is verified, move to step 3 (Edit Bank Details)
+    if (result?.payload?.status == 200) {
+      console.log("result", result?.payload.status);
+     const cnt = 3;
+      setstep(cnt);
+      console.log("step", step, cnt);
+
+      // setstep(3);
+      
+      
+    } else {
+      alert("Invalid OTP. Please try again.");
+    }
+  } else {
+    alert("Please enter the complete 6-digit OTP.");
+  }
+};
+console.log("step", step);
+
+// ...existing code...
+  
   const editBankD = useFormik({
     initialValues: {
       bankName: "",
@@ -954,7 +978,7 @@ const Profile = () => {
 
                 <p className="udescription">
                   Confirm identity to edit your bank details. OTP will be sent
-                  to registered mobile number and email ID
+                  to registered mobile number
                 </p>
 
                 <div className="udetail_item">
@@ -962,16 +986,10 @@ const Profile = () => {
                   <div className="udetail_value">{userData?.mobileNo}</div>
                 </div>
 
-                <div className="udetail_item">
-                  <div className="udetail_label">Email ID</div>
-                  <div className="udetail_value">{userData?.email}</div>
-                </div>
-
                 <button
                   className="z_button"
                   onClick={() => {
-                    // dispatch(sendOtp(userData?.email)).unwrap()
-                    dispatch(sendOtp(userData?.email));
+                    dispatch(sendOtp(userData?.mobileNo));
                     setstep(2);
                   }}
                 >
@@ -1040,6 +1058,13 @@ const Profile = () => {
                     Resend OTP
                   </a>
                 </div>
+                <button
+  className="x_submit_btn"
+  onClick={handleSubmitOtp} // You can define this function to handle OTP submit
+>
+  Submit
+</button>
+
               </div>
             )}
 

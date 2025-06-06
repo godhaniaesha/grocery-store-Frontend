@@ -8,32 +8,35 @@ import axios from "axios";
 
 function SellOnLogin() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(""); // Keeping email for standard login
   const [password, setPassword] = useState("");
   const [staps, setstaps] = useState(0);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  //   reset password states
+  // reset password states
+  const [mobileNo, setMobileNo] = useState(""); // New state for mobile number
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [Userid, SetUserid] = useState("");
-  const [users, setUsers] = useState([]);
-  const getUsers = async () => {
-    try {
-      const response = await axios.get("http://localhost:4000/api/allUsers", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      // console.log("response", response);
-      setUsers(response.data); // Update state with fetched users
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
+  const [users, setUsers] = useState([]); // This state doesn't seem to be used, can be removed if not needed.
+
+  // Removed getUsers as it's not used in the provided snippet
+  // const getUsers = async () => {
+  //   try {
+  //     const response = await axios.get("http://localhost:4000/api/allUsers", {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     });
+  //     setUsers(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching users:", error);
+  //   }
+  // };
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -46,14 +49,10 @@ function SellOnLogin() {
         password: password,
       });
 
-      // console.log("Login Response:", response.data);
-
-      // Save data to localStorage
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("filledSteps", response.data.data.filledSteps);
       localStorage.setItem("userId", response.data.data._id);
 
-      // Handle navigation based on filledSteps
       const filledSteps = response.data.data.filledSteps;
 
       if (filledSteps === 6 || filledSteps === "6") {
@@ -63,13 +62,11 @@ function SellOnLogin() {
       }
     } catch (error) {
       console.error("Login Error:", error);
-      // Consider adding error handling for the user, like:
       setError("Invalid email or password");
     }
   };
 
-  //   verification email js code
-
+  // verification code states for mobile
   const [verificationCode, setVerificationCode] = useState([
     "",
     "",
@@ -80,28 +77,23 @@ function SellOnLogin() {
   ]);
   const inputRefs = useRef([]);
 
-  // Initialize the refs array
   useEffect(() => {
     inputRefs.current = inputRefs.current.slice(0, 6);
   }, []);
 
   const handleInputChange = (index, value) => {
-    // Only allow single characters
     if (value.length > 1) {
       value = value.charAt(0);
     }
-    // Update the verification code array
     const newVerificationCode = [...verificationCode];
     newVerificationCode[index] = value;
     setVerificationCode(newVerificationCode);
-    // Auto-focus next input when a digit is entered
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
 
   const handleKeyDown = (index, e) => {
-    // Handle backspace to go to previous input
     if (e.key === "Backspace" && !verificationCode[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
@@ -109,72 +101,78 @@ function SellOnLogin() {
 
   const handleforgotPassword = async () => {
     try {
+      // Changed to send mobile number for forgot password
       const response = await axios.post(
         "http://localhost:4000/api/forgotPassword",
         {
-          email: email,
+          mobileNo: mobileNo, // Sending mobileNo instead of email
         }
       );
-      // console.log("forgot password email", response);
+      console.log("forgot password mobile response", response);
     } catch (error) {
       console.error(error);
+      setError("Error sending OTP to mobile number.");
     }
   };
 
   const handleVerify = async () => {
     const code = verificationCode.join("");
     try {
+      // Changed to verify OTP with mobile number
       const response = await axios.post(
-        "http://localhost:4000/api/emailOtpVerify",
+        "http://localhost:4000/api/emailOtpVerify", // Assuming a new endpoint for mobile OTP verification
         {
-          email: email,
+          phone: mobileNo, // Sending mobileNo for verification
           otp: code,
         }
       );
-      // console.log("reset password", response);
-      // console.log("User Id", response.data.data._id);
+      console.log("OTP verification response", response);
       SetUserid(response.data.data._id);
-      // localStorage.setItem("userId", response.data.data._id);
     } catch (error) {
       console.error(error);
+      setError("Invalid OTP or mobile number.");
     }
   };
 
   const handleResetPassword = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:4000/api/resetPassword/${Userid}`,
+        `http://localhost:4000/api/resetPassword`,
         {
+          mobileNo: mobileNo,
           newPassword: newPassword,
           confirmPassword: confirmPassword,
         }
       );
-      // console.log("reset password", response);
-      setstaps(0);
+      console.log("reset password", response);
+      setstaps(0); // Go back to login screen after successful reset
+      alert("Password reset successfully! Please log in with your new password.");
     } catch (error) {
       console.error(error);
+      setError("Error resetting password. Please try again.");
+    }
+  };
+  const handleResend = async (e) => {
+    e.preventDefault();
+    try {
+      // Changed to resend OTP to mobile number
+      const response = await axios.post("http://localhost:4000/api/resendEmailOtp", { // Assuming a new endpoint for resending mobile OTP
+        mobileNo: mobileNo, // Sending mobileNo for resend
+      });
+      console.log("Resend verification code response", response);
+      alert("Verification code resent to your mobile number.");
+    } catch (error) {
+      console.error(error);
+      setError("Error resending verification code.");
     }
   };
 
-  const handleResend = (e) => {
-    e.preventDefault();
-    // alert("Resending verification code...");
-    try {
-      const response = axios.post("http://localhost:4000/api/resendEmailOtp", {
-        email: email,
-      });
-      // console.log("Resend verification code response", response); 
-      
-    } catch (error) {
-      console.error(error);
-    }
-  };
   return (
     <>
       <Header />
 
-      {/* login form  */}
-      {staps == 0 && (
+      {/* login form */}
+      {staps === 0 && (
         <div className="k-login-form" style={{ marginTop: "100px" }}>
           <Container className="d-flex justify-content-center align-items-center">
             <div
@@ -228,13 +226,9 @@ function SellOnLogin() {
                   </InputGroup>
                   <div
                     className="d-flex justify-content-end mt-1 fw-medium text-danger"
-                    onClick={() => setstaps(1)}
-                    style={{ fontSize: "0.9rem" }}
+                    onClick={() => setstaps(1)} // Changed to setstaps(1) for mobile input
+                    style={{ fontSize: "0.9rem", cursor: "pointer" }}
                   >
-                    {/* <Link
-                        to="/seller/seller-forget-password"
-                      >
-                      </Link> */}
                     Forgot Password?
                   </div>
                 </Form.Group>
@@ -243,12 +237,6 @@ function SellOnLogin() {
                   <Button
                     type="submit"
                     className="w-100 py-2 z_button"
-                    // style={{
-                    //   background:
-                    //     "linear-gradient(180deg, #479529 0%, #0C6C44 100%)",
-                    //   borderColor: "#4CAF50",
-                    //   fontSize: "1rem",
-                    // }}
                     onClick={handleSubmit}
                   >
                     Login
@@ -263,8 +251,8 @@ function SellOnLogin() {
         </div>
       )}
 
-      {/* forget password */}
-      {staps == 1 && (
+      {/* forget password - Mobile Number Input */}
+      {staps === 1 && (
         <div className="k-login-form" style={{ marginTop: "100px" }}>
           <Container className="d-flex justify-content-center align-items-center">
             <div
@@ -274,17 +262,17 @@ function SellOnLogin() {
               <div className="text-center mb-4">
                 <h3 className="k-text-size">Forgot Password?</h3>
                 <p className="k-text-gray">
-                  To recover your account, please enter your email below.
+                  To recover your account, please enter your mobile number below.
                 </p>
               </div>
               <Form>
                 <Form.Group className="my-5">
-                  <Form.Label>Email Id</Form.Label>
+                  <Form.Label>Mobile Number</Form.Label>
                   <Form.Control
-                    type="email"
-                    placeholder="Email Id"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    type="tel" // Changed to tel type for mobile number
+                    placeholder="Mobile Number"
+                    value={mobileNo}
+                    onChange={(e) => setMobileNo(e.target.value)}
                     required
                     className="rounded k-input-bg-color"
                   />
@@ -295,12 +283,15 @@ function SellOnLogin() {
                     type="submit"
                     className="w-100 py-2 z_button"
                     onClick={() => {
-                      setstaps(2);
-                      handleforgotPassword();
+                      setstaps(2); // Move to OTP verification step
+                      handleforgotPassword(); // Send OTP to mobile
                     }}
                   >
                     Send Code
                   </Button>
+                  {error && (
+                    <div className="text-danger mt-2">{error}</div>
+                  )}
                 </div>
               </Form>
             </div>
@@ -308,15 +299,15 @@ function SellOnLogin() {
         </div>
       )}
 
-      {/* verify email */}
-      {staps == 2 && (
+      {/* verify mobile OTP */}
+      {staps === 2 && (
         <div className="container">
           <div className="k-verification-container">
             <div className="text-center">
-              <h3 className="k-heading">Verify Email</h3>
+              <h3 className="k-heading">Verify Mobile Number</h3>
               <p className="k-instruction">
-                We've sent a code to <strong>{email}</strong>.<br />
-                Please enter it to verify your email.
+                We've sent a code to <strong>{mobileNo}</strong>.<br />
+                Please enter it to verify your mobile number.
               </p>
             </div>
             <div className="k-code-input-container my-5">
@@ -333,21 +324,27 @@ function SellOnLogin() {
                 />
               ))}
             </div>
-            <button className="z_button w-100" onClick={handleVerify}>
-              <div onClick={() => setstaps(3)}>Verify Email</div>
-            </button>
+            <Button className="z_button w-100" onClick={() => {
+              handleVerify();
+              setstaps(3); // Move to reset password step after verification
+            }}>
+              Verify Code
+            </Button>
             <p className="k-resend-text mt-3">
-              Didn't received code?{" "}
+              Didn't receive code?{" "}
               <a href="#" className="k-resend-link" onClick={handleResend}>
                 Resend
               </a>
             </p>
+            {error && (
+              <div className="text-danger mt-2">{error}</div>
+            )}
           </div>
         </div>
       )}
 
       {/* reset password */}
-      {staps == 3 && (
+      {staps === 3 && (
         <Container className="d-flex justify-content-center align-items-center k-password-reset-container">
           <Card className="k-password-card shadow-sm border-0">
             <Card.Body className="p-4">
@@ -356,7 +353,7 @@ function SellOnLogin() {
                 Create a unique password different from your previous ones.
               </p>
 
-              <Form onSubmit={handleSubmit}>
+              <Form onSubmit={(e) => { e.preventDefault(); handleResetPassword(); }}>
                 <Form.Group className="mb-3">
                   <Form.Label>New Password</Form.Label>
                   <InputGroup className="k-password-input-group mb-4">
@@ -409,14 +406,15 @@ function SellOnLogin() {
                   </InputGroup>
                 </Form.Group>
 
-
                 <Button
                   type="submit"
                   className="w-100 mt-4 z_button"
-                  onClick={handleResetPassword}
                 >
                   Reset Password
                 </Button>
+                {error && (
+                  <div className="text-danger mt-2">{error}</div>
+                )}
               </Form>
             </Card.Body>
           </Card>

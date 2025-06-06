@@ -21,7 +21,7 @@ function Addproduct() {
 
     // Fetch category and subcategory data
     const categoryData = useSelector((state) => state.sellerProduct.categoryData);
-    const subcategoriesData = useSelector((state) => state.sellerProduct.subcategories);
+    const subcategoriesData = useSelector((state) => state.subcategory.subcategories);
 
     useEffect(() => {
         dispatch(getCategory());

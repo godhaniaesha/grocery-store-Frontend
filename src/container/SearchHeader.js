@@ -464,7 +464,7 @@ export default function SearchHeader() {
             {/* ==== LEFT: LOGO & MENU ==== */}
             <div className="d-flex align-items-center">
               <button
-                className="navbar-toggler p-1 me-sm-3 me-1 border-0"
+                className="navbar-toggler p-1 me-md-1 me-0 border-0"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#navbarMenu"
@@ -477,7 +477,7 @@ export default function SearchHeader() {
               </button>
 
               <a className="navbar-brand d-flex align-items-center" href="/Main">
-                <BsShop className="me-2" size={28} />
+                <BsShop className="me-1 me-md-2" size={28} />
                 <span className="fw-bold fs-4">FreshMart</span>
               </a>
             </div>
@@ -488,7 +488,7 @@ export default function SearchHeader() {
               <Search />
 
               {/* Icons Section */}
-              <div className="db_icon_wrapper d-flex align-items-center gap-sm-4 gap-2 ms-sm-3 ms-1">
+              <div className="db_icon_wrapper d-flex align-items-center gap-md-2 gap-3 ms-sm-3 ms-1">
                 {/* Account */}
                 {/* Account */}
                 <div className="text-center position-relative" ref={userDropdownRef}>
@@ -1365,6 +1365,11 @@ export default function SearchHeader() {
         }
         .db_icon_wrapper button {
           transition: transform 0.2s ease;
+        }
+          @media (max-width: 330px) {
+          .db_icon_wrapper {
+               gap: 0.7rem !important;
+          }
         }
 
         /* SHRINK ICONS BELOW 425px */

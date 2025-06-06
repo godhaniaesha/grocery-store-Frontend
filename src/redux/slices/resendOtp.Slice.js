@@ -3,15 +3,15 @@ import axios from "axios";
 
 export const sendOtp = createAsyncThunk(
   "sendOtp",
-  async (email, { rejectWithValue }) => {
-    // console.log("email", email);
+  async (mobileNo, { rejectWithValue }) => {
+    // console.log("mobileNo", mobileNo);
     // alert("sjhas");
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
         "http://localhost:4000/api/forgotPassword",
         {
-          email: email,
+          mobileNo: mobileNo,
         },
         {
           headers: {
@@ -30,15 +30,15 @@ export const sendOtp = createAsyncThunk(
 
 export const resendOtp = createAsyncThunk(
   "resendOtp",
-  async (email, { rejectWithValue }) => {
-    // console.log("email", email);
+  async (mobileNo, { rejectWithValue }) => {
+    // console.log("mobileNo", mobileNo);
     
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
         "http://localhost:4000/api/resendEmailOtp",
         {
-          email: email,
+          mobileNo: mobileNo,
         },
         {
           headers: {
