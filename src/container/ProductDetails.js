@@ -22,7 +22,7 @@ import {
   getallMyCarts,
 } from "../redux/slices/cart.Slice";
 import SimilarPro from "./SimilarPro";
-const ProductDetails = ({setIsVegetablePage,setIsProductDetailPage,productId}) => {
+const ProductDetails = ({ setIsVegetablePage, setIsProductDetailPage, productId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const selectedCurrency = useSelector(selectCurrency);
@@ -137,24 +137,24 @@ const ProductDetails = ({setIsVegetablePage,setIsProductDetailPage,productId}) =
     if (!product || !product.productVarientData || !Array.isArray(product.productVarientData)) {
       return null;
     }
-  
+
     const variant = product.productVarientData.find(v => v.size === selectedSize) || product.productVarientData[0];
-  
+
     if (variant) {
       // Ensure price values are numbers
       const originalPrice = parseFloat(variant.price) || 0;
       const discountPercentage = parseFloat(variant.discount) || 0;
-      
+
       // Calculate discounted price based on discount percentage
       const calculatedDiscountPrice = originalPrice - (originalPrice * (discountPercentage / 100));
-      
+
       return {
         ...variant,
         price: originalPrice,
         discountPrice: calculatedDiscountPrice
       };
     }
-    
+
     return null;
   };
 
@@ -177,9 +177,9 @@ const ProductDetails = ({setIsVegetablePage,setIsProductDetailPage,productId}) =
   const thumbnails =
     product && product.images
       ? product.images.map((img, index) => ({
-          image: `http://localhost:4000/${img.split("public\\")[1]}`,
-          alt: `${product.productName} view ${index + 1}`,
-        }))
+        image: `http://localhost:4000/${img.split("public\\")[1]}`,
+        alt: `${product.productName} view ${index + 1}`,
+      }))
       : [];
 
   const handleSizeChange = (size) => {
@@ -251,9 +251,8 @@ const ProductDetails = ({setIsVegetablePage,setIsProductDetailPage,productId}) =
               {product?.images?.map((img, index) => (
                 <div
                   key={index}
-                  className={`a_thumbnail ${
-                    index === activeThumbnail ? "active" : ""
-                  }`}
+                  className={`a_thumbnail ${index === activeThumbnail ? "active" : ""
+                    }`}
                   onClick={() => handleThumbnailClick(img, index)}
                 >
                   <img
@@ -296,9 +295,8 @@ const ProductDetails = ({setIsVegetablePage,setIsProductDetailPage,productId}) =
                   {product?.productVarientData?.filter(variant => variant.status === true).map((variant) => (
                     <button
                       key={variant.size}
-                      className={`a_size-btn ${
-                        selectedSize === variant.size ? "active" : ""
-                      }`}
+                      className={`a_size-btn ${selectedSize === variant.size ? "active" : ""
+                        }`}
                       onClick={() => handleSizeChange(variant.size)}
                     >
                       {variant.size}
@@ -344,8 +342,8 @@ const ProductDetails = ({setIsVegetablePage,setIsProductDetailPage,productId}) =
                   <div className="a_tags-container d-flex flex-wrap gap-2 mt-2">
                     {product?.tags?.map((tag, index) => (
                       <span
-                        key={index} 
-                        className="a_tag-item px-3 py-2 rounded-pill bg-light text-dark d-inline-flex align-items-center transition-all hover:bg-primary hover:text-white" 
+                        key={index}
+                        className="a_tag-item px-3 py-2 rounded-pill bg-light text-dark d-inline-flex align-items-center transition-all hover:bg-primary hover:text-white"
                         style={{
                           fontSize: '0.9rem',
                           border: '1px solid #e0e0e0',
@@ -386,11 +384,11 @@ const ProductDetails = ({setIsVegetablePage,setIsProductDetailPage,productId}) =
             <div className="a_share_modal_content">
               <div className="a_share_product_info">
                 <img
-                  src={activeImage}
-                  alt="Broccoli"
+                  src={`http://localhost:4000/public/${activeImage}`}
+                  alt={product?.productName}
                   className="a_share_product_image"
                 />
-                <h4>Broccoli - Organically Grown</h4>
+                <h4>{product?.productName}</h4>
               </div>
               <div className="a_share_url_container">
                 <input

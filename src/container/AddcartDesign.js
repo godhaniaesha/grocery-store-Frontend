@@ -47,20 +47,6 @@ export default function AddcartDesign() {
 
 
   // Replace the applyDiscountCode function with this updated version
-  const applyDiscountCode = () => {
-    if (!discountCode.trim()) {
-      alert('Please enter coupon code');
-      return;
-    }
-    const coupon = coupons.find(c => c.code === discountCode || c.title === discountCode);
-    if (coupon) {
-      setAppliedCoupon(coupon);
-      console.log('Coupon applied:', coupon);
-    } else {
-      setAppliedCoupon(null);
-      alert('Invalid coupon code');
-    }
-  };
 
   const updateQuantity = async (cartId, type) => {
     try {
@@ -251,12 +237,52 @@ export default function AddcartDesign() {
       [name]: value
     }));
   };
+  useEffect(() => {
+    if (coupons.length > 0) {
+      const storedCoupon = localStorage.getItem('coupon');
+      if (storedCoupon) {
+        try {
+          const parsedCoupon = JSON.parse(storedCoupon);
+          const matchedCoupon = coupons.find(
+            c =>
+              c._id === parsedCoupon._id ||
+              c.code === parsedCoupon.code ||
+              c.title === parsedCoupon.title
+          );
+          if (matchedCoupon) {
+            setAppliedCoupon(matchedCoupon);
+            setDiscountCode(matchedCoupon.code || matchedCoupon.title);
+            return;
+          }
+        } catch (e) {
+          // Ignore parse error
+        }
+      }
+      setAppliedCoupon(null);
+      setDiscountCode('');
+    }
+  }, [coupons]);
+  const applyDiscountCode = () => {
+    if (!discountCode.trim()) {
+      alert('Please enter coupon code');
+      return;
+    }
+    const coupon = coupons.find(c => c.code === discountCode || c.title === discountCode);
+    if (coupon) {
+      setAppliedCoupon(coupon);
+      console.log('Coupon applied:', coupon);
+    } else {
+      setAppliedCoupon(null);
+      alert('Invalid coupon code');
+    }
+  };
 
   const applyCouponCode = (code) => {
     setDiscountCode(code);
     const coupon = coupons.find(c => c.code === code || c.title === code);
     if (coupon) {
       setAppliedCoupon(coupon);
+      localStorage.setItem('coupon', JSON.stringify(coupon)); // Store in localStorage
       console.log('Coupon applied:', coupon);
     } else {
       setAppliedCoupon(null);
@@ -600,14 +626,14 @@ export default function AddcartDesign() {
                       >
                         Cancel
                       </button>
-                        <button
-                          type="button"
-                          className="btn"
-                          style={{ backgroundColor: "#2c6145", color: "#fff" }}
-                          onClick={handleAddAddress}
-                        >
-                          {editingAddress ? 'Update Address' : 'Add Address'}
-                        </button>
+                      <button
+                        type="button"
+                        className="btn"
+                        style={{ backgroundColor: "#2c6145", color: "#fff" }}
+                        onClick={handleAddAddress}
+                      >
+                        {editingAddress ? 'Update Address' : 'Add Address'}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -827,7 +853,7 @@ export default function AddcartDesign() {
                                 }
                                 style={{ width: "32px", height: "32px" }}
                               >
-                               <p className='x_mar_b mb-1 mb-md-0'> <Minus size={16} /></p>
+                                <p className='x_mar_b mb-1 mb-md-0'> <Minus size={16} /></p>
                               </button>
                               <input
                                 type="text"
@@ -878,12 +904,24 @@ export default function AddcartDesign() {
                     type="text"
                     className="form-control"
                     placeholder="Add voucher discount"
-                    value={discountCode}
-                    onChange={(e) => setDiscountCode(e.target.value)}
+                    value={
+                      (() => {
+                        const storedCoupon = localStorage.getItem('coupon');
+                        if (storedCoupon) {
+                          try {
+                            const parsed = JSON.parse(storedCoupon);
+                            return parsed.code || parsed.title || '';
+                          } catch {
+                            return '';
+                          }
+                        }
+                        return '';
+                      })()
+                    }
+                    readOnly
                     style={{
                       borderColor: "#dee2e6",
-                      transition:
-                        "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
+                      transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
                     }}
                   />
                   <button
@@ -914,8 +952,18 @@ export default function AddcartDesign() {
                         width: "250px",
                         borderRadius: "8px",
                         overflow: "hidden",
-                        backgroundColor: discountCode === coupon.title ? "#e8f5e9" : "#fff",
-                        scrollSnapAlign: "start"
+                        backgroundColor: (() => {
+                          const storedCoupon = localStorage.getItem('coupon');
+                          if (storedCoupon) {
+                            try {
+                              const parsed = JSON.parse(storedCoupon);
+                              return parsed._id === coupon._id ? "#e8f5e9" : "#fff";
+                            } catch {
+                              return "#fff";
+                            }
+                          }
+                          return "#fff";
+                        })(),
                       }}
                     >
                       <div className="p-3" style={{ borderBottom: "1px dashed #2c6145" }}>
@@ -1016,8 +1064,22 @@ export default function AddcartDesign() {
 
               {appliedCoupon && (
                 <div className="d-flex justify-content-between mb-3">
-                  <span>Discount ({appliedCoupon.title})</span>
-                  <span className="text-success">
+                  <span>
+                    Discount (
+                    {(() => {
+                      const storedCoupon = localStorage.getItem('coupon');
+                      if (storedCoupon) {
+                        try {
+                          const parsed = JSON.parse(storedCoupon);
+                          return parsed.code || parsed.title || '';
+                        } catch {
+                          return '';
+                        }
+                      }
+                      return '';
+                    })()}
+                    )
+                  </span>                  <span className="text-success">
                     -{formatPrice(
                       appliedCoupon.coupenType === "Fixed"
                         ? appliedCoupon.coupenDiscount

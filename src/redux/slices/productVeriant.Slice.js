@@ -22,6 +22,7 @@ export const fetchProductVariants = createAsyncThunk(
 export const fetchProductVariantById = createAsyncThunk(
   'productVariants/fetchProductVariantById',
   async (id, { rejectWithValue }) => {
+    alert("hello")
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(`${API_URL}/getProductVarient/${id}`, {

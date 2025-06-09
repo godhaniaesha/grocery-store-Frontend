@@ -10,8 +10,8 @@ import { LiaAngleRightSolid } from 'react-icons/lia';
 import { createCart, getallMyCarts, updateCart } from '../redux/slices/cart.Slice';
 import { Link, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { Card } from 'react-bootstrap';
-import { FaShoppingCart, FaHeart, FaEye, FaStar } from 'react-icons/fa';
+import { Card, Modal } from 'react-bootstrap';
+import { FaShoppingCart, FaHeart, FaEye, FaStar, FaTimes, FaMinus, FaPlus } from 'react-icons/fa';
 
 import { createWishlist, deleteFromWishlist, getWishlistItems } from '../redux/slices/wishlist.Slice';
 import { toast } from 'react-toastify';
@@ -19,10 +19,19 @@ import { toast } from 'react-toastify';
 function SimilarPro({ setIsProductDetailPage, setIsVegetablePage }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+     const { categories } = useSelector(state => state.category);
+     console.log(categories,"categories");
+     
     const [productQuantities, setProductQuantities] = useState({});
     const { cartItems } = useSelector((state) => state.addcart);
     const { wishlistItems } = useSelector((state) => state.wishlist || { wishlistItems: [] });
+    const [quantity, setQuantity] = useState(1);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
+    const [modalShow, setModalShow] = useState(false);
+
+console.log(selectedProduct,"selectedProduct");
     // Add isInWishlist function
     const isInWishlist = (productId) => {
         return wishlistItems?.some(item =>
@@ -92,7 +101,11 @@ function SimilarPro({ setIsProductDetailPage, setIsVegetablePage }) {
                     price: formatPrice(`${variant.price}`),
                     discountPrice: formatPrice(`${variant.discountPrice}`),
                     discount: variant?.discount || '0',
-                    stockStatus: variant?.stockStatus ?? true
+                    stockStatus: variant?.stockStatus ?? true,
+                    subtitle: variant?.categoryData?.[0]?.categoryName || product.categoryId?.categoryName || 'Uncategorized',
+                    description: product.description || '',
+                    category: variant?.categoryData?.[0]?.categoryName || product.categoryId?.categoryName || 'Uncategorized',
+                    categoryId: product.categoryId || null,
                 };
             })
             .filter(Boolean);
@@ -100,86 +113,25 @@ function SimilarPro({ setIsProductDetailPage, setIsVegetablePage }) {
 
 
 
-    const handleQuantityChange = async (product, change) => {
-        try {
-            // Get the current quantity from cart or local state
-            const currentQuantity = cartItems?.find(item => item.productId === product.id)?.quantity || productQuantities[product.name] || 0;
-            const newQuantity = Math.max(0, currentQuantity + change);
-            const variant = variants.find(v => v.productId === product.id);
-
-            // If new quantity is 0, remove from cart
-            if (newQuantity === 0) {
-                const existingCartItem = cartItems?.find(item =>
-                    item.productId === product.id && item.productVarientId === variant?._id
-                );
-
-                if (existingCartItem) {
-                    // Send delete request by setting quantity to 0
-                    await dispatch(updateCart({
-                        cartId: existingCartItem._id,
-                        productId: product.id,
-                        productVarientId: variant?._id,
-                        quantity: 0
-                    })).unwrap();
-
-                    // Clear local state
-                    setProductQuantities(prev => {
-                        const { [product.name]: _, ...rest } = prev;
-                        return rest;
-                    });
-                }
-                return;
-            }
-
-            // Adding new item to cart
-            if (currentQuantity === 0 && change > 0) {
-                const cartData = {
-                    productId: product.id,
-                    productVarientId: variant?._id,
-                    quantity: 1
-                };
-                const result = await dispatch(createCart(cartData)).unwrap();
-                if (result.success) {
-                    setProductQuantities(prev => ({
-                        ...prev,
-                        [product.name]: 1
-                    }));
-                }
-            } else {
-                // Updating existing cart item
-                const existingCartItem = cartItems?.find(item =>
-                    item.productId === product.id && item.productVarientId === variant?._id
-                );
-
-                const cartData = {
-                    cartId: existingCartItem?._id,
-                    productId: product.id,
-                    productVarientId: variant?._id,
-                    quantity: newQuantity
-                };
-
-                const result = await dispatch(updateCart(cartData)).unwrap();
-                if (result.success) {
-                    setProductQuantities(prev => ({
-                        ...prev,
-                        [product.name]: newQuantity
-                    }));
-                }
-            }
-
-            // Refresh cart items after any change
-            await dispatch(getallMyCarts({}));
-        } catch (error) {
-            console.error('Failed to update cart:', error);
+  const handleQuantityChange = (value) => {
+        const newQuantity = quantity + value;
+        if (newQuantity >= 1 && newQuantity <= 10) {
+            setQuantity(newQuantity);
         }
     };
-
     const handleViewAllProducts = () => {
         localStorage.setItem('activePage', 'Vegetable');
         setIsVegetablePage(true);
         setIsProductDetailPage(false);
     };
 
+    const handleClose = () => {
+        setModalShow(false);
+        setTimeout(() => {
+            setShowModal(false);
+            setQuantity(1);
+        }, 200);
+    };
     useEffect(() => {
         const fetchData = async () => {
             // બધા API કૉલ્સ પેરેલલ મોડમાં કરો
@@ -195,7 +147,9 @@ function SimilarPro({ setIsProductDetailPage, setIsVegetablePage }) {
     if (productLoading || variantLoading) return <LoadingSpinner></LoadingSpinner>;
     if (productError || variantError) return <div>Error: {productError?.message || variantError?.message || 'An error occurred'}</div>;
 
-    const formattedProducts = getSimilarProducts(products, variants, selectedProductId);
+    const formattedProducts = getSimilarProducts(
+        products,
+         variants, selectedProductId);
 
     if (!formattedProducts || formattedProducts.length === 0) {
         return (
@@ -216,67 +170,74 @@ function SimilarPro({ setIsProductDetailPage, setIsVegetablePage }) {
         );
     }
 
-    
-const handleAddToCart = async (product) => {
-    try {
-        const variant = variants.find(v => v.productId === product.id);
-        if (!variant) {
-            toast.error("Product variant not found");
-            return;
-        }
 
-        const result = await dispatch(createCart({
-            productId: product.id,
-            productVarientId: variant._id,
-            quantity: 1
-        })).unwrap();
-
-        if (result.success) {
-            toast.success("Item added to cart");
-            // ફક્ત કાર્ટ આઇટમ્સ ફેચ કરો, આખો કમ્પોનન્ટ રિફ્રેશ નહીં
-            dispatch(getallMyCarts({}));
-        }
-    } catch (error) {
-        console.error("Cart operation failed:", error);
-        if (error?.message === 'Cart Already Exist') {
-            toast.info("Item quantity updated in cart");
-        } else {
-            toast.error("Failed to add to cart");
-        }
-    }
-};
-
-const handleAddToWishlist = async (productId) => {
-    try {
-        const isAlreadyInWishlist = isInWishlist(productId);
-        if (isAlreadyInWishlist) {
-            const wishlistItem = wishlistItems.find(item => item.productId === productId);
-            const result = await dispatch(deleteFromWishlist(wishlistItem._id)).unwrap();
-            if (result.success) {
-                toast.success('Item removed from wishlist');
-                // ફક્ત વિશલિસ્ટ આઇટમ્સ ફેચ કરો
-                dispatch(getWishlistItems());
+    const handleAddToCart = async (product) => {
+        try {
+            const variant = variants.find(v => v.productId === product.id);
+            if (!variant) {
+                toast.error("Product variant not found");
+                return;
             }
-        } else {
-            const result = await dispatch(createWishlist(productId)).unwrap();
+
+            const result = await dispatch(createCart({
+                productId: product.id,
+                productVarientId: variant._id,
+                quantity: 1
+            })).unwrap();
+
             if (result.success) {
-                toast.success('Item added to wishlist');
-                // ફક્ત વિશલિસ્ટ આઇટમ્સ ફેચ કરો
-                dispatch(getWishlistItems());
+                toast.success("Item added to cart");
+                // ફક્ત કાર્ટ આઇટમ્સ ફેચ કરો, આખો કમ્પોનન્ટ રિફ્રેશ નહીં
+                dispatch(getallMyCarts({}));
+            }
+        } catch (error) {
+            console.error("Cart operation failed:", error);
+            if (error?.message === 'Cart Already Exist') {
+                toast.info("Item quantity updated in cart");
+            } else {
+                toast.error("Failed to add to cart");
             }
         }
-    } catch (error) {
-        toast.error(error.message || 'Wishlist operation failed');
-    }
-};
+    };
 
-const handleShow = (product) => {
-    // Set product details in localStorage
-    localStorage.setItem('selectedProductId', product.id);
-    localStorage.setItem('activePage', 'ProductDetails');
-    // Navigate to product details page
-    navigate(`/HomeMain`);
-};
+    const handleAddToWishlist = async (productId) => {
+        try {
+            const isAlreadyInWishlist = isInWishlist(productId);
+            if (isAlreadyInWishlist) {
+                const wishlistItem = wishlistItems.find(item => item.productId === productId);
+                const result = await dispatch(deleteFromWishlist(wishlistItem._id)).unwrap();
+                if (result.success) {
+                    toast.success('Item removed from wishlist');
+                    // ફક્ત વિશલિસ્ટ આઇટમ્સ ફેચ કરો
+                    dispatch(getWishlistItems());
+                }
+            } else {
+                const result = await dispatch(createWishlist(productId)).unwrap();
+                if (result.success) {
+                    toast.success('Item added to wishlist');
+                    // ફક્ત વિશલિસ્ટ આઇટમ્સ ફેચ કરો
+                    dispatch(getWishlistItems());
+                }
+            }
+        } catch (error) {
+            toast.error(error.message || 'Wishlist operation failed');
+        }
+    };
+
+    const handleShow = (product) => {
+        const variant = variants?.find(v => v.productId === product.id);
+        const existingCartItem = cartItems?.find(item =>
+            item.productId === product.id
+        );
+
+        console.log(cartItems, "existingCartItem");
+
+        setQuantity(existingCartItem?.quantity || 1);
+
+        setSelectedProduct(product);
+        setShowModal(true);
+        setTimeout(() => setModalShow(true), 100);
+    };
 
     return (
         <>
@@ -285,13 +246,13 @@ const handleShow = (product) => {
                     <div className="a_garden-fresh-header">
                         <h2 className="a_garden-fresh-title">You May Also Like</h2>
                         <Link to="/Vegetable" className="a_view-all">
-  View All <LiaAngleRightSolid />
-</Link>
+                            View All <LiaAngleRightSolid />
+                        </Link>
                     </div>
                     <span className="line"></span>
                     <div className="a_garden-fresh-grid mt-3">
                         {formattedProducts.map((product, index) => (
-                            <div key={index} className="z_product-card"  style={{ cursor: 'pointer' }}>
+                            <div key={index} className="z_product-card" style={{ cursor: 'pointer' }}>
                                 <div className="z_product-image-container">
                                     <Card.Img
                                         variant="top"
@@ -319,13 +280,7 @@ const handleShow = (product) => {
                                             >
                                                 <FaHeart style={{ color: isInWishlist(product.id) ? 'red' : 'inherit' }} />
                                             </button>
-                                            <button
-                                                className="z_hover-icon-btn"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleShow(product);
-                                                }}
-                                            >
+                                            <button className="z_hover-icon-btn" onClick={() => handleShow(product)}>
                                                 <FaEye />
                                             </button>
                                         </div>
@@ -341,10 +296,10 @@ const handleShow = (product) => {
                                             ({Number(product.rating || 0).toFixed(1)})
                                         </span>
                                     </div>
-                                    <h3 className="z_product-title"  style={{ cursor: "pointer" }} onClick={() => {
-                                                localStorage.setItem('selectedProductId', product.id);
-                                                navigate(`/product-details/${product.id}`);
-                                            }}>{product.name}</h3>
+                                    <h3 className="z_product-title" style={{ cursor: "pointer" }} onClick={() => {
+                                        localStorage.setItem('selectedProductId', product.id);
+                                        navigate(`/product-details/${product.id}`);
+                                    }}>{product.name}</h3>
                                     <p className="z_product-weight mb-1">{product.size}</p>
                                     <div className="d-flex align-items-center justify-content-between">
                                         <div className="z_price-container mb-0 me-2">
@@ -358,7 +313,110 @@ const handleShow = (product) => {
                     </div>
                 </div>
             </div>
+            <Modal show={showModal} onHide={handleClose} size="lg" centered className="p-0">
+                <Modal.Body className="p-0 position-relative">
+                    {selectedProduct && (
+                        <>
+                            <button onClick={handleClose} className="z_modal-close-btn">
+                                <FaTimes className="z_modal-close-icon" />
+                            </button>
+                            <div className="row g-0 p-0">
+                                <div className="col-md-6 position-relative p-0">
+                                    <div className="modal-img-wrapper">
+                                        <img
+                                            src={`http://localhost:4000/${selectedProduct.image && selectedProduct.image[0] ? selectedProduct.image[0] : ''}`}
+                                            alt={selectedProduct.name}
+                                            className="z_modal-product-img"
+                                        />
+                                        <span className="z_modal-discount-badge">
+                                            {selectedProduct.discount}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="col-md-6">
+                                    <div className="z_modal-content">
+                                        <h4 className="mb-3">{selectedProduct.name}</h4>
+                                        <div className="mb-4">
+                                            <div className="d-flex align-items-center gap-2">
+                                                <span className="h5 mb-0">
+                                                    {selectedProduct.price }
+                                                </span>
+                                                <span className="text-decoration-line-through text-muted">
+                                                    {selectedProduct.discountPrice }
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <p className="text-muted mb-4">
+                                            {selectedProduct.description}
+                                        </p>
+                                        <div className="z_modal-quantity-container">
+                                            <div className="z_modal-quantity-selector">
+                                                <button
+                                                    className="z_modal-quantity-btn"
+                                                    onClick={() => handleQuantityChange(-1)}
+                                                    disabled={quantity === 1}
+                                                >
+                                                    <FaMinus size={12} />
+                                                </button>
 
+                                                <div className="d-flex flex-column align-items-center">
+                                                    <span className="z_modal-quantity-number">
+                                                        {quantity}
+                                                    </span>
+                                                    {/* {selectedProduct.cartQuantity > 0 && (
+                                                                         // <small className="text-muted" style={{fontSize: '0.75rem'}}>
+                                                                         //    {selectedProduct.cartQuantity}
+                                                                         // </small>
+                                                                       )} */}
+                                                </div>
+
+                                                <button
+                                                    className="z_modal-quantity-btn"
+                                                    onClick={() => handleQuantityChange(1)}
+                                                    disabled={quantity === 10}
+                                                >
+                                                    <FaPlus size={12} />
+                                                </button>
+                                            </div>
+                                            <button
+                                                className="z_modal-add-cart-btn"
+                                                onClick={() => handleAddToCart(selectedProduct)}
+                                            >
+                                                Add to cart
+                                                <FaShoppingCart className="z_cart-icon" />
+                                            </button>
+                                        </div>
+                                        <div className="z_modal-details">
+                                            <div className="z_modal-details-item">
+                                                <span className="z_modal-details-label">SKU:</span>
+                                                <span className="z_modal-details-value">
+                                                    {selectedProduct.id || "9852434"}
+                                                </span>
+                                            </div>
+                                            <div className="z_modal-details-item">
+                                                <span className="z_modal-details-label">
+                                                    Category:
+                                                </span>
+                                                <span className="z_modal-details-value">
+                                                    {/* If you have categories in scope */}
+                                                    {categories && categories.find(cat => cat._id === selectedProduct.categoryId)?.categoryName || 'Uncategorized'}
+                                                    {/* {selectedProduct.categoryName} */}
+                                                </span>
+                                            </div>
+                                            <div className="z_modal-details-item">
+                                                <span className="z_modal-details-label">Brand:</span>
+                                                <span className="z_modal-details-value">
+                                                    {selectedProduct.brand || 'Premium Collection'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </Modal.Body>
+            </Modal>
 
         </>
     );

@@ -245,6 +245,18 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
         }, 200);
     };
 
+    // const handleShow = (product) => {
+    //     const variant = variants?.find(v => v.productId === product._id);
+    //     const existingCartItem = cartItems?.find(item =>
+    //         item.productId === product._id &&
+    //         item.productVarientId === variant?._id
+    //     );
+
+    //     setSelectedProduct(product);
+    //     setQuantity(existingCartItem?.quantity || 1);
+    //     setShowModal(true);
+    //     setTimeout(() => setModalShow(true), 100);
+    // };
     const handleShow = (product) => {
         const variant = variants?.find(v => v.productId === product._id);
         const existingCartItem = cartItems?.find(item =>
@@ -252,12 +264,19 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
             item.productVarientId === variant?._id
         );
 
-        setSelectedProduct(product);
+        // Attach variant data directly to selectedProduct for modal use
+        setSelectedProduct({
+            ...product,
+            variantPrice: variant?.price,
+            variantDiscount: variant?.discount,
+            variantId: variant?._id,
+            images: product.images,
+            // Add more variant fields if needed
+        });
         setQuantity(existingCartItem?.quantity || 1);
         setShowModal(true);
         setTimeout(() => setModalShow(true), 100);
     };
-
     const priceOptions = [
         { label: '--Default--' },
         { value: '0-10', label: 'Less than $10' },
@@ -1011,6 +1030,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                         )}
                     </div>
 
+
                     <Modal show={showModal} onHide={handleClose} size="lg" centered className="p-0">
                         <Modal.Body className="p-0 position-relative">
                             {selectedProduct && (
@@ -1022,7 +1042,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                         <div className="col-md-6 position-relative p-0">
                                             <div className="modal-img-wrapper">
                                                 <img
-                                                    src={`http://localhost:4000/${selectedProduct.images?.[0]}`}
+                                                    src={`http://localhost:4000/${selectedProduct.image?.[0]}`}
                                                     alt={selectedProduct.productName}
                                                     className="z_modal-product-img"
                                                 />
@@ -1033,7 +1053,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                         </div>
                                         <div className="col-md-6">
                                             <div className="z_modal-content">
-                                                <h4 className="mb-3">{selectedProduct.productName}</h4>
+                                                <h4 className="mb-3">{selectedProduct.name}</h4>
 
                                                 {/* <div className="z_rating-container mb-4">
                         {renderStars(4.5)}
@@ -1060,9 +1080,10 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                 {/* // In the Modal section, update the quantity display: */}
                                                 <div className="z_modal-quantity-container">
                                                     <div className="z_modal-quantity-selector">
+                                                      {/* // ...inside your Modal... */}
                                                         <button
                                                             className="z_modal-quantity-btn"
-                                                            onClick={() => handleQuantityChange(-1)}
+                                                            onClick={() => handleModalQuantityChange(-1)}
                                                             disabled={quantity === 1}
                                                         >
                                                             <FaMinus size={12} />
@@ -1072,16 +1093,11 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                             <span className="z_modal-quantity-number">
                                                                 {quantity}
                                                             </span>
-                                                            {/* {selectedProduct.cartQuantity > 0 && (
-                              // <small className="text-muted" style={{fontSize: '0.75rem'}}>
-                              //    {selectedProduct.cartQuantity}
-                              // </small>
-                            )} */}
                                                         </div>
 
                                                         <button
                                                             className="z_modal-quantity-btn"
-                                                            onClick={() => handleQuantityChange(1)}
+                                                            onClick={() => handleModalQuantityChange(1)}
                                                             disabled={quantity === 10}
                                                         >
                                                             <FaPlus size={12} />
@@ -1109,7 +1125,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                             Category:
                                                         </span>
                                                         <span className="z_modal-details-value">
-                                                            {categories.find(cat => cat._id === selectedProduct.categoryId)?.categoryName || 'Uncategorized'}
+                                                            {selectedProduct.categoryName || 'Uncategorized'}
                                                         </span>
                                                     </div>
                                                     <div className="z_modal-details-item">

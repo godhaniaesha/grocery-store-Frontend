@@ -474,28 +474,35 @@ export default function Checkout()   {
                                     </button>
                                 </div>
 
-                                <div className="g_price_details">
-                                    <div className="g_price_row">
-                                        <span>Subtotal</span>
-                                        <span>${calculateTotals().subtotal}</span>
-                                    </div>
-                                    <div className="g_price_row">
-                                        <span>Taxes and vat</span>
-                                        <span>${calculateTotals().platformFee}</span>
-                                    </div>
-                                    <div className="g_price_row">
-                                        <span>Delivery charge</span>
-                                        <span>$0</span>
-                                    </div>
-                                    <div className="g_price_row">
-                                        <span>Discount</span>
-                                        <span>-${calculateTotals().discount}</span>
-                                    </div>
-                                    <div className="g_price_row g_total">
-                                        <span>Total</span>
-                                        <span>${calculateTotals().grandTotal}</span>
-                                    </div>
-                                </div>
+<div className="g_price_details">
+    <div className="g_price_row">
+        <span>Subtotal</span>
+        <span>${calculateTotals().subtotal.toFixed(2)}</span>
+    </div>
+    <div className="g_price_row">
+        <span>Taxes and vat</span>
+        <span>${calculateTotals().platformFee.toFixed(2)}</span>
+    </div>
+    <div className="g_price_row">
+        <span>Delivery charge</span>
+        <span>$0.00</span>
+    </div>
+    <div className="g_price_row">
+        <span>Discount</span>
+        <span>-${Math.abs(calculateTotals().discount).toFixed(2)}</span>
+    </div>
+    <div className="g_price_row g_total">
+        <span>Total</span>
+        <span>
+            ${(
+                calculateTotals().subtotal
+                - calculateTotals().discount
+                + calculateTotals().platformFee
+                + 0 // delivery charge
+            ).toFixed(2)}
+        </span>
+    </div>
+</div>
                             </div>
                         </div>
                     </Col>

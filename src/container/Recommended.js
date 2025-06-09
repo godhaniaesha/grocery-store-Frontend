@@ -21,6 +21,8 @@ function Recommended() {
     const [selectedCategory, setSelectedCategory] = useState('All');
 
     const dispatch = useDispatch();
+    console.log(selectedProduct,"selectedProduct");
+    
 
     const { categories } = useSelector(state => state.category);
     const { products } = useSelector(state => state.product);
@@ -265,7 +267,7 @@ function Recommended() {
                                 <div className="col-md-6 position-relative p-0">
                                     <div className="modal-img-wrapper">
                                         <img
-                                            src={`http://localhost:4000/${selectedProduct.images?.[0]}`}
+                                            src={`http://localhost:4000/${selectedProduct.image}`}
                                             alt={selectedProduct.productName}
                                             className="z_modal-product-img"
                                         />
@@ -276,7 +278,7 @@ function Recommended() {
                                 </div>
                                 <div className="col-md-6">
                                     <div className="z_modal-content">
-                                        <h4 className="mb-3">{selectedProduct.productName}</h4>
+                                        <h4 className="mb-3">{selectedProduct.title}</h4>
 
                                         {/* <div className="z_rating-container mb-4">
                                     {renderStars(4.5)}
@@ -285,16 +287,16 @@ function Recommended() {
                                     </span>
                                   </div> */}
 
-                                        <div className="mb-4">
-                                            <div className="d-flex align-items-center gap-2">
-                                                <span className="h5 mb-0">
-                                                    ${selectedProduct.variantPrice?.toFixed(2) || '0.00'}
-                                                </span>
-                                                <span className="text-decoration-line-through text-muted">
-                                                    ${((selectedProduct.variantPrice || 0) * 1.2).toFixed(2)}
-                                                </span>
-                                            </div>
-                                        </div>
+                                         <div className="mb-4">
+                                                    <div className="d-flex align-items-center gap-2">
+                                                        <span className="h5 mb-0">
+                                                            ${selectedProduct.price?.toFixed(2) || '0.00'}
+                                                        </span>
+                                                        <span className="text-decoration-line-through text-muted">
+                                                            ${((selectedProduct.originalPrice || 0) * 1.2).toFixed(2)}
+                                                        </span>
+                                                    </div>
+                                                </div>
 
                                         <p className="text-muted mb-4">
                                             {selectedProduct.description}
