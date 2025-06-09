@@ -128,17 +128,18 @@ const Invoice = () => {
           <table
             className="table table-bordered"
             style={{
-              minWidth: 700,
+              // minWidth: 700,
               tableLayout: "fixed",
               wordBreak: "break-word",
               borderCollapse: "collapse",
               width: "100%",
-              background: "#fff"
+              background: "#fff",
+              maxWidth: "100%"
             }}
           >
             <thead className="table-light">
               <tr>
-                <th
+                {/* <th
                   style={{
                     width: 90,
                     textAlign: "center",
@@ -148,7 +149,7 @@ const Invoice = () => {
                   }}
                 >
                   Image
-                </th>
+                </th> */}
                 <th
                   style={{
                     width: 180,
@@ -214,13 +215,13 @@ const Invoice = () => {
                 const size = variant?.size || variant?.weight || "N/A";
                 const price = variant?.price || item.price;
                 const total = item.quantity * price;
-                const imgSrc = product?.images?.[0]
-                  ? `http://localhost:4000/public/${product.images[0].replace("public\\", "")}`
-                  : "";
+                // const imgSrc = product?.images?.[0]
+                //   ? `http://localhost:4000/public/${product.images[0].replace("public\\", "")}`
+                //   : "";
 
                 return (
                   <tr key={item._id || idx}>
-                    <td
+                    {/* <td
                       style={{
                         width: 90,
                         textAlign: "center",
@@ -245,7 +246,7 @@ const Invoice = () => {
                           }}
                         />
                       )}
-                    </td>
+                    </td> */}
                     <td
                       style={{
                         verticalAlign: "middle",
