@@ -66,7 +66,7 @@ const Profile = () => {
 
   const handleEditBankDetails = (value) => {
     setEditBankDetails(value);
-    setstep(() => setstep(step + 1));
+    // setstep(() => setstep(step + 1));
   };
 
   const inputsRef = useRef([]);
@@ -317,7 +317,7 @@ const Profile = () => {
 // Place this inside your component
 
   
-debugger;
+// debugger;
  // ...existing code...
  const handleSubmitOtp = async () => {
   const otp = otpValues.join("");
@@ -328,16 +328,8 @@ debugger;
         phone: userData?.mobileNo,
       })
     );
-    // If OTP is verified, move to step 3 (Edit Bank Details)
-    if (result?.payload?.status == 200) {
-      console.log("result", result?.payload.status);
-     const cnt = 3;
-      setstep(cnt);
-      console.log("step", step, cnt);
-
-      // setstep(3);
-      
-      
+    if (result?.payload?.status === 200) {
+      setstep(3); // Move to step 3 (Edit Bank Details)
     } else {
       alert("Invalid OTP. Please try again.");
     }
@@ -1050,9 +1042,10 @@ console.log("step", step);
                   <a
                     href="#"
                     className="uresend_otp"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault();
                       dispatch(resendOtp(userData?.email));
-                      setstep(3);
+                      // Don't change step on resend
                     }}
                   >
                     Resend OTP
@@ -1165,7 +1158,14 @@ console.log("step", step);
                   <button
                     type="submit"
                     className="updateBtn"
-                    onClick={setstep(1)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      editBankD.handleSubmit(e);
+                      // Only change step after successful update
+                      if (Object.keys(editBankD.errors).length === 0) {
+                        setstep(0); // Go back to bank details view
+                      }
+                    }}
                   >
                     Update
                   </button>
