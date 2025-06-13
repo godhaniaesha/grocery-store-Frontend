@@ -184,8 +184,9 @@
   .swiper-pagination {
     top: 90% !important;
   }
+
   .z_button {
-  padding: 10px 10px;
+    padding: 10px 10px;
   }
 }
 
@@ -1395,10 +1396,12 @@
   background-repeat: no-repeat;
   z-index: 0;
 }
-.z_sm_db{
+
+.z_sm_db {
   display: none;
 }
-.z_lg_db{
+
+.z_lg_db {
   display: block;
 }
 
@@ -1475,6 +1478,7 @@
     padding: 12px 25px;
     font-size: 15px;
   }
+
   .Z_banner::before {
     opacity: 0.5;
   }
@@ -1496,7 +1500,7 @@
   .Z_banner_content h1 {
     font-size: 28px;
   }
-  
+
 
   .Z_banner_content p {
     font-size: 14px;
@@ -1751,7 +1755,7 @@
 }
 
 .z_checkbox-input:checked+.z_checkbox-custom {
- background: linear-gradient(90deg, #23985a, #2c6145);
+  background: linear-gradient(90deg, #23985a, #2c6145);
   border-color: #479529;
 }
 
@@ -2298,6 +2302,8 @@
 .z_modal-product-img {
   width: 100%;
   transition: all 0.3s ease;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
 
 /* Shine effect */
@@ -2331,7 +2337,7 @@
 
 .z_apply-filter-btn {
   /* background: linear-gradient(90deg, #479529, #0c6c44); */
-      background: linear-gradient(180deg, #23985a, #2c6145);
+  background: linear-gradient(180deg, #23985a, #2c6145);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -2464,6 +2470,12 @@
   transform: scale(1.1);
 }
 
+@media (max-width: 1024px) {
+  .z_modal-product-img {
+    height: 366px;
+  }
+}
+
 @media (max-width: 768px) {
   .z_category-image-wrapper {
     width: 60px !important;
@@ -2487,12 +2499,14 @@
     text-align: left !important;
   }
 }
+
 @media (max-width: 576px) {
-.Z_banner_content  {
-  text-align: center !important;
-  padding-top: 5rem;
+  .Z_banner_content {
+    text-align: center !important;
+    padding-top: 5rem;
+  }
 }
-}
+
 .Z_coupon_box {
   padding: 10px;
 }
@@ -2587,7 +2601,7 @@
   border: 2px solid transparent !important;
   transform: scale(1.01);
 } */
- .address-card.selected-address {
+.address-card.selected-address {
   background: linear-gradient(white, white) padding-box,
     linear-gradient(45deg, #2c6145, #3b7d5c, #4d9973) border-box;
   border: 2px solid transparent !important;

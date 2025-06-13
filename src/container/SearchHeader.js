@@ -664,7 +664,7 @@ export default function SearchHeader() {
           <div className="x_nav_container" ref={dropdownRef}>
             <div className="x_sticky_category">
               <div
-                className={`x_nav_item ${active === "All Categories" ? "x_active" : ""}`}
+                className={`text-nowrap x_nav_item ${active === "All Categories" ? "x_active" : ""}`}
                 onClick={() => handleItemClick("All Categories")}
               >
                 All Categories
