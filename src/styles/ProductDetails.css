@@ -152,6 +152,7 @@
   font-weight: 500;
   background: var(--gradiant) !important;
   border: none !important;
+  text-wrap: nowrap;
 }
 
 .a_add-to-cart-btn:hover {

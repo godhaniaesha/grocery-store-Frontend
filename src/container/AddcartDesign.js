@@ -418,7 +418,7 @@ export default function AddcartDesign() {
         <div className="col-lg-8 mb-md-4 mb-2">
           <div className="card shadow-sm mb-4">
             <div className="card-body p-md-4 p-2">
-              <div className="d-md-flex justify-content-between d-block align-items-center mb-3">
+              <div className="d-md-flex justify-content-between d-block align-items-center mb-2">
                 <h5 className="fw-bold mb-md-0 mb-2 text-nowrap x_ship_tex">Shipping Address</h5>
                 <div>
                   <button

@@ -488,7 +488,7 @@ export default function SearchHeader() {
               <Search />
 
               {/* Icons Section */}
-              <div className="db_icon_wrapper d-flex align-items-center gap-md-2 gap-3 ms-sm-3 ms-1">
+              <div className="db_icon_wrapper d-flex align-items-center gap-md-3 gap-3 ms-sm-3 ms-1">
                 {/* Account */}
                 {/* Account */}
                 <div className="text-center position-relative" ref={userDropdownRef}>
@@ -660,7 +660,7 @@ export default function SearchHeader() {
 
           {/* Mobile Search */}
         </div>
-        <nav className="x_navbar d-md-block d-none">
+        <nav className="x_navbar ">
           <div className="x_nav_container" ref={dropdownRef}>
             <div className="x_sticky_category">
               <div

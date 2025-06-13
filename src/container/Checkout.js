@@ -401,6 +401,7 @@ export default function Checkout()   {
                                         onClick={async () => {
                                             await handleShow();
                                             setShowThanksModal(true);
+                                            localStorage.removeItem("coupon");
                                             setTimeout(() => {
                                                 setShowThanksModal(false);
                                                 navigate('/Myorder');
