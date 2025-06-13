@@ -3,10 +3,6 @@
   margin: 0;
 }
 
-
-
-
-
 .z_button {
   background: linear-gradient(180deg, #23985a, #2c6145) !important;
   border-radius: 4px;
@@ -1665,7 +1661,7 @@
 }
 
 .z_filter-group:last-child {
-  border-bottom: none;
+  /* border-bottom: none; */
   padding-bottom: 0;
 }
 
@@ -2470,11 +2466,14 @@
   transform: scale(1.1);
 }
 
-@media (max-width: 1024px) {
+/* @media (max-width: 1024px) {
   .z_modal-product-img {
     height: 366px;
   }
-}
+  .x_modal-content{
+    height: 366px;
+  }
+} */
 
 @media (max-width: 768px) {
   .z_category-image-wrapper {

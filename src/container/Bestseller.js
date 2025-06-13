@@ -324,7 +324,7 @@ function Bestseller(props) {
           </div>
         </div>
 
-        <Modal show={showModal} onHide={handleClose} size="lg" centered className="p-0">
+        <Modal show={showModal} onHide={handleClose} size="lg" centered className="p-0 x_modal-content">
           <Modal.Body className="p-0 position-relative">
             {selectedProduct && (
               <>
