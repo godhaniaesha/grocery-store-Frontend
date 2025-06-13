@@ -413,12 +413,12 @@
   transition: all 0.3s ease;
 }
 
-.x_custom-checkbox:checked+.x_checkbox-mark {
+.x_custom-checkbox:checked + .x_checkbox-mark {
   background: linear-gradient(135deg, #23985a, #2c6145);
   border: none;
 }
 
-.x_custom-checkbox:checked+.x_checkbox-mark:after {
+.x_custom-checkbox:checked + .x_checkbox-mark:after {
   content: "";
   position: absolute;
   left: 7px;
@@ -465,13 +465,13 @@
 }
 
 /* redio */
-.x_radio-input:checked+.x_radio-custom {
+.x_radio-input:checked + .x_radio-custom {
   border: 2px solid transparent;
   background: linear-gradient(white, white) padding-box,
     linear-gradient(45deg, #2c6145, #3b7d5c, #4d9973) border-box;
 }
 
-.x_radio-input:checked+.x_radio-custom::after {
+.x_radio-input:checked + .x_radio-custom::after {
   content: "";
   width: 10px;
   height: 10px;
@@ -1166,7 +1166,6 @@
 }
 
 @media only screen and (max-width: 768px) {
-
   .x_swiper-button-next,
   .x_swiper-button-prev {
     display: none;
@@ -2162,7 +2161,6 @@
 }
 
 @media (max-width: 425px) {
-
   /* LOGIN MODEL */
   .new-customer-section p {
     max-width: 100% !important;
@@ -3106,7 +3104,6 @@
 
 /*MyOrder end  */
 
-
 /* model for add address */
 .x_dropdown {
   position: relative;
@@ -3184,7 +3181,6 @@
   color: #2c6145 !important;
 }
 
-
 /* custom redio */
 .x_header {
   background-color: #2c6145;
@@ -3195,7 +3191,7 @@
   border-radius: 50px;
   display: inline-flex;
   cursor: pointer;
-  transition: background .2s ease;
+  transition: background 0.2s ease;
   margin: 8px 0;
   -webkit-tap-highlight-color: transparent;
   align-items: center;
@@ -3218,7 +3214,7 @@
   appearance: none;
   padding: 0;
   margin: 0;
-  transition: box-shadow 150ms cubic-bezier(.95, .15, .5, 1.25);
+  transition: box-shadow 150ms cubic-bezier(0.95, 0.15, 0.5, 1.25);
 }
 
 .x_radio input[type="radio"]:focus {
@@ -3350,7 +3346,6 @@
 
 /* Print only .x_invoice, hide everything else */
 @media print {
-
   html,
   body {
     background: #fff !important;
@@ -3360,7 +3355,6 @@
     padding: 0 !important;
     width: 100%;
     height: 100%;
-
   }
 
   body * {
@@ -3455,7 +3449,6 @@
   }
 } */
 
-
 /* Table formatting for PDF/print and screen */
 .x_table th,
 .x_table td {
@@ -3482,7 +3475,6 @@
 }
 
 /* ...existing code... */
-
 
 /* error solve  */
 @media screen and (max-width: 375px) {
@@ -3516,7 +3508,7 @@
   }
 }
 @media screen and (max-width: 767px) {
-.x_ship_tex {
+  .x_ship_tex {
     margin-bottom: 7px !important;
   }
 }
@@ -3542,7 +3534,7 @@
   .x_btn_inc {
     width: 25px !important;
     height: 25px !important;
-    padding: 0.20rem !important;
+    padding: 0.2rem !important;
   }
 
   .x_btn_inc p {
@@ -3553,16 +3545,27 @@
     display: none !important;
   }
   .x_addr_btn {
-    border: none!important;
+    border: none !important;
   }
 
+  .x_in_man {
+    max-width: 35px !important;
+    padding-bottom: 2px !important;
+    padding-top: 2px !important;
+  }
+
+  .x_del_btn {
+    width: 27px !important;
+    height: 27px !important;
+    font-size: 8px !important;
+  }
 
   /* .x_mar_b{
     margin-bottom: 2px!important;
   } */
 }
 @media screen and (max-width: 432px) {
-   .x_btn_gradient_m {
+  .x_btn_gradient_m {
     margin-bottom: 8px;
     margin-top: 4px;
   }
@@ -3576,9 +3579,8 @@
 @media screen and (max-width: 375px) {
   .address-card {
     padding: 0px !important;
-
   }
-  .g_apply_btn{
+  .g_apply_btn {
     margin-top: 5px;
   }
   /* .g_coupon_section{

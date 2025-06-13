@@ -117,23 +117,27 @@ function Order() {
     setSearchTerm(e.target.value);
   };
 
-  const filteredOrders = (getallOrders || []).filter((order) => {
-    const isDateMatch = date ? order.createdAt.slice(0, 10) === date : true;
+  const filteredOrders = (getallOrders || [])
+    .slice() // Create a shallow copy to avoid mutating Redux state
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by date descending
+    .filter((order) => {
+      const isDateMatch = date ? order.createdAt.slice(0, 10) === date : true;
 
-    const allowedStatuses = ["Confirmed", "Cancelled", "Pending"];
-    const isStatusMatch = status
-      ? allowedStatuses.includes(status) && order.orderStatus === status
-      : true;
+      const allowedStatuses = ["Confirmed", "Cancelled", "Pending"];
+      const isStatusMatch = status
+        ? allowedStatuses.includes(status) && order.orderStatus === status
+        : true;
 
-    const fullName = order.user ? `${order.user?.firstName} ${order.user?.lastName}`.toLowerCase()
-      : "";
+      const fullName = order.user
+        ? `${order.user?.firstName} ${order.user?.lastName}`.toLowerCase()
+        : "";
 
-    const isNameMatch = searchTerm
-      ? fullName.includes(searchTerm.toLowerCase())
-      : true;
+      const isNameMatch = searchTerm
+        ? fullName.includes(searchTerm.toLowerCase())
+        : true;
 
-    return isDateMatch && isStatusMatch && isNameMatch;
-  });
+      return isDateMatch && isStatusMatch && isNameMatch;
+    });
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
   const currentOrders = filteredOrders.slice(
@@ -163,7 +167,7 @@ function Order() {
             / <Link>Orders</Link>
           </div>
           <div className="sp_filter_both mt-md-2 d-flex d-sm-flex align-items-center justify-sm-content-start justify-content-end">
-            
+
             <div className="sp_search">
               <BiSearch className="sp_sear_icon" />
               <input
@@ -252,8 +256,8 @@ function Order() {
                           "In Progress",
                           "Shipped",
                         ].includes(item.orderStatus) && (
-                          <div className="sp_btn_green">Accepted</div>
-                        )}
+                            <div className="sp_btn_green">Accepted</div>
+                          )}
                         {item.orderStatus === "Cancelled" && (
                           <div className="sp_btn_red">Rejected</div>
                         )}
