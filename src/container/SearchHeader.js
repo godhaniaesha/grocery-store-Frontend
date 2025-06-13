@@ -32,10 +32,11 @@ export default function SearchHeader() {
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [filteredProducts, setFilteredProducts] = useState([]);
 
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      dispatch(getWishlistItems()); // Fetch wishlist items when component mounts
+      dispatch(getWishlistItems());
     }
   }, [dispatch]);
 
@@ -52,7 +53,7 @@ export default function SearchHeader() {
 
   useEffect(() => {
     if (products?.length > 0) {
-      console.log('All products:', products);
+      // console.log('All products:', products);
     }
   }, [products]);
 
@@ -61,24 +62,20 @@ export default function SearchHeader() {
   };
 
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState("All Categories");
-  const [showDropdown, setShowDropdown] = useState(null);
+  const [activeCategory, setActiveCategory] = useState("All Categories"); // For styling the clicked/sticky item
+  const [visibleDropdownCategory, setVisibleDropdownCategory] = useState(null); // For showing the dropdown
 
-  // Get data from Redux store with default values
   const { categories: storeCategories = [], loading: categoriesLoading } = useSelector((state) => state.category || {});
   const { subcategories = [], loading: subcategoriesLoading } = useSelector((state) => state.subcategory || {});
   const { wishlistItems } = useSelector(state => state.wishlist);
   const { cartItems } = useSelector(state => state.addcart);
 
-
-  // Debug logs
   useEffect(() => {
-    console.log('=== REDUX STORE DATA ===');
-    console.log('Categories:', storeCategories);
-    console.log('Subcategories:', subcategories);
+    // console.log('=== REDUX STORE DATA ===');
+    // console.log('Categories:', storeCategories);
+    // console.log('Subcategories:', subcategories);
   }, [storeCategories, subcategories]);
 
-  // Fetch data when component mounts
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -88,7 +85,7 @@ export default function SearchHeader() {
 
     const fetchData = async () => {
       try {
-        console.log('=== FETCHING DATA ===');
+        // console.log('=== FETCHING DATA ===');
         await Promise.all([
           dispatch(fetchCategories()).unwrap(),
           dispatch(getAllSubcategories()).unwrap(),
@@ -103,19 +100,18 @@ export default function SearchHeader() {
     fetchData();
   }, [dispatch]);
 
-  // Combine categories with their subcategories
   const categoriesWithSubcategories = React.useMemo(() => {
     if (!storeCategories?.length) {
-      console.log('No categories found');
+      // console.log('No categories found');
       return [];
     }
 
     return storeCategories.map(category => {
       const categorySubcategories = subcategories.filter(sub => sub.categoryId === category._id);
-      console.log(`Category ${category.categoryName} subcategories:`);
-      categorySubcategories.forEach(sub => {
-        console.log(`- ${sub.subCategoryName}`);
-      });
+      // console.log(`Category ${category.categoryName} subcategories:`);
+      // categorySubcategories.forEach(sub => {
+      //   console.log(`- ${sub.subCategoryName}`);
+      // });
 
       return {
         ...category,
@@ -124,7 +120,6 @@ export default function SearchHeader() {
     });
   }, [storeCategories, subcategories]);
 
-  // Add loading state handling
   const isLoading = categoriesLoading || subcategoriesLoading;
   const dropdownRef = useRef(null);
 
@@ -133,26 +128,29 @@ export default function SearchHeader() {
       if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
         setShowUserDropdown(false);
       }
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        // If click is outside the main nav dropdown area, and no category is "active" (sticky)
+        // then close the visible dropdown.
+        // If a category is "active", its dropdown should remain visible unless another action closes it.
+        if (activeCategory === "All Categories") {
+             setVisibleDropdownCategory(null);
+        }
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [activeCategory]); // Add activeCategory to dependencies
 
   const handleProductClick = (product) => {
-    console.log('Selected Product:', product); // For debugging entire product
-    console.log('Selected Product ID:', product._id); // For debugging ID specifically
+    // console.log('Selected Product:', product);
+    // console.log('Selected Product ID:', product._id);
 
-    // Store the product ID in localStorage
     localStorage.setItem('selectedProductId', product._id);
-
-    // Navigate to product details page
     navigate(`/product-details/${product._id}`);
-
-    // Close the menu/dropdown
-    setOpen(false);
+    handleSubItemSelected(); // Close dropdowns and offcanvas
   };
 
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -164,24 +162,11 @@ export default function SearchHeader() {
   const modalRef = useRef(null);
   const isLoggedIn = !!localStorage.getItem('token');
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
-        setShowUserDropdown(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     const isVerified = localStorage.getItem('isVerified');
-    
-    // Only redirect to login if not verified and not on SliderCaptcha page
+
     if (!isVerified && window.location.pathname !== '/SliderCaptcha') {
       navigate('/SliderCaptcha');
     }
@@ -202,72 +187,62 @@ export default function SearchHeader() {
     setCurrentView('forgot');
   };
 
-  const handleEmailSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await dispatch(generateOtp(email)).unwrap();
-      setEmail(email);
-      setCurrentView('otp');
-    } catch (err) {
-      console.error('OTP generation failed:', err);
-    }
+  // Desktop Dropdown Handlers
+  const handleDesktopCategoryMouseEnter = (categoryName) => {
+    setVisibleDropdownCategory(categoryName);
   };
 
-  const handleOtpSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await dispatch(verifyOtp({ mobileNumber: email, otp })).unwrap();
-      setCurrentView('new-password');
-    } catch (err) {
-      console.error('OTP verification failed:', err);
-    }
-  };
-
-  const handleNewPasswordSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await dispatch(verifyGeneratedOtp({ mobileNumber: email, otp })).unwrap();
-      setCurrentView('login');
-    } catch (err) {
-      console.error('Password update failed:', err);
-    }
-  };
-
-  // Replace single count with an object to track counts for each item
-  const [itemCounts, setItemCounts] = useState({});
-
-  const handleItemClick = (item) => {
-    if (item === "All Categories") {
-      setActive("All Categories");
-      setShowDropdown(null);
-      return;
-    }
-
-    // Get current count for this item (default to 1 if not set)
-    const currentCount = itemCounts[item] || 1;
-
-    if (currentCount % 2 === 0) {
-      // Even count - close dropdown
-      setActive("All Categories");
-      setShowDropdown(null);
-      setItemCounts(prev => ({
-        ...prev,
-        [item]: currentCount - 1
-      }));
+  const handleDesktopCategoryMouseLeave = () => {
+    // If a category is actively clicked, keep its dropdown open, otherwise close
+    if (activeCategory === "All Categories") {
+        setVisibleDropdownCategory(null);
     } else {
-      // Odd count - open dropdown
-      setActive(item);
-      setShowDropdown(item);
-      setItemCounts(prev => ({
-        ...prev,
-        [item]: currentCount + 1
-      }));
+        setVisibleDropdownCategory(activeCategory);
     }
   };
+
+  const handleDesktopCategoryClick = (categoryName) => {
+    if (categoryName === "All Categories") {
+      setActiveCategory("All Categories");
+      setVisibleDropdownCategory(null);
+    } else if (activeCategory === categoryName) {
+      // Clicking an already active category deactivates it
+      setActiveCategory("All Categories");
+      setVisibleDropdownCategory(null);
+    } else {
+      // Clicking a new category makes it active and shows its dropdown
+      setActiveCategory(categoryName);
+      setVisibleDropdownCategory(categoryName);
+    }
+  };
+
+  // Mobile Offcanvas Handlers
+  const handleMobileCategoryClick = (categoryName) => {
+    if (categoryName === "All Categories") {
+      setActiveCategory("All Categories");
+      setVisibleDropdownCategory(null);
+    } else if (visibleDropdownCategory === categoryName) {
+      // If current is clicked to close
+      setVisibleDropdownCategory(null);
+      // setActiveCategory("All Categories"); // Optionally reset active style too
+    } else {
+      // If a new one is clicked to open
+      setVisibleDropdownCategory(categoryName);
+      setActiveCategory(categoryName); // Style new one as active
+    }
+  };
+
+  // Handler for when a sub-item (subcategory or product) is selected from a dropdown
+  const handleSubItemSelected = () => {
+    setOpen(false); // Close mobile offcanvas
+    setActiveCategory("All Categories"); // Reset active category style
+    setVisibleDropdownCategory(null); // Close any visible desktop dropdown
+  };
+
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Validation Schemas
   const loginSchema = Yup.object().shape({
     email: Yup.string()
       .email('Invalid email address')
@@ -325,30 +300,22 @@ export default function SearchHeader() {
       .required('Confirm password is required'),
   });
 
-  // Form submit handlers
   const handleLoginSubmit = async (values, { setSubmitting }) => {
     try {
       await dispatch(login(values)).unwrap();
       setShowLoginModal(false);
-
-      // After successful login, set isVerified to false in localStorage
       localStorage.setItem('isVerified', 'false');
-
-      // Navigate to SliderCaptcha
       navigate('/SliderCaptcha');
-
-      // Login પછી તરત જ data fetch કરવા માટે
       try {
         await Promise.all([
           dispatch(fetchCategories()).unwrap(),
           dispatch(getAllSubcategories()).unwrap(),
           dispatch(fetchProducts()).unwrap()
         ]);
-      } catch (error) {
-        console.error('Error fetching data after login:', error);
-        toast.error('Failed to load categories. Please try again.');
+      } catch (fetchError) {
+        console.error('Error fetching data after login:', fetchError);
+        toast.error('Failed to load initial data. Please try again.');
       }
-
       toast.success('Login successful!');
     } catch (err) {
       console.error('Login failed:', err);
@@ -376,7 +343,7 @@ export default function SearchHeader() {
   const handleForgotSubmit = async (values, { setSubmitting }) => {
     try {
       await dispatch(generateOtp(values.mobileNo)).unwrap();
-      setEmail(values.mobileNo);
+      setEmail(values.mobileNo); // Save the mobile number for OTP verification step
       setCurrentView('otp');
       toast.success('OTP has been sent');
     } catch (err) {
@@ -388,8 +355,8 @@ export default function SearchHeader() {
 
   const handleOtpVerification = async (values, { setSubmitting }) => {
     try {
-      const resetUserId = localStorage.getItem('resetUserId');
-      const result = await dispatch(verifyOtp({ mobileNo: resetUserId, otp: values.otp })).unwrap();
+      // 'email' state holds the mobile number from the previous step
+      const result = await dispatch(verifyOtp({ mobileNumber: email, otp: values.otp })).unwrap();
       if (result.success) {
         setCurrentView('new-password');
         toast.success('OTP verification successful');
@@ -405,9 +372,9 @@ export default function SearchHeader() {
 
   const handlePasswordUpdate = async (values, { setSubmitting }) => {
     try {
-      const userId = localStorage.getItem('resetUserId');
+      // 'email' state holds the mobile number (used as userId for reset)
       const result = await dispatch(resetPassword({
-        mobileNo: userId,
+        mobileNo: email,
         password: values.password,
         confirmPassword: values.confirmPassword
       })).unwrap();
@@ -422,6 +389,7 @@ export default function SearchHeader() {
     }
     setSubmitting(false);
   };
+
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchQuery(value);
@@ -456,41 +424,30 @@ export default function SearchHeader() {
       setSearchQuery(savedQuery);
     }
   }, []);
+
   return (
     <>
       <header className="sticky-top shadow-sm" style={{ "backgroundColor": "#2c6145" }}>
         <div className="container-sm text-white">
           <nav className="navbar navbar-expand-lg navbar-dark py-2 d-flex justify-content-between align-items-center">
-            {/* ==== LEFT: LOGO & MENU ==== */}
             <div className="d-flex align-items-center">
               <button
                 className="navbar-toggler p-1 me-md-1 me-0 border-0"
                 type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarMenu"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
+                onClick={() => setOpen(true)} // Directly control offcanvas
               >
-                <button className="x_menu_btn text-white" onClick={() => setOpen(true)}>
-                  <HiMenuAlt2 size={24} />
-                </button>
+                <HiMenuAlt2 size={24} />
               </button>
 
-              <a className="navbar-brand d-flex align-items-center" href="/Main">
+              <Link className="navbar-brand d-flex align-items-center" to="/Main">
                 <BsShop className="me-1 me-md-2" size={28} />
                 <span className="fw-bold fs-4">FreshMart</span>
-              </a>
+              </Link>
             </div>
 
-            {/* ==== RIGHT SIDE: SEARCH + ICONS ==== */}
             <div className="d-flex align-items-center justify-content-end flex-grow-1">
-              {/* Desktop Search */}
               <Search />
-
-              {/* Icons Section */}
               <div className="db_icon_wrapper d-flex align-items-center gap-md-3 gap-3 ms-sm-3 ms-1">
-                {/* Account */}
-                {/* Account */}
                 <div className="text-center position-relative" ref={userDropdownRef}>
                   <button
                     className="btn bg-transparent p-0 border-0 d-flex justify-content-center w-100"
@@ -498,7 +455,6 @@ export default function SearchHeader() {
                   >
                     <FaUser size={22} className="text-white" />
                   </button>
-
                   {showUserDropdown && (
                     <div className="user-dropdown-menu text-center">
                       {!isLoggedIn ? (
@@ -533,8 +489,7 @@ export default function SearchHeader() {
                           >
                             <FiShoppingBag size={20} />Orders
                           </Link>
-                          <Link
-                            to="#"
+                          <div // Changed Link to div for direct onClick handling
                             className="dropdown-item gap-2 d-flex align-items-center"
                             onClick={async () => {
                               try {
@@ -542,23 +497,22 @@ export default function SearchHeader() {
                                 setShowUserDropdown(false);
                                 localStorage.removeItem('isVerified');
                                 toast.success('Logged out successfully');
-                                setShowLoginModal(true);
-                                setCurrentView('login');
-                                navigate('/main');
-                              } catch (error) {
-                                toast.error(error || 'Logout failed');
+                                // setShowLoginModal(true); // No need to show modal if navigating away
+                                // setCurrentView('login');
+                                navigate('/main'); // Navigate to main or login page
+                              } catch (logoutError) {
+                                toast.error(logoutError.message || 'Logout failed');
                               }
                             }}
+                            style={{cursor: 'pointer'}}
                           >
                             <FaSignOutAlt size={20} />Logout
-                          </Link>
+                          </div>
                         </>
                       )}
                     </div>
                   )}
                 </div>
-
-                {/* Wishlist */}
                 <div className="text-center position-relative">
                   <Link to="/wishlist" className="btn bg-transparent p-0 border-0 d-flex justify-content-center w-100 position-relative">
                     <FaHeart size={22} className="text-white" />
@@ -566,12 +520,10 @@ export default function SearchHeader() {
                       className="badge bg-dark text-white position-absolute top-0 start-100 translate-middle rounded-circle"
                       style={{ "--bs-bg-opacity": "0.5" }}
                     >
-                      {wishlistItems.length}
+                      {wishlistItems?.length || 0}
                     </span>
                   </Link>
                 </div>
-
-                {/* Cart */}
                 <div className="text-center position-relative">
                   <Link to="/AddcartDesign" className="btn bg-transparent p-0 border-0 d-flex justify-content-center w-100 position-relative">
                     <FaShoppingCart size={22} className="text-white" />
@@ -579,21 +531,16 @@ export default function SearchHeader() {
                       className="badge bg-dark text-white position-absolute top-0 start-100 translate-middle rounded-circle"
                       style={{ "--bs-bg-opacity": "0.5" }}
                     >
-                      {cartItems.length}
+                      {cartItems?.length || 0}
                     </span>
                   </Link>
                 </div>
-
                 <div className="text-center d-md-none d-block position-relative">
                   <button
                     className="btn bg-transparent p-0 border-0 d-flex justify-content-center w-100 text-white"
                     onClick={toggleMobileSearch}
                   >
-                    {showMobileSearch ? (
-                      <FaTimes size={18} />
-                    ) : (
-                      <FaSearch size={18} />
-                    )}
+                    {showMobileSearch ? <FaTimes size={18} /> : <FaSearch size={18} />}
                   </button>
                 </div>
               </div>
@@ -618,32 +565,25 @@ export default function SearchHeader() {
                     <FaSearch />
                   </button>
                 </div>
-
                 {showSuggestions && filteredProductss.length > 0 && (
                   <div
                     className="suggestion-dropdown position-absolute start-0 w-100 bg-white border rounded mt-1 text-dark"
                     style={{
-                      zIndex: 9999,
-                      maxHeight: '300px',
-                      overflowY: 'auto',
-                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                      top: 'calc(100% + 5px)'
+                      zIndex: 9999, maxHeight: '300px', overflowY: 'auto',
+                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)', top: 'calc(100% + 5px)'
                     }}
                   >
                     {filteredProductss.map((product) => (
                       <div
                         key={product._id}
-                        className="suggestion-item p-2 border-bottom hover:bg-gray-100"
-                        style={{
-                          cursor: 'pointer',
-                          backgroundColor: 'white'
-                        }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                        className="suggestion-item p-2 border-bottom"
+                        style={{ cursor: 'pointer', backgroundColor: 'white' }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
                         onClick={() => {
                           setSearchQuery(product.productName);
                           setShowSuggestions(false);
-                          handleSearch();
+                          handleSearch(); // Perform search action
                         }}
                       >
                         <div className="d-flex align-items-center">
@@ -657,105 +597,86 @@ export default function SearchHeader() {
               </div>
             )}
           </nav>
-
-          {/* Mobile Search */}
         </div>
+
         <nav className="x_navbar ">
           <div className="x_nav_container" ref={dropdownRef}>
             <div className="x_sticky_category">
               <div
-                className={`text-nowrap x_nav_item ${active === "All Categories" ? "x_active" : ""}`}
-                onClick={() => handleItemClick("All Categories")}
+                className={`text-nowrap x_nav_item ${activeCategory === "All Categories" ? "x_active" : ""}`}
+                onClick={() => handleDesktopCategoryClick("All Categories")}
               >
                 All Categories
               </div>
             </div>
             <ul className="x_nav_list">
               {isLoading ? (
-                <li className="x_nav_item"><LoadingSpinner></LoadingSpinner></li>
+                <li className="x_nav_item"><LoadingSpinner /></li>
               ) : (
-                categoriesWithSubcategories.map((category) => {
-                  console.log('Rendering category:', category.categoryName);
-                  return (
-                    <li
-                      key={category._id}
-                      className={`x_nav_item ${active === category.categoryName ? "x_active" : ""}`}
-                      data-category={category.categoryName}
-                      onClick={() => handleItemClick(category.categoryName)}
-                    >
-                      <div className="x_nav_item_content">
-                        {category.categoryName}
-                        <IoIosArrowDown
-                          className={`x_arrow ${active === category.categoryName ? "x_arrow_up" : ""}`}
-                        />
-                      </div>
-                      {active === category.categoryName && (
-                        <div className="x_mega_dropdown">
-                          <div className="x_dropdown_section">
-
-                            <ul className="x_dropdown_list d-flex gap-5">
-                              {subcategories
-                                .filter(sub => sub.categoryId === category._id)
-                                .map((subcat, index) => {
-                                  console.log('Rendering subcategory:', subcat.subCategoryName);
-                                  return (
-                                    <li
-                                      key={index}
-                                      className="x_dropdown_item"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setActive("All Categories");
-                                        setShowDropdown(null);
-                                        const filteredProducts = products.filter(product => product.subCategoryId === subcat._id);
-                                        setFilteredProducts(filteredProducts);
-                                        console.log('Filtered products:', filteredProducts);
-                                      }}
-                                    >
+                categoriesWithSubcategories.map((category) => (
+                  <li
+                    key={category._id}
+                    className={`x_nav_item ${activeCategory === category.categoryName ? "x_active" : ""}`}
+                    data-category={category.categoryName}
+                    onMouseEnter={() => handleDesktopCategoryMouseEnter(category.categoryName)}
+                    onMouseLeave={handleDesktopCategoryMouseLeave}
+                    onClick={() => handleDesktopCategoryClick(category.categoryName)}
+                  >
+                    <div className="x_nav_item_content">
+                      {category.categoryName}
+                      <IoIosArrowDown
+                        className={`x_arrow ${visibleDropdownCategory === category.categoryName ? "x_arrow_up" : ""}`}
+                      />
+                    </div>
+                    {visibleDropdownCategory === category.categoryName && (
+                      <div className="x_mega_dropdown">
+                        <div className="x_dropdown_section">
+                          <ul className="x_dropdown_list d-flex gap-5">
+                            {subcategories
+                              .filter(sub => sub.categoryId === category._id)
+                              .map((subcat, index) => (
+                                <li
+                                  key={index}
+                                  className="x_dropdown_item"
+                                >
+                                  <div
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      localStorage.setItem('selectedSubCategoryIdfromheader', subcat._id);
+                                      localStorage.removeItem('selectedCategoryId');
+                                      localStorage.removeItem('searchQuery');
+                                      localStorage.setItem('activePage', 'Vegetables'); // Or derive from category/subcat
+                                      navigate('/Vegetable');
+                                      handleSubItemSelected();
+                                    }}
+                                  >
+                                    {subcat.subCategoryName}
+                                  </div>
+                                  <hr />
+                                  {products
+                                    .filter(product => product.subCategoryId === subcat._id)
+                                    .map((product, idx) => (
                                       <div
-                                        role="button"
-                                        tabIndex={0}
+                                        key={idx}
+                                        className="x_product_item db_product_name hover-underline my-1"
                                         onClick={(e) => {
-                                          localStorage.setItem('selectedSubCategoryIdfromheader', subcat._id);
-                                          localStorage.removeItem('selectedCategoryId');
-                                          localStorage.removeItem('searchQuery');
-                                          localStorage.setItem('activePage', 'Vegetables');
-                                          navigate('/Vegetable');
+                                          e.stopPropagation();
+                                          handleProductClick(product); // This will navigate and call handleSubItemSelected
                                         }}
                                       >
-                                        {subcat.subCategoryName}
+                                        {product.productName}
                                       </div>
-
-                                      <hr></hr>
-                                      {products
-                                        .filter(product => product.subCategoryId === subcat._id)
-                                        .map((product, idx) => (
-                                          <div
-                                            key={idx}
-                                            className="x_product_item db_product_name hover-underline my-1"
-                                            onClick={(e) => {
-                                              e.preventDefault();
-                                              e.stopPropagation();
-                                              localStorage.setItem('selectedProductId', product._id);
-                                              navigate(`/product-details/${product._id}`);
-                                              setOpen(false);
-                                              setActive("All Categories");
-                                              setShowDropdown(null);
-                                            }}
-                                          >
-                                            {product.productName}
-                                          </div>
-                                        ))}
-                                    </li>
-                                  );
-                                })
-                              }
-                            </ul>
-                          </div>
+                                    ))}
+                                </li>
+                              ))}
+                          </ul>
                         </div>
-                      )}
-                    </li>
-                  );
-                })
+                      </div>
+                    )}
+                  </li>
+                ))
               )}
             </ul>
           </div>
@@ -768,62 +689,67 @@ export default function SearchHeader() {
           <div className="x_offcanvas_content">
             <ul className="x_mobile_menu">
               <li
-                className={`x_mobile_item ${active === "All Categories" ? "x_active" : ""}`}
-                onClick={() => handleItemClick("All Categories")}
+                className={`x_mobile_item ${activeCategory === "All Categories" ? "x_active" : ""}`}
+                onClick={() => handleMobileCategoryClick("All Categories")}
               >
                 All Categories
               </li>
               {categoriesWithSubcategories.map((category) => (
                 <li
                   key={category._id}
-                  className={`x_mobile_item ${active === category.categoryName ? "x_active" : ""}`}
+                  className={`x_mobile_item ${activeCategory === category.categoryName ? "x_active" : ""}`}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleItemClick(category.categoryName);
+                    handleMobileCategoryClick(category.categoryName);
                   }}
                 >
                   <div className="x_mobile_item_header">
                     {category.categoryName}
                     <IoIosArrowDown
-                      className={`x_arrow ${active === category.categoryName ? "x_arrow_up" : ""}`}
+                      className={`x_arrow ${visibleDropdownCategory === category.categoryName ? "x_arrow_up" : ""}`}
                     />
                   </div>
-                  {showDropdown === category.categoryName && (
+                  {visibleDropdownCategory === category.categoryName && (
                     <div className="x_mobile_submenu">
                       <div className="x_mobile_section">
-                        {/* <h3 className="x_mobile_title">{category.categoryName}</h3> */}
                         <ul className="x_mobile_list">
                           {category.subcategories.map((subcat, index) => (
                             <li
                               key={index}
                               className="x_dropdown_item"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setActive("All Categories");
-                                setShowDropdown(null);
-                                const filteredProducts = products.filter(product => product.subCategoryId === subcat._id);
-                                setFilteredProducts(filteredProducts);
-                                console.log('Filtered products:', filteredProducts);
-                                setOpen(false);
-                              }}
                             >
-                              <h6 className="fw-bold">{subcat.subCategoryName}</h6>
-                              <hr className="mt-0"></hr>
-                              {/* // ... existing code ... */}
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                className="fw-bold"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  localStorage.setItem('selectedSubCategoryIdfromheader', subcat._id);
+                                  localStorage.removeItem('selectedCategoryId');
+                                  localStorage.removeItem('searchQuery');
+                                  localStorage.setItem('activePage', 'Vegetables');
+                                  navigate('/Vegetable');
+                                  handleSubItemSelected();
+                                }}
+                              >
+                                {subcat.subCategoryName}
+                              </div>
+                              <hr className="mt-0" />
                               {products
                                 .filter(product => product.subCategoryId === subcat._id)
                                 .map((product, idx) => (
                                   <div
                                     key={idx}
                                     className="x_product_item db_product_name hover-underline my-1"
-                                    onClick={() => handleProductClick(product)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleProductClick(product);
+                                    }}
                                   >
                                     {product.productName}
                                   </div>
                                 ))}
-                              {/* // ... existing code ... */}
                             </li>
                           ))}
                         </ul>
@@ -837,15 +763,15 @@ export default function SearchHeader() {
         </div>
       </header>
 
-      {/* Login Modal */}
       {showLoginModal && (
-        <div className="modal-overlay">
+        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setShowLoginModal(false); }}>
           <div className="login-modal" ref={modalRef}>
-
+            <button className="close-btn" onClick={() => setShowLoginModal(false)}>
+              <FaTimesCircle />
+            </button>
             <div className="container-fluid">
               <div className="row">
                 <div className="view-content">
-                  {/* Login View */}
                   {currentView === 'login' && (
                     <>
                       <div className="col-md-6 login-section">
@@ -857,9 +783,9 @@ export default function SearchHeader() {
                         >
                           {({ errors, touched, values, handleChange, handleBlur, isSubmitting }) => (
                             <Form>
-                              {error && (
+                              {error && !loading && ( // Show error only if not loading
                                 <div className="alert alert-danger" role="alert">
-                                  {error}
+                                  {typeof error === 'string' ? error : JSON.stringify(error)}
                                 </div>
                               )}
                               {loading && (
@@ -871,46 +797,29 @@ export default function SearchHeader() {
                               )}
                               <div className="form-group">
                                 <input
-                                  type="email"
-                                  name="email"
-                                  placeholder="Username or email address*"
+                                  type="email" name="email" placeholder="Username or email address*"
                                   className={`form-input ${errors.email && touched.email ? 'is-invalid' : ''}`}
-                                  value={values.email}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
+                                  value={values.email} onChange={handleChange} onBlur={handleBlur}
                                 />
-                                {errors.email && touched.email && (
-                                  <div className="error-message">{errors.email}</div>
-                                )}
+                                {errors.email && touched.email && (<div className="error-message">{errors.email}</div>)}
                               </div>
                               <div className="form-group password-group">
                                 <input
-                                  type={showPassword ? "text" : "password"}
-                                  name="password"
-                                  placeholder="Password*"
+                                  type={showPassword ? "text" : "password"} name="password" placeholder="Password*"
                                   className={`form-input ${errors.password && touched.password ? 'is-invalid' : ''}`}
-                                  value={values.password}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
+                                  value={values.password} onChange={handleChange} onBlur={handleBlur}
                                 />
                                 <span className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
                                   {showPassword ? <IoIosEyeOff size={22} /> : <IoIosEye size={22} />}
                                 </span>
-                                {errors.password && touched.password && (
-                                  <div className="error-message">{errors.password}</div>
-                                )}
+                                {errors.password && touched.password && (<div className="error-message">{errors.password}</div>)}
                               </div>
                               <div className="form-options">
-                                <label className="remember-me">
-                                  <input type="checkbox" />
-                                  <span>Remember me</span>
-                                </label>
-                                <a href="#" className="forgot-password" onClick={handleForgotPasswordClick}>
-                                  Forgot Password?
-                                </a>
+                                <label className="remember-me"><input type="checkbox" /><span>Remember me</span></label>
+                                <a href="#" className="forgot-password" onClick={handleForgotPasswordClick}>Forgot Password?</a>
                               </div>
-                              <button type="submit" className="login-btn" disabled={isSubmitting}>
-                                {isSubmitting ? 'Logging in...' : 'Login'}
+                              <button type="submit" className="login-btn" disabled={isSubmitting || loading}>
+                                {isSubmitting || loading ? 'Logging in...' : 'Login'}
                               </button>
                             </Form>
                           )}
@@ -923,61 +832,6 @@ export default function SearchHeader() {
                       </div>
                     </>
                   )}
-
-                  {/* Forgot Password View - Email Form */}
-                  {/* {currentView === 'forgot' && (
-                    <>
-                      <div className="col-md-6 login-section">
-                        <h2>Reset your password</h2>
-                        <p className="reset-text">We will send you an OTP to reset your password</p>
-                        <Formik
-                          initialValues={{ email: '' }}
-                          validationSchema={forgotPasswordSchema}
-                          onSubmit={handleForgotSubmit}
-                        >
-                          {({ errors, touched, values, handleChange, handleBlur, isSubmitting }) => (
-                            <Form>
-                              {error && (
-                                <div className="alert alert-danger" role="alert">
-                                  {error}
-                                </div>
-                              )}
-                              {loading && (
-                                <div className="text-center mb-3">
-                                  <div className="spinner-border text-primary" role="status">
-                                    <span className="visually-hidden">Loading...</span>
-                                  </div>
-                                </div>
-                              )}
-                              <div className="form-group">
-                                <input
-                                  type="email"
-                                  name="email"
-                                  placeholder="Username or email address*"
-                                  className={`form-input ${errors.email && touched.email ? 'is-invalid' : ''}`}
-                                  value={values.email}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                />
-                                {errors.email && touched.email && (
-                                  <div className="error-message">{errors.email}</div>
-                                )}
-                              </div>
-                              <button type="submit" className="submit-btn" disabled={isSubmitting}>
-                                {isSubmitting ? 'Sending...' : 'Send OTP'}
-                              </button>
-                            </Form>
-                          )}
-                        </Formik>
-                      </div>
-                      <div className="col-md-6 new-customer-section">
-                        <h2>New Customer</h2>
-                        <p>Be part of our growing family of new customers! Join us today and unlock a world of exclusive benefits, offers, and personalized experiences.</p>
-                        <button className="register-btn" onClick={handleRegisterClick}>Register</button>
-                      </div>
-                    </>
-                  )} */}
-
                   {currentView === 'forgot' && (
                     <>
                       <div className="col-md-6 login-section">
@@ -990,34 +844,18 @@ export default function SearchHeader() {
                         >
                           {({ errors, touched, values, handleChange, handleBlur, isSubmitting }) => (
                             <Form>
-                              {error && (
-                                <div className="alert alert-danger" role="alert">
-                                  {error}
-                                </div>
-                              )}
-                              {loading && (
-                                <div className="text-center mb-3">
-                                  <div className="spinner-border text-primary" role="status">
-                                    <span className="visually-hidden">Loading...</span>
-                                  </div>
-                                </div>
-                              )}
+                              {error && !loading && (<div className="alert alert-danger" role="alert">{typeof error === 'string' ? error : JSON.stringify(error)}</div>)}
+                              {loading && (<div className="text-center mb-3"><div className="spinner-border text-primary" role="status"><span className="visually-hidden">Loading...</span></div></div>)}
                               <div className="form-group">
                                 <input
-                                  type="tel"
-                                  name="mobileNo"
-                                  placeholder="Mobile Number*"
+                                  type="tel" name="mobileNo" placeholder="Mobile Number*"
                                   className={`form-input ${errors.mobileNo && touched.mobileNo ? 'is-invalid' : ''}`}
-                                  value={values.mobileNo}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
+                                  value={values.mobileNo} onChange={handleChange} onBlur={handleBlur}
                                 />
-                                {errors.mobileNo && touched.mobileNo && (
-                                  <div className="error-message">{errors.mobileNo}</div>
-                                )}
+                                {errors.mobileNo && touched.mobileNo && (<div className="error-message">{errors.mobileNo}</div>)}
                               </div>
-                              <button type="submit" className="submit-btn" disabled={isSubmitting}>
-                                {isSubmitting ? 'Sending...' : 'Send OTP'}
+                              <button type="submit" className="submit-btn" disabled={isSubmitting || loading}>
+                                {isSubmitting || loading ? 'Sending...' : 'Send OTP'}
                               </button>
                             </Form>
                           )}
@@ -1030,13 +868,11 @@ export default function SearchHeader() {
                       </div>
                     </>
                   )}
-
-                  {/* OTP Verification View */}
                   {currentView === 'otp' && (
                     <>
                       <div className="col-md-6 login-section">
                         <h2>Verify OTP</h2>
-                        <p className="reset-text">Please enter the OTP sent to your email</p>
+                        <p className="reset-text">Please enter the OTP sent to your mobile</p>
                         <Formik
                           initialValues={{ otp: '' }}
                           validationSchema={otpSchema}
@@ -1044,43 +880,21 @@ export default function SearchHeader() {
                         >
                           {({ errors, touched, values, handleChange, handleBlur, isSubmitting }) => (
                             <Form>
-                              {error && (
-                                <div className="alert alert-danger" role="alert">
-                                  {error}
-                                </div>
-                              )}
-                              {loading && (
-                                <div className="text-center mb-3">
-                                  <div className="spinner-border text-primary" role="status">
-                                    <span className="visually-hidden">Loading...</span>
-                                  </div>
-                                </div>
-                              )}
+                              {error && !loading && (<div className="alert alert-danger" role="alert">{typeof error === 'string' ? error : JSON.stringify(error)}</div>)}
+                              {loading && (<div className="text-center mb-3"><div className="spinner-border text-primary" role="status"><span className="visually-hidden">Loading...</span></div></div>)}
                               <div className="form-group">
                                 <input
-                                  type="text"
-                                  name="otp"
-                                  placeholder="Enter OTP*"
+                                  type="text" name="otp" placeholder="Enter OTP*"
                                   className={`form-input ${errors.otp && touched.otp ? 'is-invalid' : ''}`}
-                                  value={values.otp}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  maxLength="6"
+                                  value={values.otp} onChange={handleChange} onBlur={handleBlur} maxLength="6"
                                 />
-                                {errors.otp && touched.otp && (
-                                  <div className="error-message">{errors.otp}</div>
-                                )}
+                                {errors.otp && touched.otp && (<div className="error-message">{errors.otp}</div>)}
                               </div>
                               <div className="form-options">
-                                <a href="#" className="forgot-password" onClick={(e) => {
-                                  e.preventDefault();
-                                  setCurrentView('forgot');
-                                }}>
-                                  Resend OTP
-                                </a>
+                                <a href="#" className="forgot-password" onClick={(e) => { e.preventDefault(); setCurrentView('forgot'); }}>Resend OTP</a>
                               </div>
-                              <button type="submit" className="submit-btn" disabled={isSubmitting}>
-                                {isSubmitting ? 'Verifying...' : 'Verify OTP'}
+                              <button type="submit" className="submit-btn" disabled={isSubmitting || loading}>
+                                {isSubmitting || loading ? 'Verifying...' : 'Verify OTP'}
                               </button>
                             </Form>
                           )}
@@ -1093,8 +907,6 @@ export default function SearchHeader() {
                       </div>
                     </>
                   )}
-
-                  {/* Create New Password View */}
                   {currentView === 'new-password' && (
                     <>
                       <div className="col-md-6 login-section">
@@ -1107,54 +919,32 @@ export default function SearchHeader() {
                         >
                           {({ errors, touched, values, handleChange, handleBlur, isSubmitting }) => (
                             <Form>
-                              {error && (
-                                <div className="alert alert-danger" role="alert">
-                                  {error}
-                                </div>
-                              )}
-                              {loading && (
-                                <div className="text-center mb-3">
-                                  <div className="spinner-border text-primary" role="status">
-                                    <span className="visually-hidden">Loading...</span>
-                                  </div>
-                                </div>
-                              )}
+                              {error && !loading && (<div className="alert alert-danger" role="alert">{typeof error === 'string' ? error : JSON.stringify(error)}</div>)}
+                              {loading && (<div className="text-center mb-3"><div className="spinner-border text-primary" role="status"><span className="visually-hidden">Loading...</span></div></div>)}
                               <div className="form-group password-group">
                                 <input
-                                  type={showPassword ? "text" : "password"}
-                                  name="password"
-                                  placeholder="New Password*"
+                                  type={showPassword ? "text" : "password"} name="password" placeholder="New Password*"
                                   className={`form-input ${errors.password && touched.password ? 'is-invalid' : ''}`}
-                                  value={values.password}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
+                                  value={values.password} onChange={handleChange} onBlur={handleBlur}
                                 />
                                 <span className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
                                   {showPassword ? <IoIosEyeOff size={22} /> : <IoIosEye size={22} />}
                                 </span>
-                                {errors.password && touched.password && (
-                                  <div className="error-message">{errors.password}</div>
-                                )}
+                                {errors.password && touched.password && (<div className="error-message">{errors.password}</div>)}
                               </div>
                               <div className="form-group password-group">
                                 <input
-                                  type={showConfirmPassword ? "text" : "password"}
-                                  name="confirmPassword"
-                                  placeholder="Confirm New Password*"
+                                  type={showConfirmPassword ? "text" : "password"} name="confirmPassword" placeholder="Confirm New Password*"
                                   className={`form-input ${errors.confirmPassword && touched.confirmPassword ? 'is-invalid' : ''}`}
-                                  value={values.confirmPassword}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
+                                  value={values.confirmPassword} onChange={handleChange} onBlur={handleBlur}
                                 />
                                 <span className="password-toggle" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                                   {showConfirmPassword ? <IoIosEyeOff size={22} /> : <IoIosEye size={22} />}
                                 </span>
-                                {errors.confirmPassword && touched.confirmPassword && (
-                                  <div className="error-message">{errors.confirmPassword}</div>
-                                )}
+                                {errors.confirmPassword && touched.confirmPassword && (<div className="error-message">{errors.confirmPassword}</div>)}
                               </div>
-                              <button type="submit" className="submit-btn" disabled={isSubmitting}>
-                                {isSubmitting ? 'Updating...' : 'Update Password'}
+                              <button type="submit" className="submit-btn" disabled={isSubmitting || loading}>
+                                {isSubmitting || loading ? 'Updating...' : 'Update Password'}
                               </button>
                             </Form>
                           )}
@@ -1162,7 +952,6 @@ export default function SearchHeader() {
                       </div>
                       <div className="col-md-6 new-customer-section">
                         <h2>Password Guidelines</h2>
-                        <p>Make sure your password:</p>
                         <ul className="password-guidelines">
                           <li>Is at least 8 characters long</li>
                           <li>Contains at least one uppercase letter</li>
@@ -1172,112 +961,63 @@ export default function SearchHeader() {
                       </div>
                     </>
                   )}
-
-                  {/* Register View */}
                   {currentView === 'register' && (
                     <>
                       <div className="col-md-6 reg_sec login-section ">
                         <h2 className="mb-3">Register</h2>
                         <Formik
-                          initialValues={{
-                            username: '',
-                            email: '',
-                            mobileNo: '',
-                            password: '',
-                            terms: false
-                          }}
+                          initialValues={{ username: '', email: '', mobileNo: '', password: '', terms: false }}
                           validationSchema={registerSchema}
                           onSubmit={handleRegisterSubmit}
                         >
                           {({ errors, touched, values, handleChange, handleBlur, isSubmitting }) => (
                             <Form>
-                              {error && (
-                                <div className="alert alert-danger" role="alert">
-                                  {error}
-                                </div>
-                              )}
-                              {loading && (
-                                <div className="text-center mb-3">
-                                  <div className="spinner-border text-primary" role="status">
-                                    <span className="visually-hidden">Loading...</span>
-                                  </div>
-                                </div>
-                              )}
+                              {error && !loading && (<div className="alert alert-danger" role="alert">{typeof error === 'string' ? error : JSON.stringify(error)}</div>)}
+                              {loading && (<div className="text-center mb-3"><div className="spinner-border text-primary" role="status"><span className="visually-hidden">Loading...</span></div></div>)}
                               <div className="form-group">
                                 <input
-                                  type="text"
-                                  name="username"
-                                  placeholder="Username*"
+                                  type="text" name="username" placeholder="Username*"
                                   className={`form-input ${errors.username && touched.username ? 'is-invalid' : ''}`}
-                                  value={values.username}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
+                                  value={values.username} onChange={handleChange} onBlur={handleBlur}
                                 />
-                                {errors.username && touched.username && (
-                                  <div className="error-message">{errors.username}</div>
-                                )}
+                                {errors.username && touched.username && (<div className="error-message">{errors.username}</div>)}
                               </div>
                               <div className="form-group">
                                 <input
-                                  type="email"
-                                  name="email"
-                                  placeholder="Email address*"
+                                  type="email" name="email" placeholder="Email address*"
                                   className={`form-input ${errors.email && touched.email ? 'is-invalid' : ''}`}
-                                  value={values.email}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
+                                  value={values.email} onChange={handleChange} onBlur={handleBlur}
                                 />
-                                {errors.email && touched.email && (
-                                  <div className="error-message">{errors.email}</div>
-                                )}
+                                {errors.email && touched.email && (<div className="error-message">{errors.email}</div>)}
                               </div>
                               <div className="form-group">
                                 <input
-                                  type="tel"
-                                  name="mobileNo"
-                                  placeholder="Mobile Number*"
+                                  type="tel" name="mobileNo" placeholder="Mobile Number*"
                                   className={`form-input ${errors.mobileNo && touched.mobileNo ? 'is-invalid' : ''}`}
-                                  value={values.mobileNo}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
+                                  value={values.mobileNo} onChange={handleChange} onBlur={handleBlur}
                                 />
-                                {errors.mobileNo && touched.mobileNo && (
-                                  <div className="error-message">{errors.mobileNo}</div>
-                                )}
+                                {errors.mobileNo && touched.mobileNo && (<div className="error-message">{errors.mobileNo}</div>)}
                               </div>
                               <div className="form-group password-group">
                                 <input
-                                  type={showPassword ? "text" : "password"}
-                                  name="password"
-                                  placeholder="Password*"
+                                  type={showPassword ? "text" : "password"} name="password" placeholder="Password*"
                                   className={`form-input ${errors.password && touched.password ? 'is-invalid' : ''}`}
-                                  value={values.password}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
+                                  value={values.password} onChange={handleChange} onBlur={handleBlur}
                                 />
                                 <span className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
                                   {showPassword ? <IoIosEyeOff size={22} /> : <IoIosEye size={22} />}
                                 </span>
-                                {errors.password && touched.password && (
-                                  <div className="error-message">{errors.password}</div>
-                                )}
+                                {errors.password && touched.password && (<div className="error-message">{errors.password}</div>)}
                               </div>
                               <div className="form-options">
                                 <label className="remember-me">
-                                  <input
-                                    type="checkbox"
-                                    name="terms"
-                                    checked={values.terms}
-                                    onChange={handleChange}
-                                  />
+                                  <input type="checkbox" name="terms" checked={values.terms} onChange={handleChange} />
                                   <span>I agree to the Terms of User</span>
                                 </label>
-                                {errors.terms && touched.terms && (
-                                  <div className="error-message">{errors.terms}</div>
-                                )}
+                                {errors.terms && touched.terms && (<div className="error-message">{errors.terms}</div>)}
                               </div>
-                              <button type="submit" className="login-btn" disabled={isSubmitting}>
-                                {isSubmitting ? 'Registering...' : 'Register'}
+                              <button type="submit" className="login-btn" disabled={isSubmitting || loading}>
+                                {isSubmitting || loading ? 'Registering...' : 'Register'}
                               </button>
                             </Form>
                           )}
@@ -1298,349 +1038,50 @@ export default function SearchHeader() {
       )}
 
       <style jsx>{`
-        .animate-slide-down {
-          animation: slideDown 0.3s ease-out;
-        }
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .user-dropdown-menu {
-          position: absolute;
-          top: 100%;
-          left: 50%;
-          transform: translateX(-50%);
-          background-color: white;
-          border-radius: 8px;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-          min-width: 200px;
-          z-index: 1000;
-          margin-top: 14px;
-          animation: dropdownAnimation 0.3s ease-out;
-        }
-
-        @keyframes dropdownAnimation {
-          from {
-            opacity: 0;
-            transform: translate(-50%, -10px);
-          }
-          to {
-            opacity: 1;
-            transform: translate(-50%, 0);
-          }
-        }
-
-        .dropdown-item {
-          padding: 12px 16px;
-          cursor: pointer;
-          color: #333;
-          transition: all 0.2s;
-        }
-
-        .dropdown-item:hover {
-          background-color: #2c6145;
-          color: white;
-        }
-
-        .db_icon_wrapper .badge {
-          font-size: 0.65rem;
-          padding: 4px 6px;
-          min-width: 20px;
-          min-height: 20px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: bold;
-        }
-
-        .db_icon_wrapper button:hover {
-          transform: scale(1.1);
-        }
-        .db_icon_wrapper button {
-          transition: transform 0.2s ease;
-        }
-          @media (max-width: 330px) {
-          .db_icon_wrapper {
-               gap: 0.7rem !important;
-          }
-        }
-
-        /* SHRINK ICONS BELOW 425px */
-        @media (max-width: 425px) {
-          .db_icon_wrapper svg {
-            width: 16px !important;
-            height: 16px !important;
-          }
-          /* if you need the badges slightly smaller too: */
-          .db_icon_wrapper .badge {
-            font-size: 0.55rem;
-            padding: 2px 4px;
-            min-width: 16px;
-            min-height: 16px;
-          }
-        }
-        input:focus {
-          box-shadow: none !important;
-          outline: none;
-        }
-
-        .custom-input:focus {
-          box-shadow: none !important;
-          outline: none;
-        }
-
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: rgba(0, 0, 0, 0.5);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 1100;
-          padding: 15px;
-        }
-
-        .login-modal {
-          background-color: white;
-          border-radius: 12px;
-          width: 900px;
-          max-width: 95%;
-          position: relative;
-        }
-
-        .close-btn {
-          position: absolute;
-          top: 15px;
-          right: 15px;
-          background: rgba(255, 255, 255, 0.2);
-          border: none;
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          z-index: 1;
-          color: #333;
-          backdrop-filter: blur(5px);
-        }
-
-        .close-btn:hover {
-          background: rgba(255, 255, 255, 0.4); 
-          transform: rotate(90deg);
-        }
-
-        .close-btn svg {
-          width: 20px;
-          height: 20px;
-          transition: all 0.3s ease;
-        }
-
-        .close-btn:hover svg {
-          color: #2c6145;
-        }
-
-        .view-content {
-          display: flex;
-          width: 100%;
-        }
-
-        .login-section {
-          padding: 40px;
-          border-right: 1px solid #eee;
-          width: 50%;
-        }
-
-        .new-customer-section {
-          padding: 40px;
-          background-color: #f9f9f9;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          width: 50%;
-        }
-
-        .new-customer-section h2 {
-          margin-bottom: 25px;
-        }
-
-        .new-customer-section p {
-          color: #666;
-          line-height: 1.6;
-          margin-bottom: 30px;
-          max-width: 80%;
-        }
-
-        .form-group {
-          margin-bottom: 20px;
-          position: relative;
-        }
-
-        .form-input {
-          width: 100%;
-          padding: 12px 15px;
-          padding-right: 45px;
-          border: 1px solid #ddd;
-          border-radius: 6px;
-          font-size: 14px;
-          background-color: white;
-          height: 45px;
-        }
-
-        .form-input:focus {
-          border-color: #2c6145;
-          outline: none;
-        }
-
-        .password-group {
-          position: relative;
-        }
-
-        .password-toggle {
-          position: absolute;
-          right: 15px;
-          top: 8px;
-          cursor: pointer;
-          color: #666;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 5px;
-          transition: color 0.3s ease;
-        }
-
-        .error-message {
-          color: #dc3545;
-          font-size: 12px;
-          margin-top: 5px;
-          margin-left: 2px;
-          display: block;
-        }
-
-        .is-invalid {
-          border-color: #dc3545;
-        }
-
-        .form-options {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 20px;
-        }
-
-        .remember-me {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          color: #666;
-          cursor: pointer;
-        }
-
-        .forgot-password {
-          color: #333;
-          text-decoration: none;
-          font-size: 15px;
-        }
-
-        .forgot-password:hover {
-          text-decoration: underline;
-        }
-
-        .login-btn, .register-btn {
-          width: 160px;
-          padding: 12px 20px;
-          border: none;
-          border-radius: 25px;
-          font-size: 14px;
-          cursor: pointer;
-          transition: background-color 0.3s;
-          background-color: #2c6145;
-          color: white;
-        }
-
-        // .login-btn:hover, .register-btn:hover {
-        //   background-color: rgb(71, 143, 104);;
-        // }
-
-        @media (max-width: 768px) {
-          .view-content {
-            flex-direction: column;
-          }
-
-          .login-section,
-          .new-customer-section {
-            width: 100%;
-            padding: 30px 20px;
-          }
-
-          .login-section {
-            border-right: none;
-            border-bottom: 1px solid #eee;
-          }
-        }
-
-        .reset-text {
-          color: #666;
-          margin-bottom: 20px;
-          font-size: 14px;
-        }
-
-        .submit-btn {
-          width: 160px;
-          padding: 12px 20px;
-          border: none;
-          border-radius: 25px;
-          font-size: 14px;
-          cursor: pointer;
-          transition: background-color 0.3s;
-          background-color: #2c6145;
-          color: white;
-        }
-
-        .submit-btn:hover {
-          background-color: #e9f6eb;
-          color: #000;
-          border: 1px solid #2c6145;
-        }
-
-        .password-guidelines {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-          color: #666;
-        }
-
-        .password-guidelines li {
-          margin-bottom: 8px;
-          font-size: 14px;
-          position: relative;
-          padding-left: 20px;
-        }
-
-        .password-guidelines li:before {
-          content: "•";
-          position: absolute;
-          left: 0;
-          color: #2c6145;
-        }
-
-        @media only screen and (max-width: 320px) {
-          .form-options{
-            display: block;
-          }
-        }
+        .animate-slide-down { animation: slideDown 0.3s ease-out; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .user-dropdown-menu { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background-color: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); min-width: 200px; z-index: 1000; margin-top: 14px; animation: dropdownAnimation 0.3s ease-out; }
+        @keyframes dropdownAnimation { from { opacity: 0; transform: translate(-50%, -10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+        .dropdown-item { padding: 12px 16px; cursor: pointer; color: #333; transition: all 0.2s; }
+        .dropdown-item:hover { background-color: #2c6145; color: white; }
+        .db_icon_wrapper .badge { font-size: 0.65rem; padding: 4px 6px; min-width: 20px; min-height: 20px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .db_icon_wrapper button:hover { transform: scale(1.1); }
+        .db_icon_wrapper button { transition: transform 0.2s ease; }
+        @media (max-width: 330px) { .db_icon_wrapper { gap: 0.7rem !important; } }
+        @media (max-width: 425px) { .db_icon_wrapper svg { width: 16px !important; height: 16px !important; } .db_icon_wrapper .badge { font-size: 0.55rem; padding: 2px 4px; min-width: 16px; min-height: 16px; } }
+        input:focus { box-shadow: none !important; outline: none; }
+        .custom-input:focus { box-shadow: none !important; outline: none; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 1100; padding: 15px; }
+        .login-modal { background-color: white; border-radius: 12px; width: 900px; max-width: 95%; position: relative; }
+        .close-btn { position: absolute; top: 15px; right: 15px; background: rgba(255, 255, 255, 0.2); border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; z-index: 1; color: #333; backdrop-filter: blur(5px); }
+        .close-btn:hover { background: rgba(255, 255, 255, 0.4); transform: rotate(90deg); }
+        .close-btn svg { width: 20px; height: 20px; transition: all 0.3s ease; }
+        .close-btn:hover svg { color: #2c6145; }
+        .view-content { display: flex; width: 100%; }
+        .login-section { padding: 40px; border-right: 1px solid #eee; width: 50%; }
+        .new-customer-section { padding: 40px; background-color: #f9f9f9; display: flex; flex-direction: column; justify-content: center; width: 50%; }
+        .new-customer-section h2 { margin-bottom: 25px; }
+        .new-customer-section p { color: #666; line-height: 1.6; margin-bottom: 30px; max-width: 80%; }
+        .form-group { margin-bottom: 20px; position: relative; }
+        .form-input { width: 100%; padding: 12px 15px; padding-right: 45px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; background-color: white; height: 45px; }
+        .form-input:focus { border-color: #2c6145; outline: none; }
+        .password-group { position: relative; }
+        .password-toggle { position: absolute; right: 15px; top: 8px; cursor: pointer; color: #666; display: flex; align-items: center; justify-content: center; padding: 5px; transition: color 0.3s ease; }
+        .error-message { color: #dc3545; font-size: 12px; margin-top: 5px; margin-left: 2px; display: block; }
+        .is-invalid { border-color: #dc3545; }
+        .form-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .remember-me { display: flex; align-items: center; gap: 8px; color: #666; cursor: pointer; }
+        .forgot-password { color: #333; text-decoration: none; font-size: 15px; }
+        .forgot-password:hover { text-decoration: underline; }
+        .login-btn, .register-btn { width: 160px; padding: 12px 20px; border: none; border-radius: 25px; font-size: 14px; cursor: pointer; transition: background-color 0.3s; background-color: #2c6145; color: white; }
+        @media (max-width: 768px) { .view-content { flex-direction: column; } .login-section, .new-customer-section { width: 100%; padding: 30px 20px; } .login-section { border-right: none; border-bottom: 1px solid #eee; } }
+        .reset-text { color: #666; margin-bottom: 20px; font-size: 14px; }
+        .submit-btn { width: 160px; padding: 12px 20px; border: none; border-radius: 25px; font-size: 14px; cursor: pointer; transition: background-color 0.3s; background-color: #2c6145; color: white; }
+        .submit-btn:hover { background-color: #e9f6eb; color: #000; border: 1px solid #2c6145; }
+        .password-guidelines { list-style: none; padding: 0; margin: 0; color: #666; }
+        .password-guidelines li { margin-bottom: 8px; font-size: 14px; position: relative; padding-left: 20px; }
+        .password-guidelines li:before { content: "•"; position: absolute; left: 0; color: #2c6145; }
+        @media only screen and (max-width: 320px) { .form-options{ display: block; } }
       `}
       </style>
     </>
