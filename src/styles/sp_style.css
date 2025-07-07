@@ -611,6 +611,11 @@
   border-radius: 5px;
   background-color: #0F0F0F0F;
 }
+@media (max-width: 1024px) {
+.sp_filter_both{
+    margin-top: 10px;
+  }
+}
 @media (max-width: 768px) {
   .sp_sidebar {
     width: 100%;
@@ -643,7 +648,6 @@
   }
 
   .sp_filter_both{
-    margin-top: 10px;
     gap: 5px;
   }
 
@@ -657,7 +661,7 @@
   .sp_add_btn {
     width: 48%;
     margin: 0px;
-    margin-top: 10px;
+    /* margin-top: 10px; */
   }
   .sp_add_btn1 {
     width: 100%;

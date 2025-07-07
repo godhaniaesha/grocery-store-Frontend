@@ -176,10 +176,10 @@ function Product() {
     return (
         <div className="sp_container">
             <div className="d-xl-flex justify-content-between align-item-center">
-                <div><h4>Product</h4>
+                <div ><h4>Product</h4>
                     <Link className='sp_text_grey' to={'/seller/home'}>Dashboard</Link> / <Link>Product</Link>
                 </div>
-                <div className="sp_filter_both d-flex d-sm-flex align-items-center justify-sm-content-start justify-content-end">
+                <div className="sp_filter_both d-flex d-sm-flex align-items-center justify-lg-content-end justify-content-start">
                     <div className="sp_search">
                         <BiSearch className="sp_sear_icon" />
                         <input

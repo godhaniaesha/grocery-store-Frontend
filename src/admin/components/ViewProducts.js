@@ -28,7 +28,7 @@ const ViewProducts = () => {
       <div className="umain_container u-bg-color" >
         <div className="uviewP_header">
           {/* <h1>Product</h1> */}
-          <div><h4>Product</h4>
+          <div ><h4>Productafdxgchjk</h4>
             <Link to={'/seller/home'}>Dashboard</Link> /
             <Link to={'/seller/product'}>Product</Link> /
             <Link>View Product</Link>
