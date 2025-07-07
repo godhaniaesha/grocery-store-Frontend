@@ -657,11 +657,16 @@
   .sp_add_btn {
     width: 48%;
     margin: 0px;
-    margin-top: 10px;
+    /* margin-top: 10px; */
+  }
+  .sp_filter_btn{
+    margin-right:10px;
   }
   .sp_add_btn1 {
-    width: 100%;
-  }
+        width: fit-content;
+        padding: 0px 10px;
+        text-wrap: nowrap;
+    }
 
   .sp_pagination {
     margin: auto;}

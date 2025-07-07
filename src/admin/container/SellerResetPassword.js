@@ -43,7 +43,7 @@ function SellerResetPassword() {
                     className="k-eye-button border-0"
                     onClick={() => setShowNewPassword(!showNewPassword)}
                   >
-                    {showNewPassword ? (
+                    {!showNewPassword ? (
                       <IoEyeOff size={20} />
                     ) : (
                       <MdRemoveRedEye size={20} />
@@ -68,7 +68,7 @@ function SellerResetPassword() {
                     className="k-eye-button border-0"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
-                    {showConfirmPassword ? (
+                    {!showConfirmPassword ? (
                       <IoEyeOff size={20} />
                     ) : (
                       <MdRemoveRedEye size={20} />

@@ -471,6 +471,8 @@
   align-items: center;
   padding: 15px 20px;
   background-color: transparent !important;
+      gap: 14px;
+    flex-wrap: wrap;
 }
 
 .k-order-info {

@@ -148,7 +148,7 @@ const AddInventory = () => {
                     <ErrorMessage name="lowStockLimit" component="div" style={{color:"red"}}/>
                   </div>
                 </div>
-                <div className="text-end my-4">
+                <div className="text-center my-4">
                   <button type="button" className="ucancelbtn">
                     Cancel
                   </button>
