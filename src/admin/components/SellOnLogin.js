@@ -218,9 +218,9 @@ function SellOnLogin() {
                       }}
                     >
                       {showPassword ? (
-                        <IoEyeOff size={20} />
-                      ) : (
                         <MdRemoveRedEye size={20} />
+                      ) : (
+                        <IoEyeOff size={20} />
                       )}
                     </Button>
                   </InputGroup>

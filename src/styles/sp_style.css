@@ -663,9 +663,14 @@
     margin: 0px;
     /* margin-top: 10px; */
   }
-  .sp_add_btn1 {
-    width: 100%;
+  .sp_filter_btn{
+    margin-right:10px;
   }
+  .sp_add_btn1 {
+        width: fit-content;
+        padding: 0px 10px;
+        text-wrap: nowrap;
+    }
 
   .sp_pagination {
     margin: auto;}

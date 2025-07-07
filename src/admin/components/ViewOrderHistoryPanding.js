@@ -417,7 +417,7 @@ function ViewOrderHistoryPanding() {
         show={showModal}
         onHide={handleCloseModal}
         centered
-        className="k-reject-order-modal"
+        className="k-reject-order-modal w-100 d-flex justify-content-center"
       >
         <div className="k-modal-content">
           <div className="k-modal-header">
