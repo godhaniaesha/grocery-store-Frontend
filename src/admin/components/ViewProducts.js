@@ -29,8 +29,8 @@ const ViewProducts = () => {
         <div className="uviewP_header">
           {/* <h1>Product</h1> */}
           <div ><h4>Productafdxgchjk</h4>
-            <Link to={'/seller/home'}>Dashboard</Link> /
-            <Link to={'/seller/product'}>Product</Link> /
+            <Link class="sp_text_grey"  to={'/seller/home'}>Dashboard</Link> /
+            <Link  class="sp_text_grey" to={'/seller/product'}>Product</Link> /
             <Link>View Product</Link>
           </div>
         </div>

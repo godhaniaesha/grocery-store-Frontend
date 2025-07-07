@@ -17,13 +17,12 @@ export const deleteAcc = createAsyncThunk(
         },
       });
       console.log("response",response.data);
-      if (response.message === "Password Not Match") {
-        alert("Password Not Match")
+      if (response.data.message === "Password Not Match") {
+        return rejectWithValue("Password Not Match");
       }
       return response.data;
     } catch (error) {
-      alert("password Not Match")
-      return rejectWithValue(error.response?.data || "Failed to fetch coupons");
+      return rejectWithValue(error.response?.data?.message || "Password Not Match");
     }
   }
 );

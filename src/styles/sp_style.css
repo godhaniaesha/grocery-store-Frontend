@@ -425,7 +425,16 @@
   /* margin-bottom: 10px; */
   color: #0f0f0f99;
 }
-
+.sp_filter_select select{
+  appearance: none; /* arrow remove kare */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #0f0f0f0f !important;
+  background: url('data:image/svg+xml;utf8,<svg fill="black" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat;
+  background-position: right 10px center; /* 🔄 ahi thi arrow ni position left baju lavso */
+  background-size: 16px;
+  padding-right: 30px; /* enough space for arrow */
+}
 /* price range css */
 .s_price_slider .multi-range-slider {
   border: none;

@@ -37,6 +37,29 @@ export const fetchProductVariantById = createAsyncThunk(
   }
 );
 
+// Update product variant by ID
+export const updateProductVariant = createAsyncThunk(
+  'productVariants/updateProductVariant',
+  async ({ id, ...updateFields }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.put(
+        `${API_URL}/updateProductVarient/${id}`,
+        updateFields,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response ? error.response.data : error.message);
+    }
+  }
+);
+
 const productVariantSlice = createSlice({
   name: "productVariants",
   initialState: {
@@ -73,8 +96,21 @@ const productVariantSlice = createSlice({
       .addCase(fetchProductVariantById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || 'Failed to fetch product variant';
+      })
+      .addCase(updateProductVariant.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProductVariant.fulfilled, (state, action) => {
+        state.loading = false;
+        state.variant = action.payload.data;
+      })
+      .addCase(updateProductVariant.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || 'Failed to update product variant';
       });
   },
 });
 
 export default productVariantSlice.reducer;
+

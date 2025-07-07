@@ -18,6 +18,8 @@ import { useNavigate } from "react-router-dom";
 import { deleteAcc } from "../../redux/slices/deleteAcc.Slice";
 import { resendOtp, sendOtp } from "../../redux/slices/resendOtp.Slice";
 import { verifyOtp } from "../../redux/slices/Auth.slice";
+import { changePassword, clearError } from "../../redux/slices/authSlice";
+import { toast } from "react-toastify";
 const Profile = () => {
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showTaxdetails, setShowTaxDetails] = useState("");
@@ -44,6 +46,7 @@ const Profile = () => {
     // dispatch(getResendOtp());
   }, []);
   var userData = useSelector((state) => state.sellerProduct.userData);
+  const { isLoading, error, passwordChangeSuccess } = useSelector((state) => state.auth);
   // var deleteData = useSelector((state) => state.deleteAcc.deleteData);
   // var resendOtpData = useSelector(
   //   (state) => state.resendOtpSlice.resendOtpData
@@ -62,6 +65,8 @@ const Profile = () => {
     setShowTaxDetails(value);
     setstep(0);
     setActiveItem(value);
+    // Clear auth errors when switching sections
+    dispatch(clearError());
   };
 
   const handleEditBankDetails = (value) => {
@@ -145,9 +150,15 @@ const Profile = () => {
 
   useEffect(() => {
     getUser();
-  }, []);
+    // Clear any existing auth errors when component mounts
+    dispatch(clearError());
+  }, [dispatch]);
 
   const handleDeactivateAccount = async (values) => {
+    if (!values.currentPassword) {
+      toast.error("Current password is required");
+      return;
+    }
     console.log("DeleteFormik", DeleteFormik);
     await dispatch(deleteAcc(DeleteFormik?.values?.currentPassword)).then(
       (response) => {
@@ -244,24 +255,28 @@ const Profile = () => {
     }),
     onSubmit: async (values) => {
       try {
-        var token = localStorage.getItem("token");
-        const response = await axios.put(
-          "http://localhost:4000/api/changePassword",
-          {
-            oldPassword: values.currentPassword,
-            newPassword: values.newPassword,
-            confirmPassword: values.confirmPassword,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        alert(response.data.message);
-        formik.resetForm();
+        const result = await dispatch(changePassword({
+          oldPassword: values.currentPassword,
+          newPassword: values.newPassword,
+          confirmPassword: values.confirmPassword,
+        })).unwrap();
+        
+        // Clear any previous errors
+        dispatch(clearError());
+        
+        // Show success message
+        toast.success(result.message || "Password changed successfully!");
+        
+        // Reset form
+        passwordFormik.resetForm();
+        
+        // Reset password visibility states
+        setShowPassword(false);
+        setShowPassword1(false);
+        setShowPassword2(false);
       } catch (error) {
-        console.error("Error changing password:", error.response.data.message);
+        // Error is handled by the Redux slice and displayed via the error state
+        console.error("Error changing password:", error);
       }
     },
   });
@@ -306,7 +321,7 @@ const Profile = () => {
             },
           }
         );
-        alert(response.data.message);
+        toast.success(response.data.message);
         getUser();
         // localStorage.setItem("address", JSON.stringify(values));
       } catch (error) {
@@ -331,10 +346,10 @@ const Profile = () => {
     if (result?.payload?.status === 200) {
       setstep(3); // Move to step 3 (Edit Bank Details)
     } else {
-      alert("Invalid OTP. Please try again.");
+      toast.error("Invalid OTP. Please try again.");
     }
   } else {
-    alert("Please enter the complete 6-digit OTP.");
+    toast.error("Please enter the complete 6-digit OTP.");
   }
 };
 console.log("step", step);
@@ -748,18 +763,7 @@ console.log("step", step);
                   >
                     Change Password
                   </h1>
-                  <form onSubmit={(e) => {
-                    e.preventDefault();
-                    passwordFormik.handleSubmit(e);
-                    if (Object.keys(passwordFormik.errors).length === 0) {
-                      // Reset form after successful submission
-                      passwordFormik.resetForm();
-                      // Reset password visibility states
-                      setShowPassword(false);
-                      setShowPassword1(false);
-                      setShowPassword2(false);
-                    }
-                  }}>
+                  <form onSubmit={passwordFormik.handleSubmit}>
                     <div className="uform_grouppass">
                       <label className="upasslabel" htmlFor="current-password">
                         Current Password
@@ -847,8 +851,14 @@ console.log("step", step);
                       ) : null}
                     </div>
 
-                    <button className="z_button mt-3" type="submit">
-                      Change Password
+                    {error && (
+                      <div className="error" style={{ color: "red", fontSize: "14px", marginTop: "10px" }}>
+                        {error}
+                      </div>
+                    )}
+                    
+                    <button className="z_button mt-3" type="submit" disabled={isLoading}>
+                      {isLoading ? "Changing Password..." : "Change Password"}
                     </button>
                   </form>
                 </div>
@@ -1355,21 +1365,24 @@ console.log("step", step);
                   To continue, Please enter your password.
                 </p>
 
-                <form onSubmit={DeleteFormik.handleSubmit} className="uform_grouppass">
+                <form
+                  onSubmit={e => {
+                    e.preventDefault();
+                    DeleteFormik.handleSubmit();
+                    if (DeleteFormik.errors.currentPassword) {
+                      toast.error(DeleteFormik.errors.currentPassword);
+                    }
+                  }}
+                  className="uform_grouppass"
+                >
                   <label className="upassword_label">Password</label>
-                  {/* <input
-                    type="password"
-                    className="upassword_input"
-                    placeholder="Enter Password"
-                    {...DeleteFormik.getFieldProps("currentPassword")}
-                  /> */}
                   <div className="uinput_containerpass">
                     <input
                       type={showPassword3 ? "text" : "password"}
                       id="current-password"
                       className="upassword_input"
                       placeholder="Enter Password"
-                      {...passwordFormik.getFieldProps("currentPassword")}
+                      {...DeleteFormik.getFieldProps("currentPassword")}
                     />
                     <span
                       style={{

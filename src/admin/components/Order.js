@@ -371,7 +371,7 @@ function Order() {
                   onChange={(e) => setTempDate(e.target.value)}
                 />
               </div>
-              <div className="sp_filter_select">
+              <div className="sp_filter_select mt-3">
                 <p>Status</p>
                 <select
                   value={tempStatus}
@@ -385,8 +385,8 @@ function Order() {
               </div>
             </div>
 
-            <div className="d-flex align-items-center gap-4 justify-content-between ">
-              <div className="sp_filter_btn w-50" onClick={handleCancel}>
+            <div className="d-flex align-items-center gap-sm-4 justify-content-between ">
+              <div className="sp_filter_btn w-sm-50 w-100" onClick={handleCancel}>
                 Cancel
               </div>
               <Link

@@ -112,6 +112,9 @@ function OrderHistory() {
     setFilterMethod("");
     setFilterStatus("");
     setOrderStatus("");
+    setSearchQuery("");
+    setOrders(order || []);
+    setCurrentPage(1);
     handleClose();
   };
   

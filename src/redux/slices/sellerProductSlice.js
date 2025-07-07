@@ -146,21 +146,20 @@ export const getSingleProduct = createAsyncThunk(
 
 export const updateProduct = createAsyncThunk(
     'updateProduct',
-    async (productData, { rejectWithValue, getState }) => {
+    async ({ id, category, subcategory, productName, description, image, fields, variants }, { rejectWithValue, getState }) => {
         try {
-            const state = getState(); // Access Redux state
+            const state = getState();
             const myVariable = state.sellerProduct.singleProduct[0];
-            // console.log('updateProduct', myVariable);
-            // console.log('productData', productData);
             const token = localStorage.getItem('token');
             const formData = new FormData();
-            formData.append('categoryId', productData.category);
-            formData.append('productName', productData.productName);
-            formData.append('description', productData.description);
+            formData.append('categoryId', category);
+            formData.append('subCategoryId', subcategory);
+            formData.append('productName', productName);
+            formData.append('description', description);
 
             const existingImages = [];
-            if (Array.isArray(productData.image)) {
-                productData.image.forEach((imgItem) => {
+            if (Array.isArray(image)) {
+                image.forEach((imgItem) => {
                     if (typeof imgItem === 'string') {
                         existingImages.push(imgItem);
                     } else if (imgItem instanceof FileList) {
@@ -175,37 +174,31 @@ export const updateProduct = createAsyncThunk(
 
             formData.append('existingImages', JSON.stringify(existingImages));
 
-            const specifications = productData.fields.reduce((acc, field) => {
-                acc[field.title] = field.description; // Correct object structure
+            const specifications = fields.reduce((acc, field) => {
+                acc[field.title] = field.description;
                 return acc;
             }, {});
 
             formData.append('specifications', JSON.stringify(specifications));
-            // console.log(productData.variants[0]);
-            for (let pair of formData.entries()) {
-                // console.log(`${pair[0]}:`, pair[1]);
-            }
+
             const config = {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             }
 
-            const response = await axios.put('http://localhost:4000/api/updateProduct/' + myVariable.productData[0]._id, formData, config);
-            // console.log('hey', response.data);
-            // console.log('sss', myVariable)
+            const response = await axios.put('http://localhost:4000/api/updateProduct/' + id, formData, config);
+
             const requests = await axios.put('http://localhost:4000/api/updateProductVarient/' + myVariable._id, {
-                productId: myVariable.productData[0]._id,
-                size: `${productData.variants[0].quantity}${productData.variants[0].unit}`,
-                price: productData.variants[0].price,
-                discount: productData.variants[0].discount
+                productId: id,
+                size: `${variants[0].quantity}${variants[0].unit}`,
+                price: variants[0].price,
+                discount: variants[0].discount
             }, config);
-            // console.log('All responses:', requests.data);
+
         } catch (error) {
             console.log('error:', error);
         }
-
-        // const requests = 
     }
 );
 

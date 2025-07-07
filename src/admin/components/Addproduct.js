@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createProduct, getCategory, getProducts, getSingleProduct, removesingleproduct, updateProduct } from '../../redux/slices/sellerProductSlice';
 import { RiCloseCircleFill } from 'react-icons/ri';
 import { getAllSubcategories } from '../../redux/slices/Subcategory.slice';
+import { updateProductVariant } from '../../redux/slices/productVeriant.Slice';
 
 function Addproduct() {
     const { id } = useParams();
@@ -76,14 +77,37 @@ function Addproduct() {
             });
 
             const existingImageUrls = images.filter(img => typeof img === 'string');
-            if (existingImageUrls.length > 0) {
-                formData.append('existingImages', JSON.stringify(existingImageUrls));
-            }
+            formData.append('existingImages', JSON.stringify(existingImageUrls));
 
             if (id) {
-                dispatch(updateProduct({ id, productData: formData })).then(() => { 
+                // Get productId and variantId from your loaded redux data
+                const productId = singleProductFromRedux?.[0]?.productData?.[0]?._id || id; // fallback to id if not found
+                const variantId = singleProductFromRedux?.[0]?._id;
+
+                // Update product (use productId)
+                dispatch(updateProduct({
+                    id: productId,
+                    category: values.category,
+                    subcategory: values.subcategory,
+                    productName: values.productName,
+                    description: values.description,
+                    images: values.image,
+                    fields: values.fields,
+                    variants: values.variants
+                })).then(() => { 
                     dispatch(getProducts()) 
                 });
+
+                // Update variant (use variantId)
+                if (variantId) {
+                    const variant = values.variants[0];
+                    dispatch(updateProductVariant({
+                        id: variantId,
+                        price: variant.price,
+                        discount: variant.discount,
+                        size: `${variant.quantity}${variant.unit}`,
+                    }));
+                }
             } else {
                 dispatch(createProduct(formData)).then(() => { 
                     dispatch(getProducts()) 

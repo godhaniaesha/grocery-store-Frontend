@@ -179,7 +179,7 @@ function Product() {
                 <div ><h4>Product</h4>
                     <Link className='sp_text_grey' to={'/seller/home'}>Dashboard</Link> / <Link>Product</Link>
                 </div>
-                <div className="sp_filter_both d-flex d-sm-flex align-items-center justify-lg-content-end justify-content-start">
+                <div className="sp_filter_both d-flex flex-sm-row flex-column  d-sm-flex align-items-sm-center justify-lg-content-end justify-content-start">
                     <div className="sp_search">
                         <BiSearch className="sp_sear_icon" />
                         <input
@@ -190,10 +190,10 @@ function Product() {
                             onChange={(e) => { handleFilter(e.target.value) }}
                         />
                     </div>
-                    <div className="d-flex justify-content-md-center align-items-center justify-content-between ">
-                        <div className="sp_filter_btn sp_linear1" onClick={() => { handleShow() }}><RiFilter2Fill className="mx-2" /> Filter</div>
+                    <div className="d-flex justify-content-md-center align-items-sm-center justify-content-between ">
+                        <div className="sp_filter_btn sp_linear1 w-sm-auto w-100" onClick={() => { handleShow() }}><RiFilter2Fill className="mx-2" /> Filter</div>
                         {/* <Link to="/admin/add-product" className="sp_add_btn"> */}
-                        <Link to="/seller/Add-product" className="sp_add_btn mx-2 gap-1 d-flex justify-content-center align-items-center fw-medium">
+                        <Link to="/seller/Add-product" className="sp_add_btn mx-md-2 gap-1 px-2 d-flex justify-content-center  w-sm-auto w-100 align-items-center fw-medium">
                             <span> <FiPlus /> </span>Add
                         </Link>
                     </div>
@@ -392,13 +392,13 @@ function Product() {
                     </div>
 
                     {/* Buttons */}
-                    <div className="d-flex align-items-center gap-4 justify-content-between">
-                        <div className="sp_filter_btn w-50 mt-0" onClick={removefilter}>Cancel</div>
+                    <div className="d-flex align-items-center gap-md-4 justify-content-between">
+                        <div className="sp_filter_btn w-sm-50 w-100 mt-0" onClick={removefilter}>Cancel</div>
                         <Link onClick={handleFilter} className="z_button d-flex justify-content-center align-items-center w-50">
                             Apply
                         </Link>
                     </div>
-                </Offcanvas.Body>
+                </Offcanvas.Body>m
             </Offcanvas>
 
 
