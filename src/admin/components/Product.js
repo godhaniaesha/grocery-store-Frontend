@@ -40,11 +40,20 @@ function Product() {
 
     const [productData, setProductData] = useState([]);
     useEffect(() => {
-        const product = productData1.flatMap((product, index) =>
-            // console.log(product.subcategoryData, "product")
-            product.productVarientData
+        // Check if productData1 is an array before processing
+        if (!Array.isArray(productData1)) {
+            setProductData([]);
+            return;
+        }
 
-                .filter(data => data.sellerId === localStorage.getItem('userId'))
+        const product = productData1.flatMap((product, index) => {
+            // Check if productVarientData exists and is an array
+            if (!product.productVarientData || !Array.isArray(product.productVarientData)) {
+                return [];
+            }
+
+            return product.productVarientData
+                .filter(data => data && data.sellerId === localStorage.getItem('userId'))
                 .map((data, id) => ({
                     id: id,
                     image: product.images?.[0] ?? 'default.jpg',
@@ -54,9 +63,12 @@ function Product() {
                     unit: data.size,
                     status: data?.status || false,
                     price: data.price,
-                    variantId: data._id
-                }))
-        );
+                    variantId: data._id,
+                    createdAt: data.createdAt // <-- make sure this exists
+                }));
+        });
+        // Sort by createdAt descending (newest first)
+        product.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setProductData(product)
     }, [productData1, subcategoryData])
     useEffect(() => {
@@ -84,6 +96,8 @@ function Product() {
     const [currentPage, setCurrentPage] = useState(1);
     const [currentData, setCurrentData] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
+    console.log(currentData, "currentData");
+
     const itemsPerPage = 10;
     useEffect(() => {
         setFilteredData(productData);
@@ -213,57 +227,58 @@ function Product() {
                             <th>Action</th>
                         </tr>
                     </thead>
-                    {currentData.length > 0 ? <tbody>
-                        {currentData.map((ele, index) => (
-                            <tr key={(currentPage - 1) * itemsPerPage + index}>
-                                <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                                <td className="d-flex align-items-center">
-                                    <div className="sp_table_img">
-                                        <img src={'http://localhost:4000/' + ele?.image} alt="Product" />
-                                    </div>
-                                    {ele?.productName}
-                                </td>
-                                <td>{ele?.categoryName}</td>
-                                <td>{ele?.subcategoryName}</td>
-                                <td>{ele?.unit}</td>
-                                <td>${ele?.price}</td>
-                                <td className="sp_status1">
-                                    <label className="sp_switch">
-                                        <input type="checkbox" checked={ele?.status === true ? true : false} onChange={(e) => { updateStatus(ele.variantId, e.target.checked) }} />
-                                        <span className="slider round"></span>
-                                    </label>
-                                    <p>{ele.status}</p>
-                                </td>
-                                <td className="sp_td_action">
-                                    <div className="d-flex align-items-center">
-                                        <Link to={'/seller/viewproducts/' + ele.variantId} className="sp_table_action d-flex justify-content-center align-items-center">
-                                            <img src={require('../../img/s_img/view.png')} alt="View" />
-                                        </Link>
-                                        {/* <Link to={`/seller/Edit-product/` + ele.variantId} className="sp_table_action d-flex justify-content-center align-items-center" >
+                    {currentData.length > 0 ?
+                        <tbody>
+                            {currentData.map((ele, index) => (
+                                <tr key={(currentPage - 1) * itemsPerPage + index}>
+                                    <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                                    <td className="d-flex align-items-center">
+                                        <div className="sp_table_img">
+                                            <img src={'http://localhost:4000/' + ele?.image} alt="Product" />
+                                        </div>
+                                        {ele?.productName}
+                                    </td>
+                                    <td>{ele?.categoryName}</td>
+                                    <td>{ele?.subcategoryName}</td>
+                                    <td>{ele?.unit}</td>
+                                    <td>${ele?.price}</td>
+                                    <td className="sp_status1">
+                                        <label className="sp_switch">
+                                            <input type="checkbox" checked={ele?.status === true} onChange={(e) => { updateStatus(ele.variantId, e.target.checked) }} />
+                                            <span className="slider round"></span>
+                                        </label>
+                                        <p>{ele.status}</p>
+                                    </td>
+                                    <td className="sp_td_action">
+                                        <div className="d-flex align-items-center">
+                                            <Link to={'/seller/viewproducts/' + ele.variantId} className="sp_table_action d-flex justify-content-center align-items-center">
+                                                <img src={require('../../img/s_img/view.png')} alt="View" />
+                                            </Link>
+                                            {/* <Link to={`/seller/Edit-product/` + ele.variantId} className="sp_table_action d-flex justify-content-center align-items-center" >
                                             <img
                                                 src={require("../../img/s_img/edit.png")}
                                                 alt="Edit Icon"
                                             />
                                         </Link> */}
-                                        {/* // ... existing code ... */}
-                                        <Link
-                                            to={`/seller/Edit-product/` + ele.variantId}
-                                            className="sp_table_action d-flex justify-content-center align-items-center"
-                                            onClick={() => {
-                                                console.log('Edit row data:', ele); // Log the row data
-                                            }}
-                                        >
-                                            <img src={require("../../img/s_img/edit.png")} alt="Edit Icon" />
-                                        </Link>
-{/* // ... existing code ... */}
-                                        <Link className="sp_table_action d-flex justify-content-center align-items-center" onClick={() => { setModalShow(true), setDeleteId(ele.variantId) }}>
-                                            <img src={require('../../img/s_img/delete.png')} alt="Delete" />
-                                        </Link>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody> :
+                                            {/* // ... existing code ... */}
+                                            <Link
+                                                to={`/seller/Edit-product/` + ele.variantId}
+                                                className="sp_table_action d-flex justify-content-center align-items-center"
+                                                onClick={() => {
+                                                    console.log('Edit row data:', ele); // Log the row data
+                                                }}
+                                            >
+                                                <img src={require("../../img/s_img/edit.png")} alt="Edit Icon" />
+                                            </Link>
+                                            {/* // ... existing code ... */}
+                                            <Link className="sp_table_action d-flex justify-content-center align-items-center" onClick={() => { setModalShow(true), setDeleteId(ele.variantId) }}>
+                                                <img src={require('../../img/s_img/delete.png')} alt="Delete" />
+                                            </Link>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody> :
                         <div className="sp_404">
                             <div className="d-flex justify-content-center align-items-center">
                                 <img src={require('../../img/s_img/404.png')}></img>

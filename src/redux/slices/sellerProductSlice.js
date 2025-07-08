@@ -30,10 +30,10 @@ export const getProducts = createAsyncThunk(
                     'Authorization': `Bearer ${token}`
                 }
             }
-        // console.log('is callled');
+            // console.log('is callled');
             const response = await axios.get('http://localhost:4000/api/allProducts', config);
             console.log("is called", response.data);
-            
+
             return response.data;
         }
         catch (error) {
@@ -62,50 +62,17 @@ export const getCategory = createAsyncThunk(
 
 export const createProduct = createAsyncThunk(
     'createProduct',
-    async (productData, { rejectWithValue }) => {
+    async (formData, { rejectWithValue }) => {
         try {
-            // console.log('productData', productData);
             const token = localStorage.getItem('token');
-            const formData = new FormData();
-            formData.append('categoryId', productData.category);
-            formData.append('subCategoryId', productData.subcategory);
-            formData.append('productName', productData.productName);
-            formData.append('description', productData.description);
-
-            productData.image.forEach((fileList) => {
-                if (fileList.length > 0) {
-                    formData.append('images', fileList[0]); // Only first file
-                }
-
-            });
-            const specifications = productData.fields.reduce((acc, field) => {
-                acc[field.title] = field.description; // Correct object structure
-                return acc;
-            }, {});
-
-            formData.append('specifications', JSON.stringify(specifications));
-            // console.log(productData);
-            // console.log(formData)
             const config = {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
                 }
             }
-            const response = await axios.post('http://localhost:4000/api/createProduct', formData, config);
-            console.log(response);
-            
-            const requests = productData.variants.map(variant => {
-                return axios.post('http://localhost:4000/api/createProductVarient', {
-                    productId: response.data.data._id,
-                    size: `${variant.quantity}${variant.unit}`,
-                    price: variant.price,
-                    discount: variant.discount,
-                    sellerId: localStorage.getItem('userId')
-                }, config);
-            });
-            const responses = await Promise.all(requests); // Wait for all API calls
-            // console.log('All responses:', responses.map(res => res.data));
-            formData.append('packSizes', JSON.stringify(packSizes));
+            const response = await axios.post('http://localhost:4000/api/createProducts', formData, config);
+            // ... handle variants if needed ...
             return response.data;
         }
         catch (error) {
@@ -146,7 +113,7 @@ export const getSingleProduct = createAsyncThunk(
 
 export const updateProduct = createAsyncThunk(
     'updateProduct',
-    async ({ id, category, subcategory, productName, description, image, fields, variants }, { rejectWithValue, getState }) => {
+    async ({ id, variantId, category, subcategory, productName, description, image, fields, variants }, { rejectWithValue, getState }) => {
         try {
             const state = getState();
             const myVariable = state.sellerProduct.singleProduct[0];
@@ -158,15 +125,16 @@ export const updateProduct = createAsyncThunk(
             formData.append('description', description);
 
             const existingImages = [];
+            const newImages = [];
+            
             if (Array.isArray(image)) {
                 image.forEach((imgItem) => {
                     if (typeof imgItem === 'string') {
+                        // This is an existing image path
                         existingImages.push(imgItem);
-                    } else if (imgItem instanceof FileList) {
-                        for (let i = 0; i < imgItem.length; i++) {
-                            formData.append('images', imgItem[i]);
-                        }
                     } else if (imgItem instanceof File) {
+                        // This is a new image file
+                        newImages.push(imgItem);
                         formData.append('images', imgItem);
                     }
                 });
@@ -189,15 +157,19 @@ export const updateProduct = createAsyncThunk(
 
             const response = await axios.put('http://localhost:4000/api/updateProduct/' + id, formData, config);
 
-            const requests = await axios.put('http://localhost:4000/api/updateProductVarient/' + myVariable._id, {
+            // Use the passed variantId, not myVariable._id
+            await axios.put('http://localhost:4000/api/updateProductVarient/' + variantId, {
                 productId: id,
                 size: `${variants[0].quantity}${variants[0].unit}`,
                 price: variants[0].price,
                 discount: variants[0].discount
             }, config);
 
+            return { success: true };
+
         } catch (error) {
             console.log('error:', error);
+            return rejectWithValue(error.response ? error.response.data : error.message);
         }
     }
 );
@@ -228,7 +200,7 @@ export const updateProductStats = createAsyncThunk(
     'updateProductStats',
     async ({ id, value }, { rejectWithValue, getState }) => {
         // console.log('id',id);
-        console.log('value',value)
+        console.log('value', value)
         const token = localStorage.getItem('token');
         const config = {
             headers: {
@@ -240,6 +212,26 @@ export const updateProductStats = createAsyncThunk(
         }, config);
     }
 )
+
+export const createProductVariant = createAsyncThunk(
+    'createProductVariant',
+    async (variantData, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+            const response = await axios.post('http://localhost:4000/api/createProductVarient', variantData, config);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response ? error.response.data : error.message);
+        }
+    }
+);
+
 const productSlice = createSlice({
     name: 'product',
     initialState: {
@@ -257,11 +249,11 @@ const productSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(getuserData.fulfilled, (state, action) => {
             state.userData = action?.payload?.data;
-            // console.log('userData get successfully', action?.payload?.data)
+            console.log('userData get successfully', action?.payload?.data)
         })
             .addCase(getProducts.fulfilled, (state, action) => {
                 state.productData = action?.payload?.data;
-                // console.log('Products fetched successfully', action.payload.data);
+                console.log('Products fetched successfully', action.payload.data);
             })
             .addCase(getProducts.rejected, (state, action) => {
                 console.error(action.payload);
@@ -274,6 +266,11 @@ const productSlice = createSlice({
                 console.error(action.payload);
             })
             .addCase(createProduct.fulfilled, (state, action) => {
+                console.log('createProduct', action.payload); // Log action.payload
+                // Optionally, update productData if you want to add the new product to the list
+                if (action.payload && action.payload.data) {
+                    state.productData = [...state.productData, action.payload.data];
+                }
                 // state.subcategoryData = action?.payload?.data;
                 // console.log('Category fetched successfully', action.payload.data);
                 // handleAddVariant();
@@ -285,6 +282,10 @@ const productSlice = createSlice({
                 state.viewProduct = action?.payload?.data;
             }).addCase(removesingleproduct.fulfilled, (state, action) => {
                 state.singleProduct = []; // Clear the array
+            }).addCase(updateProduct.fulfilled, (state, action) => {
+                console.log('Product updated successfully');
+            }).addCase(updateProduct.rejected, (state, action) => {
+                console.error('Product update failed:', action.payload);
             });
     }
 })

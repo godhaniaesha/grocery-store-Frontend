@@ -5,7 +5,7 @@ import UploadImage from '../../img/Kassets/UploadImage.png';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { createProduct, getCategory, getProducts, getSingleProduct, removesingleproduct, updateProduct } from '../../redux/slices/sellerProductSlice';
+import { createProduct, createProductVariant, getCategory, getProducts, getSingleProduct, removesingleproduct, updateProduct } from '../../redux/slices/sellerProductSlice';
 import { RiCloseCircleFill } from 'react-icons/ri';
 import { getAllSubcategories } from '../../redux/slices/Subcategory.slice';
 import { updateProductVariant } from '../../redux/slices/productVeriant.Slice';
@@ -61,56 +61,57 @@ function Addproduct() {
         }),
         onSubmit: async (values) => {
             const formData = new FormData();
-            
-            Object.keys(values).forEach(key => {
-                if (key === 'image') {
-                    values.image.forEach(file => {
-                        if (file instanceof File) {
-                            formData.append('image', file);
-                        }
-                    });
-                } else if (key === 'variants' || key === 'fields') {
-                    formData.append(key, JSON.stringify(values[key]));
-                } else {
-                    formData.append(key, values[key]);
-                }
+            formData.append('categoryId', values.category);
+            formData.append('subCategoryId', values.subcategory);
+            formData.append('productName', values.productName);
+            formData.append('description', values.description);
+
+            // Append images
+            values.image.forEach((file) => {
+                formData.append('images', file);
             });
 
-            const existingImageUrls = images.filter(img => typeof img === 'string');
-            formData.append('existingImages', JSON.stringify(existingImageUrls));
+            // Add specifications (fields)
+            const specifications = values.fields.reduce((acc, field) => {
+                acc[field.title] = field.description;
+                return acc;
+            }, {});
+            formData.append('specifications', JSON.stringify(specifications));
 
             if (id) {
-                // Get productId and variantId from your loaded redux data
-                const productId = singleProductFromRedux?.[0]?.productData?.[0]?._id || id; // fallback to id if not found
-                const variantId = singleProductFromRedux?.[0]?._id;
-
-                // Update product (use productId)
+                // Find productId from loaded data
+                const product = singleProductFromRedux[0];
+                const productId = product?.productData?.[0]?._id;
                 dispatch(updateProduct({
                     id: productId,
+                    variantId: id, // id from URL param
                     category: values.category,
                     subcategory: values.subcategory,
                     productName: values.productName,
                     description: values.description,
-                    images: values.image,
+                    image: values.image,
                     fields: values.fields,
                     variants: values.variants
                 })).then(() => { 
                     dispatch(getProducts()) 
                 });
-
-                // Update variant (use variantId)
-                if (variantId) {
-                    const variant = values.variants[0];
-                    dispatch(updateProductVariant({
-                        id: variantId,
-                        price: variant.price,
-                        discount: variant.discount,
-                        size: `${variant.quantity}${variant.unit}`,
-                    }));
-                }
             } else {
-                dispatch(createProduct(formData)).then(() => { 
-                    dispatch(getProducts()) 
+                // Create new product
+                dispatch(createProduct(formData)).then((res) => {
+                    if (res.payload && res.payload.data) {
+                        // After product is created, create variants
+                        const productId = res.payload.data._id;
+                        values.variants.forEach(variant => {
+                            dispatch(createProductVariant({
+                                productId: productId,
+                                size: `${variant.quantity}${variant.unit}`,
+                                price: variant.price,
+                                discount: variant.discount || 0,
+                                sellerId: localStorage.getItem('userId')
+                            }));
+                        });
+                    }
+                    dispatch(getProducts());
                 });
             }
 
@@ -125,14 +126,18 @@ function Addproduct() {
     // Effect to fetch single product data when ID is present
     useEffect(() => {
         if (id) {
-            // Always fetch single product when id exists (even on page reload)
-            dispatch(getSingleProduct(id));
-            setIsDataLoaded(false); // Reset data loaded flag
-        } else {
-            // Clear product data when no id (add mode)
+            // Clear previous product data immediately
             dispatch(removesingleproduct());
-            setIsDataLoaded(true); // Set as loaded for add mode
-            // Reset form for add mode
+            setIsDataLoaded(false);
+            formik.resetForm();
+            setAddVarient([{ variantName: "", price: "", unit: "KG", quantity: "" }]);
+            setFields([]);
+            setImages([]);
+            // Now fetch the new product
+            dispatch(getSingleProduct(id));
+        } else {
+            dispatch(removesingleproduct());
+            setIsDataLoaded(true);
             formik.resetForm();
             setAddVarient([{ variantName: "", price: "", unit: "KG", quantity: "" }]);
             setFields([]);
@@ -142,8 +147,14 @@ function Addproduct() {
 
     // Effect to populate formik values when singleProductFromRedux is available
     useEffect(() => {
-        if (id && singleProductFromRedux && !isDataLoaded) {
-            console.log("Data to fill edit form:", singleProductFromRedux); // Log the data
+        // Only fill the form if the loaded product's id matches the URL param id
+        if (
+            id &&
+            singleProductFromRedux &&
+            singleProductFromRedux.length > 0 &&
+            singleProductFromRedux[0]?._id === id &&
+            !isDataLoaded
+        ) {
             const product = singleProductFromRedux[0];
             if (product) {
                 let numbers = product.size.match(/\d+/g)?.join('') || '';
@@ -167,7 +178,7 @@ function Addproduct() {
                     subcategory: product.productData[0].subCategoryId || '', // Ensure subcategory is set
                     productName: product.productData[0].productName,
                     description: product.productData[0].description,
-                    image: [], // Keep empty for edit mode
+                    image: product.productData[0].images || [], // Set existing images
                     variants: [{
                         price: product.price,
                         discount: product.discount || 0,
@@ -195,7 +206,15 @@ function Addproduct() {
     }, [singleProductFromRedux, id, isDataLoaded]);
 
     // Show loading if we're in edit mode but data isn't loaded yet
-    if (id && !isDataLoaded) {
+    if (
+        id &&
+        (
+            !singleProductFromRedux ||
+            singleProductFromRedux.length === 0 ||
+            singleProductFromRedux[0]?._id !== id ||
+            !isDataLoaded
+        )
+    ) {
         return (
             <section className='sp_container x_err'>
                 <div className="d-xl-flex justify-content-between align-item-center">
@@ -265,7 +284,10 @@ function Addproduct() {
             const newImageFiles = Array.from(files);
             const imageArray = [...images, ...newImageFiles.map((file) => URL.createObjectURL(file))];
             setImages(imageArray);
-            formik.setFieldValue("image", [...formik.values.image, ...newImageFiles]);
+            
+            // Combine existing images with new files
+            const currentFormikImages = formik.values.image || [];
+            formik.setFieldValue("image", [...currentFormikImages, ...newImageFiles]);
         }
     };
 
@@ -274,11 +296,13 @@ function Addproduct() {
         const filteredImages = images.filter((_, i) => i !== index);
         setImages(filteredImages);
         
-        const filteredFormikImages = formik.values.image.filter((_, i) => i !== index);
+        // Handle both existing images (strings) and new files
+        const currentFormikImages = formik.values.image || [];
+        const filteredFormikImages = currentFormikImages.filter((_, i) => i !== index);
         formik.setFieldValue("image", filteredFormikImages);
     };
 
-    const selectedSubcategory = subcategoriesData?.find(
+    const selectedSubcategory = (subcategoriesData || [])?.find(
         sub => sub._id === formik.values.subcategory
     );
       const selectedSubcategoryName = selectedSubcategory ? selectedSubcategory.subCategoryName : '';
@@ -348,7 +372,7 @@ function Addproduct() {
                                             onBlur={formik.handleBlur}
                                         >
                                             <option value="">Select</option>
-                                            {categoryData?.map((category) => {
+                                            {(categoryData || []).map((category) => {
                                                 return (<option key={category._id} value={category._id}>{category.categoryName}</option>)
                                             })}
                                         </Form.Select>
@@ -372,8 +396,8 @@ function Addproduct() {
                                             onBlur={formik.handleBlur}
                                         >
                                             <option value="">{selectedSubcategoryName || 'Select'}</option>
-                                            {subcategoriesData
-                                                ?.filter(sub => sub.categoryId === formik.values.category)
+                                            {(subcategoriesData || [])
+                                                .filter(sub => sub.categoryId === formik.values.category)
                                                 .map((subcategory) => (
                                                     <option key={subcategory._id} value={subcategory._id}>
                                                         {subcategory.subCategoryName}
