@@ -2506,6 +2506,9 @@
   .x_about_content_wrapper {
     flex-direction: column;
   }
+  .x_testimonial_slider .swiper-slide-active {
+    transform: scale(1) !important;
+  }
 }
 
 /* AboutUs end */
@@ -3506,6 +3509,10 @@
   .x_none_10 {
     display: none;
   }
+
+  .x_testimonial_header {
+    margin-bottom: 15px !important;
+  }
 }
 @media screen and (max-width: 767px) {
   .x_ship_tex {
@@ -3583,7 +3590,99 @@
   .g_apply_btn {
     margin-top: 5px;
   }
+
+  .x_testimonial_text {
+    padding: 0 0px !important;
+  }
+  .x_quote_right {
+    bottom: -44px !important;
+  }
   /* .g_coupon_section{
     display: block !important ;
   } */
+}
+
+.x_whyus-modern {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 32px;
+  margin-top: 30px;
+}
+
+.x_feature_card_modern {
+  background: #fff;
+  /* border-radius: 18px; */
+  box-shadow: 0 4px 24px rgba(44, 97, 69, 0.10);
+  padding: 32px 18px 24px 18px;
+  text-align: center;
+  transition: transform 0.18s, box-shadow 0.18s;
+  border: 1.5px solid #e8f5e9;
+  position: relative;
+  overflow: hidden;
+}
+.x_feature_card_modern:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 8px 32px rgba(44, 97, 69, 0.18);
+  border-color: #2c6145;
+}
+
+.x_feature_icon_wrap {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #e8f5e9 60%, #c8e6c9 100%);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(44, 97, 69, 0.10);
+  font-size: 2rem;
+  color: #2c6145;
+  transition: background 0.2s;
+}
+.x_feature_card_modern:hover .x_feature_icon_wrap {
+  background: linear-gradient(135deg, #2c6145 60%, #43a047 100%);
+  color: #fff;
+}
+
+.x_feature_title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #2c6145;
+  margin-bottom: 8px;
+  margin-top: 0;
+  letter-spacing: 0.01em;
+}
+.x_feature_description {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .x_whyus-modern {
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+}
+@media (max-width: 600px) {
+  .x_whyus-modern {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .x_feature_card_modern {
+    padding: 18px 6px 14px 6px;
+  }
+  .x_feature_icon_wrap {
+    width: 48px;
+    height: 48px;
+    font-size: 1.4rem;
+  }
+  .x_feature_title {
+    font-size: 1rem;
+  }
+  .x_feature_description {
+    font-size: 0.95rem;
+  }
 }

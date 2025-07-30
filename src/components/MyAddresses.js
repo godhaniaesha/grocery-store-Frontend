@@ -14,6 +14,7 @@ const MyAddresses = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [addressToDelete, setAddressToDelete] = useState(null);
   const [localAddresses, setLocalAddresses] = useState([]); // Local state for immediate UI updates
+  const [editErrors, setEditErrors] = useState({}); // State for edit form validation errors
   const [newAddress, setNewAddress] = useState({
     saveAddressAs: '',
     firstName: '',
@@ -92,11 +93,68 @@ const MyAddresses = () => {
 
   const handleEdit = (address) => {
     setSelectedAddress(address);
+    setEditErrors({}); // Clear any previous validation errors
     setShowEditModal(true);
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    const errors = {};
+    
+    if (!selectedAddress.saveAddressAs?.trim()) {
+      errors.saveAddressAs = 'Address type is required';
+    }
+    
+    if (!selectedAddress.firstName?.trim()) {
+      errors.firstName = 'First name is required';
+    }
+    
+    if (!selectedAddress.lastName?.trim()) {
+      errors.lastName = 'Last name is required';
+    }
+    
+    if (!selectedAddress.phone?.trim()) {
+      errors.phone = 'Phone number is required';
+    } else if (!/^[\+]?[1-9][\d]{0,15}$/.test(selectedAddress.phone.replace(/\s/g, ''))) {
+      errors.phone = 'Please enter a valid phone number';
+    }
+    
+    if (!selectedAddress.email?.trim()) {
+      errors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(selectedAddress.email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+    
+    if (!selectedAddress.address1?.trim()) {
+      errors.address1 = 'Address line 1 is required';
+    }
+    
+    if (!selectedAddress.city?.trim()) {
+      errors.city = 'City is required';
+    }
+    
+    if (!selectedAddress.state?.trim()) {
+      errors.state = 'State is required';
+    }
+    
+    if (!selectedAddress.country?.trim()) {
+      errors.country = 'Country is required';
+    }
+    
+    if (!selectedAddress.postalCode?.trim()) {
+      errors.postalCode = 'Postal code is required';
+    } else if (!/^[A-Za-z0-9\s-]{3,10}$/.test(selectedAddress.postalCode)) {
+      errors.postalCode = 'Please enter a valid postal code';
+    }
+    
+    // If there are validation errors, don't proceed
+    if (Object.keys(errors).length > 0) {
+      setEditErrors(errors);
+      return;
+    }
+    
     try {
       const result = await dispatch(updateAddress({
         addressId: selectedAddress._id,
@@ -111,6 +169,7 @@ const MyAddresses = () => {
       );
       
       setShowEditModal(false);
+      setEditErrors({});
       // Optional: Refresh from server to ensure consistency
       // dispatch(getUserAddresses());
     } catch (error) {
@@ -249,7 +308,10 @@ const MyAddresses = () => {
       </Modal>
 
       {/* Edit Modal */}
-      <Modal className='ps-0' show={showEditModal} onHide={() => setShowEditModal(false)}>
+      <Modal className='ps-0' show={showEditModal} onHide={() => {
+        setShowEditModal(false);
+        setEditErrors({}); // Clear validation errors when modal is closed
+      }}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Address</Modal.Title>
         </Modal.Header>
@@ -262,7 +324,11 @@ const MyAddresses = () => {
                 name="saveAddressAs"
                 value={selectedAddress?.saveAddressAs || ''}
                 onChange={handleInputChange}
+                isInvalid={!!editErrors.saveAddressAs}
               />
+              <Form.Control.Feedback type="invalid">
+                {editErrors.saveAddressAs}
+              </Form.Control.Feedback>
             </Form.Group>
             <Row>
               <Col md={6}>
@@ -273,7 +339,11 @@ const MyAddresses = () => {
                     name="firstName"
                     value={selectedAddress?.firstName || ''}
                     onChange={handleInputChange}
+                    isInvalid={!!editErrors.firstName}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {editErrors.firstName}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col md={6}>
@@ -284,7 +354,11 @@ const MyAddresses = () => {
                     name="lastName"
                     value={selectedAddress?.lastName || ''}
                     onChange={handleInputChange}
+                    isInvalid={!!editErrors.lastName}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {editErrors.lastName}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -295,7 +369,11 @@ const MyAddresses = () => {
                 name="phone"
                 value={selectedAddress?.phone || ''}
                 onChange={handleInputChange}
+                isInvalid={!!editErrors.phone}
               />
+              <Form.Control.Feedback type="invalid">
+                {editErrors.phone}
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>
@@ -304,7 +382,11 @@ const MyAddresses = () => {
                 name="email"
                 value={selectedAddress?.email || ''}
                 onChange={handleInputChange}
+                isInvalid={!!editErrors.email}
               />
+              <Form.Control.Feedback type="invalid">
+                {editErrors.email}
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Address Line 1</Form.Label>
@@ -313,7 +395,11 @@ const MyAddresses = () => {
                 name="address1"
                 value={selectedAddress?.address1 || ''}
                 onChange={handleInputChange}
+                isInvalid={!!editErrors.address1}
               />
+              <Form.Control.Feedback type="invalid">
+                {editErrors.address1}
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Address Line 2</Form.Label>
@@ -333,7 +419,11 @@ const MyAddresses = () => {
                     name="city"
                     value={selectedAddress?.city || ''}
                     onChange={handleInputChange}
+                    isInvalid={!!editErrors.city}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {editErrors.city}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col md={6}>
@@ -344,7 +434,11 @@ const MyAddresses = () => {
                     name="state"
                     value={selectedAddress?.state || ''}
                     onChange={handleInputChange}
+                    isInvalid={!!editErrors.state}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {editErrors.state}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -357,7 +451,11 @@ const MyAddresses = () => {
                     name="country"
                     value={selectedAddress?.country || ''}
                     onChange={handleInputChange}
+                    isInvalid={!!editErrors.country}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {editErrors.country}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col md={6}>
@@ -368,7 +466,11 @@ const MyAddresses = () => {
                     name="postalCode"
                     value={selectedAddress?.postalCode || ''}
                     onChange={handleInputChange}
+                    isInvalid={!!editErrors.postalCode}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {editErrors.postalCode}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>

@@ -909,20 +909,77 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                     </Accordion.Header>
                                     <Accordion.Body className="z_filter-group-content">
                                         <div className="z_radio-group">
-                                            <label className="z_radio-label">
-                                                <input type="radio" name="discount" className="z_radio-input" />
+                                            <label
+                                                className="z_radio-label"
+                                                onClick={() => {
+                                                    setSelectedDiscount('');
+                                                    handleFilterClose();
+                                                }}
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    name="discount"
+                                                    className="z_radio-input"
+                                                    checked={!selectedDiscount}
+                                                    readOnly
+                                                />
                                                 <span className="z_radio-custom"></span>
-                                                10% and above
+                                                All Discounts
                                             </label>
-                                            <label className="z_radio-label">
-                                                <input type="radio" name="discount" className="z_radio-input" />
+                                            <label
+                                                className="z_radio-label"
+                                                onClick={() => {
+                                                    setSelectedDiscount('10-15');
+                                                    handleFilterClose();
+                                                }}
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    name="discount"
+                                                    className="z_radio-input"
+                                                    checked={selectedDiscount === '10-15'}
+                                                    readOnly
+                                                />
                                                 <span className="z_radio-custom"></span>
-                                                20% and above
+                                                10% - 15%
                                             </label>
-                                            <label className="z_radio-label">
-                                                <input type="radio" name="discount" className="z_radio-input" />
+                                            <label
+                                                className="z_radio-label"
+                                                onClick={() => {
+                                                    setSelectedDiscount('15-25');
+                                                    handleFilterClose();
+                                                }}
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    name="discount"
+                                                    className="z_radio-input"
+                                                    checked={selectedDiscount === '15-25'}
+                                                    readOnly
+                                                />
                                                 <span className="z_radio-custom"></span>
-                                                30% and above
+                                                15% - 25%
+                                            </label>
+                                            <label
+                                                className="z_radio-label"
+                                                onClick={() => {
+                                                    setSelectedDiscount('25+');
+                                                    handleFilterClose();
+                                                }}
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    name="discount"
+                                                    className="z_radio-input"
+                                                    checked={selectedDiscount === '25+'}
+                                                    readOnly
+                                                />
+                                                <span className="z_radio-custom"></span>
+                                                More than 25%
                                             </label>
                                         </div>
                                     </Accordion.Body>
@@ -1056,11 +1113,11 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                 <h4 className="mb-3">{selectedProduct.name}</h4>
 
                                                 {/* <div className="z_rating-container mb-4">
-                        {renderStars(4.5)}
-                        <span className="z_rating-text ms-2">
-                          (4.5 customer review)
-                        </span>
-                      </div> */}
+                                                      {renderStars(4.5)}
+                                                      <span className="z_rating-text ms-2">
+                                                        (4.5 customer review)
+                                                      </span>
+                                                </div> */}
 
                                                 <div className="mb-4">
                                                     <div className="d-flex align-items-center gap-2">
@@ -1080,7 +1137,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                 {/* // In the Modal section, update the quantity display: */}
                                                 <div className="z_modal-quantity-container">
                                                     <div className="z_modal-quantity-selector">
-                                                      {/* // ...inside your Modal... */}
+                                                        {/* // ...inside your Modal... */}
                                                         <button
                                                             className="z_modal-quantity-btn"
                                                             onClick={() => handleModalQuantityChange(-1)}

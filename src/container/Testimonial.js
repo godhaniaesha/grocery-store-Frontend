@@ -50,7 +50,7 @@ export default function Testimonial() {
   return (
     <div className="x_testimonial_section">
       <div className="a_header_container py-5">
-      <div className="x_testimonial_header text-center mb-5">
+      <div className="x_testimonial_header text-center ">
           {/* <h5 className="x_testimonial_subtitle">Testimonial</h5>
           <h2 className="x_testimonial_title">Our Clients Say!!!</h2> */}
           <h5 className="x_testimonial_subtitle">Reviews</h5>
