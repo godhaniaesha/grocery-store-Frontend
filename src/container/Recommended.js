@@ -211,7 +211,7 @@ function Recommended() {
                 </div>
 
                 <div className="row">
-                    {filteredProducts.map((product, index) => (
+                    {(selectedCategory === 'All' ? filteredProducts.slice(0, 30) : filteredProducts).map((product, index) => (
                         <div key={index} className="col-xl-2 col-lg-4 col-md-3 col-sm-6 mb-4">
                             <Card className="z_product-card">
                                 <div className="z_product-image-container">

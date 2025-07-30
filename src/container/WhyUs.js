@@ -1,5 +1,6 @@
 import React from 'react';
-import { FaTruck, FaLeaf, FaRegClock, FaShieldAlt, FaMoneyBillWave, FaHeadset } from 'react-icons/fa';
+import { FaLeaf, FaRegClock, FaShieldAlt, FaMoneyBillWave, FaHeadset } from 'react-icons/fa';
+import '../styles/x_app.css'
 
 function WhyUs() {
     const features = [
@@ -35,16 +36,12 @@ function WhyUs() {
             <div className="a_header_container">
                 <div className="x_why_header text-center">
                     <h5 className="x_testimonial_subtitle">Why Choose Us</h5>
-                    
-                    <h2 className="x_testimonial_title">
-                       Find Reasons to Choose Us
-                    </h2>
+                    <h2 className="x_testimonial_title">Find Reasons to Choose Us</h2>
                 </div>
-                
-                <div className="x_why_features">
+                <div className="x_why_features x_whyus-modern">
                     {features.map((feature, index) => (
-                        <div key={index} className="x_feature_card">
-                            <div className="x_feature_icon">
+                        <div key={index} className="x_feature_card x_feature_card_modern">
+                            <div className="x_feature_icon_wrap">
                                 {feature.icon}
                             </div>
                             <h3 className="x_feature_title">{feature.title}</h3>
