@@ -84,6 +84,7 @@ button:focus,
   color: #666;
   cursor: pointer;
   text-decoration: none;
+  text-wrap: nowrap !important;
 }
 
 .a_garden-fresh-grid {

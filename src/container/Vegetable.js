@@ -728,7 +728,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                     <button className="z_filter-btn" onClick={handleFilterOpen}>
                         <span className="z_filter-icon"><HiOutlineAdjustmentsHorizontal /></span> Filter
                     </button>
-                    <div className="z_sort-dropdown">
+                    <div className="z_sort-dropdown" style={{ position: 'relative',display:'inline-block' }}>
                         <select
                             className="z_sort-select"
                             value={selectedSort}
