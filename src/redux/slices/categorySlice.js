@@ -19,7 +19,16 @@ export const fetchCategories = createAsyncThunk(
       
       return data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      console.error('Failed to load categories:', error);
+      if (
+        error.response.data.message == 'Failed to load categories. Please try again.' ||
+        error.message == 'jwt expired' // add any other auth errors you want to handle
+      ) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        dispatch(userLogout());
+      }
+      return rejectWithValue(error.response.data.message);
     }
   }
 );

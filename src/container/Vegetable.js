@@ -614,7 +614,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
 
 
     return (
-        <>
+        <div className='z_main_off'>
             <section className="Z_banner z_sm_db">
                 <Container>
                     <Row className="justify-content-end">
@@ -1144,7 +1144,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                     </Modal>
                 </div>
             </div >
-        </>
+        </div>
     );
 }
 

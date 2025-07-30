@@ -423,3 +423,8 @@ button:focus,
     height: 373px;
   }
 }
+@media screen and (max-width: 375px) {
+.a_garden-fresh {
+    padding: 0rem;
+  }
+}

@@ -353,3 +353,18 @@
     text-align: center;
   }
 }
+
+
+@media (max-width: 374px) {
+.a_quantity-controls {
+    padding: 0rem;
+}
+
+.a_add-to-cart-btn {
+    padding: 0.5rem 1.5rem;
+}
+
+.a_quantity-btn {
+    padding: 0 0.5rem;
+}
+}

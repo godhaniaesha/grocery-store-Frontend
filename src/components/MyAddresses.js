@@ -144,7 +144,7 @@ const MyAddresses = () => {
           <Button
             variant="success"
             onClick={() => setShowAddModal(true)}
-            className="mt-3 add-new-btn"
+            className="add-new-btn"
             style={{ backgroundColor: '#2c6145', borderColor: '#2c6145' }}
           >
             Add New Address
@@ -190,10 +190,10 @@ const MyAddresses = () => {
                   </div>
                   <div className="action-buttons">
                     <button className="btn-delete" onClick={() => handleDeleteClick(address)}>
-                      <FaTrash /> Delete
+                      <FaTrash />
                     </button>
                     <button className="btn-edit" onClick={() => handleEdit(address)}>
-                      <FaEdit /> Edit
+                      <FaEdit />
                     </button>
                   </div>
                 </div>

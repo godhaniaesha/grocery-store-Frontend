@@ -143,6 +143,15 @@
     font-size: 40px !important;
   }
 }
+@media only screen and (max-width: 768px) {
+   
+  .z_modal-product-img {
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  max-height: 300px !important ;
+  object-fit: fill !important;
+}
+}
 
 @media only screen and (max-width: 768px) {
   .Z_slider-content {
@@ -164,6 +173,12 @@
   .Z_mySwiper .slider-item img {
     height: 100%;
   }
+  .z_modal-product-img {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  max-height: 300px !important;
+  object-fit: fill !important;
+}
 }
 
 @media only screen and (max-width: 576px) {
@@ -1365,6 +1380,22 @@
     margin: auto;
     margin-bottom: 10px !important;
   }
+  .z_modal-quantity-container{
+    display: block !important;
+  }
+  .z_modal-content{
+    padding: 1rem !important;
+    font-size: small;
+  }
+  .z_modal-quantity-selector{
+    justify-content: center;
+        width: 100% !important;
+
+  }
+  .z_modal-add-cart-btn {
+    width: 100% !important;
+    margin-top: 10px !important;
+  }
 }
 
 /* vegitable.js fisrt banner */
@@ -2257,6 +2288,9 @@
   object-fit: cover;
 }
 
+.z_modal-product-img , .modal-img-wrapper {
+  height: 100% !important;
+}
 .z_modal-discount-badge {
   position: absolute;
   top: 10px;
@@ -2497,6 +2531,10 @@
     padding: 0rem;
     text-align: left !important;
   }
+  .z_modal-content {
+    padding: 1rem;
+    font-size: small;
+}
 }
 
 @media (max-width: 576px) {

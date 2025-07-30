@@ -88,7 +88,8 @@ const adminRoute = [
       </ProtectedRoute>
     }
   >
-    <Route path="dashboard" element={<Dashboard />} />
+    {/* <Route path="dashboard" element={<Dashboard />} /> */}
+    <Route path="home" element={<Home />} />
     <Route path="profile" element={<Profile />} />
     <Route path="product" element={<Product />} />
     <Route path="order" element={<Order />} />
@@ -100,7 +101,6 @@ const adminRoute = [
     <Route path="view-order/:id" element={<ViewOrder />} />
     <Route path="view-order-rejected" element={<ViewOrderRejected />} />
     <Route path="view-order-history-panding/:id" element={<ViewOrderHistoryPanding />} />
-    <Route path="home" element={<Home />} />
     <Route path="addinventory" element={<AddInventory />} />
     <Route path="editinventory/:id" element={<EditInventory />} />
     <Route path="viewinventory/:id" element={<ViewInventory />} />

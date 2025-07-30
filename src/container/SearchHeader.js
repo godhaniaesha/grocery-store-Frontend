@@ -424,7 +424,12 @@ export default function SearchHeader() {
       setSearchQuery(savedQuery);
     }
   }, []);
-
+  const auth = useSelector(state => state.auth);
+useEffect(() => {
+    if (!auth.token) { // or use your own logout state
+      navigate('/main');
+    }
+  }, [auth.token, navigate]);
   return (
     <>
       <header className="sticky-top shadow-sm" style={{ "backgroundColor": "#2c6145" }}>

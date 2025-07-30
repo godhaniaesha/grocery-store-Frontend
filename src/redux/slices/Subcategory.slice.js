@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { userLogout } from './Auth.slice'; // import your logout thunk
+
 
 // Create Subcategory Action
 export const createSubcategory = createAsyncThunk(
@@ -38,8 +40,20 @@ export const getAllSubcategories = createAsyncThunk(
       console.log('Subcategory API Response:', response.data.data);
       return response.data.data;
     } catch (error) {
-      console.error('Subcategory API Error:', error);
-      throw error.response?.data || error.message;
+      console.error('Subcategory API Error:', error.response.data.message);
+      // If error message matches, clear localStorage and logout
+      if (
+        error.response.data.message == 'invalid signature' ||
+        error.response.data.message === 'jwt expired' || 
+        error.response.data.message === 'invalid token'
+      ) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        dispatch(userLogout());
+        //  navigate('/main'); 
+      }
+      return rejectWithValue(error.message);
+    
     }
   }
 );
