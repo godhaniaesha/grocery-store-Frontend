@@ -815,7 +815,7 @@ useEffect(() => {
                                   value={values.password} onChange={handleChange} onBlur={handleBlur}
                                 />
                                 <span className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
-                                  {showPassword ? <IoIosEyeOff size={22} /> : <IoIosEye size={22} />}
+                                  {showPassword ? <IoIosEye size={22} /> : <IoIosEyeOff  size={22} />}
                                 </span>
                                 {errors.password && touched.password && (<div className="error-message">{errors.password}</div>)}
                               </div>
@@ -1010,7 +1010,7 @@ useEffect(() => {
                                   value={values.password} onChange={handleChange} onBlur={handleBlur}
                                 />
                                 <span className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
-                                  {showPassword ? <IoIosEyeOff size={22} /> : <IoIosEye size={22} />}
+                                  {showPassword ? <IoIosEye size={22} /> : <IoIosEyeOff size={22} />}
                                 </span>
                                 {errors.password && touched.password && (<div className="error-message">{errors.password}</div>)}
                               </div>

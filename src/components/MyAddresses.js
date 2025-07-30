@@ -75,13 +75,13 @@ const MyAddresses = () => {
   const confirmDelete = async () => {
     try {
       await dispatch(deleteAddress(addressToDelete._id)).unwrap();
-      
+
       // Immediately remove from local state for instant UI update
       setLocalAddresses(prev => prev.filter(addr => addr._id !== addressToDelete._id));
-      
+
       setShowDeleteModal(false);
       setAddressToDelete(null);
-      
+
       // Optional: Refresh from server to ensure consistency
       // dispatch(getUserAddresses());
     } catch (error) {
@@ -99,75 +99,75 @@ const MyAddresses = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    
+
     // Validation
     const errors = {};
-    
+
     if (!selectedAddress.saveAddressAs?.trim()) {
       errors.saveAddressAs = 'Address type is required';
     }
-    
+
     if (!selectedAddress.firstName?.trim()) {
       errors.firstName = 'First name is required';
     }
-    
+
     if (!selectedAddress.lastName?.trim()) {
       errors.lastName = 'Last name is required';
     }
-    
+
     if (!selectedAddress.phone?.trim()) {
       errors.phone = 'Phone number is required';
     } else if (!/^[\+]?[1-9][\d]{0,15}$/.test(selectedAddress.phone.replace(/\s/g, ''))) {
       errors.phone = 'Please enter a valid phone number';
     }
-    
+
     if (!selectedAddress.email?.trim()) {
       errors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(selectedAddress.email)) {
       errors.email = 'Please enter a valid email address';
     }
-    
+
     if (!selectedAddress.address1?.trim()) {
       errors.address1 = 'Address line 1 is required';
     }
-    
+
     if (!selectedAddress.city?.trim()) {
       errors.city = 'City is required';
     }
-    
+
     if (!selectedAddress.state?.trim()) {
       errors.state = 'State is required';
     }
-    
+
     if (!selectedAddress.country?.trim()) {
       errors.country = 'Country is required';
     }
-    
+
     if (!selectedAddress.postalCode?.trim()) {
       errors.postalCode = 'Postal code is required';
     } else if (!/^[A-Za-z0-9\s-]{3,10}$/.test(selectedAddress.postalCode)) {
       errors.postalCode = 'Please enter a valid postal code';
     }
-    
+
     // If there are validation errors, don't proceed
     if (Object.keys(errors).length > 0) {
       setEditErrors(errors);
       return;
     }
-    
+
     try {
       const result = await dispatch(updateAddress({
         addressId: selectedAddress._id,
         addressData: selectedAddress
       })).unwrap();
-      
+
       // Update local state immediately
-      setLocalAddresses(prev => 
-        prev.map(addr => 
+      setLocalAddresses(prev =>
+        prev.map(addr =>
           addr._id === selectedAddress._id ? { ...addr, ...selectedAddress } : addr
         )
       );
-      
+
       setShowEditModal(false);
       setEditErrors({});
       // Optional: Refresh from server to ensure consistency
@@ -261,25 +261,25 @@ const MyAddresses = () => {
           ))
         ) : (
           <Col xs={12}>
-          <div className="db_empty_address">
-            <div className="db_empty_content">
-              <div className="db_empty_icon">
-                <FaMapMarkerAlt />
+            <div className="db_empty_address">
+              <div className="db_empty_content">
+                <div className="db_empty_icon">
+                  <FaMapMarkerAlt />
+                </div>
+                <h3>No Addresses Found</h3>
+                <p>Add your delivery address to start shopping with us</p>
+                <Button
+                  variant="success"
+                  onClick={() => setShowAddModal(true)}
+                  className="db_shop_btn"
+                  style={{ backgroundColor: '#2c6145', borderColor: '#2c6145' }}
+                >
+                  <FaMapMarkerAlt className="db_btn_icon" />
+                  Add New Address
+                </Button>
               </div>
-              <h3>No Addresses Found</h3>
-              <p>Add your delivery address to start shopping with us</p>
-              <Button
-                variant="success"
-                onClick={() => setShowAddModal(true)}
-                className="db_shop_btn"
-                style={{ backgroundColor: '#2c6145', borderColor: '#2c6145' }}
-              >
-                <FaMapMarkerAlt className="db_btn_icon" />
-                Add New Address
-              </Button>
             </div>
-          </div>
-        </Col>
+          </Col>
         )}
       </Row>
 
@@ -635,7 +635,7 @@ const MyAddresses = () => {
           </Form>
         </Modal.Body>
       </Modal>
-      
+
 
       <style jsx>{`
         .address-box {
@@ -742,8 +742,8 @@ const MyAddresses = () => {
           display: flex;
           align-items: center;
           gap: 6px;
-          padding: 6px 12px;
-          border-radius: 8px;
+          padding: 12px 12px;
+          border-radius: 4px;
           border: none;
           font-weight: 500;
           cursor: pointer;
