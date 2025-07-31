@@ -1053,28 +1053,6 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                                 <span className="z_current-price">{product.price}</span>
                                                 <span className="z_original-price">{product.discountPrice}</span>
                                             </div>
-                                            {/* <div className="z_add-to-cart-container">
-                                                {productQuantities[product.name] ? (
-                                                    <div className="z_add-button added">
-                                                        <button onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleQuantityChange(product, -1);
-                                                        }}>-</button>
-                                                        <span>{productQuantities[product.name]}</span>
-                                                        <button onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleQuantityChange(product, 1);
-                                                        }}>+</button>
-                                                    </div>
-                                                ) : (
-                                                    <button
-                                                        className="z_add-button"
-                                                        onClick={(e) => { e.stopPropagation(); handleQuantityChange(product, 1); }}
-                                                    >
-                                                        ADD
-                                                    </button>
-                                                )}
-                                            </div> */}
                                         </Card.Body>
                                     </Card>
                                 </div>

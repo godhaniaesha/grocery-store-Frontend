@@ -770,7 +770,7 @@ export default function AddcartDesign() {
                   border: "1px solid #e0e0e0"
                 }}
               >
-                <table className="table align-middle table-hover">
+                <table className="table align-middle table-hover mb-0">
                   <thead>
                     <tr className="bg-light">
                       <th scope="col" className="fw-bold py-3 ps-4" style={{ width: "40%", minWidth: "300px", borderBottom: "2px solid #2c6145" }}>Products</th>
@@ -781,126 +781,136 @@ export default function AddcartDesign() {
                   </thead>
                   <tbody>
                     {cartItems.length > 0 ? (
-                     
-                        cartItems.map((item) => {
-                          const product = item.productData?.[0];
-                          const variant = item.productVarientData?.[0];
 
-                          return (
-                            <tr
-                              key={item._id}
-                              className="border-bottom"
-                              style={{ transition: "all 0.2s" }}
+                      cartItems.map((item) => {
+                        const product = item.productData?.[0];
+                        const variant = item.productVarientData?.[0];
+
+                        return (
+                          <tr
+                            key={item._id}
+                            className="border-bottom"
+                            style={{ transition: "all 0.2s" }}
+                          >
+                            <td
+                              className="py-3 ps-4"
+                              style={{ minWidth: "200px" }}
                             >
-                              <td
-                                className="py-3 ps-4"
-                                style={{ minWidth: "200px" }}
-                              >
-                                <div className="d-flex align-items-center gap-3">
-                                  <div className="position-relative" style={{
-                                    width: "60px", // Small size (Changed from: નાની સાઈઝ)
-                                    height: "60px", // Square shape with equal height and width (Changed from: ચોરસ આકાર માટે સરખી height અને width)
-                                    borderRadius: "8px",
-                                    overflow: "hidden",
-                                    border: "1px solid #e0e0e0"
-                                  }}>
-                                    <img
-                                      src={`http://localhost:4000/${product?.images[0]}`}
-                                      alt={product?.productName}
-                                      className="img-fluid"
-                                      style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "cover",
-                                      }}
-                                    />
-                                  </div>
-                                  <div>
-                                    <h6
-                                      className="mb-1 fw-semibold"
-                                      style={{ cursor: "pointer" }}
-                                      onClick={() => {
-                                        localStorage.setItem(
-                                          "selectedProductId",
-                                          product.id
-                                        );
-                                        navigate(`/product-details/${product.id}`);
-                                      }}
-                                    >
-                                      {product?.productName}
-                                    </h6>
-                                    <span className="badge bg-light text-dark border">
-                                      {variant?.size || "Size"}
-                                    </span>
-                                  </div>
-                                </div>
-                              </td>
-                              <td
-                                className="text-center align-middle"
-                                style={{ minWidth: "80px" }}
-                              >
-                                <span className="fw-semibold">
-                                  {formatPrice(variant?.price)}
-                                </span>
-                              </td>
-                              <td
-                                className="text-center align-middle"
-                                style={{ minWidth: "120px" }}
-                              >
-                                <div className="d-flex align-items-center justify-content-center gap-2">
-                                  <button
-                                    className="btn btn-sm btn-outline-secondary rounded-circle p-md-1  x_btn_inc"
-                                    onClick={() =>
-                                      updateQuantity(item._id, "decrease")
-                                    }
-                                    style={{ width: "32px", height: "32px" }}
-                                  >
-                                    <p className='x_mar_b mb-1 mb-md-0'> <Minus size={16} /></p>
-                                  </button>
-                                  <input
-                                    type="text"
-                                    className="form-control text-center px-2 x_in_man"
-                                    style={{ maxWidth: "50px" }}
-                                    value={item.quantity}
-                                    readOnly
+                              <div className="d-flex align-items-center gap-3">
+                                <div className="position-relative" style={{
+                                  width: "60px", // Small size (Changed from: નાની સાઈઝ)
+                                  height: "60px", // Square shape with equal height and width (Changed from: ચોરસ આકાર માટે સરખી height અને width)
+                                  borderRadius: "8px",
+                                  overflow: "hidden",
+                                  border: "1px solid #e0e0e0"
+                                }}>
+                                  <img
+                                    src={`http://localhost:4000/${product?.images[0]}`}
+                                    alt={product?.productName}
+                                    className="img-fluid"
+                                    style={{
+                                      width: "100%",
+                                      height: "100%",
+                                      objectFit: "cover",
+                                    }}
                                   />
-                                  <button
-                                    className="btn btn-sm btn-outline-secondary rounded-circle p-md-1 x_btn_inc"
-                                    onClick={() =>
-                                      updateQuantity(item._id, "increase")
-                                    }
-                                    style={{ width: "32px", height: "32px" }}
-                                  >
-                                    <p className='x_mar_b mb-1 mb-md-0'> <Plus size={16} /></p>
-                                  </button>
                                 </div>
-                              </td>
-                              <td
-                                className="text-end align-middle pe-4"
-                                style={{ minWidth: "100px" }}
-                              >
-                                <div className="d-flex justify-content-end align-items-center gap-3">
-                                  <span className="fw-semibold">
-                                    {formatPrice(variant?.price * item.quantity)}
+                                <div>
+                                  <h6
+                                    className="mb-1 fw-semibold"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => {
+                                      localStorage.setItem(
+                                        "selectedProductId",
+                                        product.id
+                                      );
+                                      navigate(`/product-details/${product.id}`);
+                                    }}
+                                  >
+                                    {product?.productName}
+                                  </h6>
+                                  <span className="badge bg-light text-dark border">
+                                    {variant?.size || "Size"}
                                   </span>
-                                  <button
-                                    className="btn btn-sm btn-outline-danger rounded-circle p-1 x_del_btn"
-                                    onClick={() => removeItem(item._id)}
-                                    style={{ width: "32px", height: "32px" }}
-                                  >
-                                    <X size={16} />
-                                  </button>
                                 </div>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      
+                              </div>
+                            </td>
+                            <td
+                              className="text-center align-middle"
+                              style={{ minWidth: "80px" }}
+                            >
+                              <span className="fw-semibold">
+                                {formatPrice(variant?.price)}
+                              </span>
+                            </td>
+                            <td
+                              className="text-center align-middle"
+                              style={{ minWidth: "120px" }}
+                            >
+                              <div className="d-flex align-items-center justify-content-center gap-2">
+                                <button
+                                  className="btn btn-sm btn-outline-secondary rounded-circle p-md-1  x_btn_inc"
+                                  onClick={() =>
+                                    updateQuantity(item._id, "decrease")
+                                  }
+                                  style={{ width: "32px", height: "32px" }}
+                                >
+                                  <p className='x_mar_b mb-1 mb-md-0'> <Minus size={16} /></p>
+                                </button>
+                                <input
+                                  type="text"
+                                  className="form-control text-center px-2 x_in_man"
+                                  style={{ maxWidth: "50px" }}
+                                  value={item.quantity}
+                                  readOnly
+                                />
+                                <button
+                                  className="btn btn-sm btn-outline-secondary rounded-circle p-md-1 x_btn_inc"
+                                  onClick={() =>
+                                    updateQuantity(item._id, "increase")
+                                  }
+                                  style={{ width: "32px", height: "32px" }}
+                                >
+                                  <p className='x_mar_b mb-1 mb-md-0'> <Plus size={16} /></p>
+                                </button>
+                              </div>
+                            </td>
+                            <td
+                              className="text-end align-middle pe-4"
+                              style={{ minWidth: "100px" }}
+                            >
+                              <div className="d-flex justify-content-end align-items-center gap-3">
+                                <span className="fw-semibold">
+                                  {formatPrice(variant?.price * item.quantity)}
+                                </span>
+                                <button
+                                  className="btn btn-sm btn-outline-danger rounded-circle p-1 x_del_btn"
+                                  onClick={() => removeItem(item._id)}
+                                  style={{ width: "32px", height: "32px" }}
+                                >
+                                  <X size={16} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+
                     ) : (
                       <tr>
-                        <td colSpan="4" className="text-center py-5">
+                        <td colSpan="4" className="text-center py-4">
                           <div className="d-flex flex-column align-items-center">
-                           
+                            {/* SVG Illustration for Empty Cart */}
+                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <rect x="32" y="48" width="56" height="30" rx="8" fill="#E0F2F1" stroke="#2c6145" strokeWidth="2" />
+                              <path d="M45 58C46 56 48 55 50 56" stroke="#2c6145" strokeWidth="1.2" />
+                              <path d="M70 58C69 56 67 55 65 56" stroke="#2c6145" strokeWidth="1.2" />
+                              <path d="M52 66C55 68 65 68 68 66" stroke="#2c6145" strokeWidth="1.5" />
+                              <circle cx="48" cy="82" r="5" fill="#2c6145" fillOpacity="0.18" stroke="#2c6145" strokeWidth="1.5" />
+                              <circle cx="72" cy="82" r="5" fill="#2c6145" fillOpacity="0.18" stroke="#2c6145" strokeWidth="1.5" />
+                            </svg>
+
+
                             <h5 className="mb-3">Your cart is empty</h5>
                             <p className="text-muted mb-4">Looks like you haven't added any items to your cart yet.</p>
                             <button
