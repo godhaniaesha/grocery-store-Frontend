@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { fetchProducts } from '../redux/slices/product.Slice';
 import { fetchProductVariants } from '../redux/slices/productVeriant.Slice';
 import { selectCurrency, selectCurrencySymbol, convertPrice } from '../redux/slices/currency.Slice';
@@ -22,7 +22,7 @@ import {
     GiMeat,
     GiFruitBowl,
 } from "react-icons/gi";
-import { FaWineBottle } from "react-icons/fa";
+import { FaChevronDown, FaWineBottle } from "react-icons/fa";
 // Import Swiper
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
@@ -120,6 +120,17 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
     const [productQuantities, setProductQuantities] = useState({});
     // const [selectedCategory, setSelectedCategory] = useState(null);
     // console.log("Selected selectedDiscount ID:", selectedDiscount);
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.hash === "#scroll-category") {
+            const section = document.getElementById("category-section");
+            if (section) {
+                section.scrollIntoView({ behavior: "smooth" });
+            }
+        }
+    }, [location]);
+
     const convertPriceValue = (amount) => {
         if (!amount || isNaN(amount)) return 0;
 
@@ -642,11 +653,11 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                                 <div className="Z_banner_content text-end">
                                     <h2>Premium Grocery Store</h2>
                                     <p>Discover our selection of high-quality nuts, dried fruits, seeds, spices, and grains</p>
-                                    <Link to="/Vegetable" className="order-now-btn">
-                                        Order Now
-                                        <span>
-                                            <FaChevronRight />
-                                        </span>
+                                    <Link to="/Vegetable#scroll-category" className="order-now-btn">
+                                        Scroll Down
+                                        {/* <span>
+                                            <FaChevronDown />
+                                        </span> */}
                                     </Link>
                                 </div>
                             </Col>
@@ -655,7 +666,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                 </section>
 
                 {/* Modify category slider */}
-                <section className="z_category-slider-section">
+                <section className="z_category-slider-section" id="category-section">
                     <div>
                         <div className="z_section-header mb-4">
                             <h3 className="z_section-title">Category</h3>
@@ -728,7 +739,7 @@ function Vegetable({ setIsProductDetailPage, setSelectedProductId, setIsVegetabl
                     <button className="z_filter-btn" onClick={handleFilterOpen}>
                         <span className="z_filter-icon"><HiOutlineAdjustmentsHorizontal /></span> Filter
                     </button>
-                    <div className="z_sort-dropdown" style={{ position: 'relative',display:'inline-block' }}>
+                    <div className="z_sort-dropdown" style={{ position: 'relative', display: 'inline-block' }}>
                         <select
                             className="z_sort-select"
                             value={selectedSort}
