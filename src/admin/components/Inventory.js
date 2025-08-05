@@ -147,7 +147,7 @@ function Inventory() {
                     <div className="sp_table_img">
                       <img
                         src={`http://localhost:4000/${item.productData?.[0]?.images?.[0]}`}
-                        alt="Product"
+                        
                       />
                     </div>
                     {item.productData?.[0]?.productName}

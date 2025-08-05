@@ -1442,11 +1442,11 @@
   padding: 20px;
   z-index: 1000;
   /* width: 100rem; */
-  max-width: 100rem;
+  max-width: 82%;
   display: flex;
   /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
   gap: 24px;
-  overflow-x: scroll;
+  overflow-x: auto;
   max-height: 80vh;
   overflow-y: auto;
   scrollbar-width: thin;

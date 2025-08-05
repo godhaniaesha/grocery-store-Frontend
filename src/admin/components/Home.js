@@ -502,18 +502,18 @@ const Home = () => {
             Recent Order
           </h4>
           <div className="sp_table d-flex justify-content-between flex-column mt-0 mb-3" style={{minHeight :"auto"}} >
-            <table >
-              <thead>
-                <tr>
-                  <th style={{ backgroundColor: "#eaf0ea" }}>Order ID</th>
-                  <th style={{ backgroundColor: "#eaf0ea" }}>Customer name</th>
-                  <th style={{ backgroundColor: "#eaf0ea" }}>Date & Time</th>
-                  <th style={{ backgroundColor: "#eaf0ea" }}>Payment Method</th>
-                  <th style={{ backgroundColor: "#eaf0ea" }}>Amount</th>
-                  <th style={{ backgroundColor: "#eaf0ea" }}>Order Status</th>
+            <table className="text-center" >
+              <thead >
+                <tr className="text-center">
+                  <th className="text-center" style={{ backgroundColor: "#eaf0ea" }}>Order ID</th>
+                  <th className="text-center" style={{ backgroundColor: "#eaf0ea" }}>Customer name</th>
+                  <th className="text-center" style={{ backgroundColor: "#eaf0ea" }}>Date & Time</th>
+                  <th className="text-center" style={{ backgroundColor: "#eaf0ea" }}>Payment Method</th>
+                  <th className="text-center" style={{ backgroundColor: "#eaf0ea" }}>Amount</th>
+                  <th className="text-center" style={{ backgroundColor: "#eaf0ea" }}>Order Status</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="text-center">
                 {sellerData?.data?.slice(0, 10).map((sellerData, index) => {
                   let orderColor;
                   if (sellerData.orderStatus == "Pending") {
@@ -536,15 +536,15 @@ const Home = () => {
                   }
                   return (
                     <tr key={sellerData._id.sellerData}>
-                      <td>{index + 1}</td>
-                      <td>
+                      <td className="text-center">{index + 1}</td>
+                      <td className="text-center">
                         {(sellerData.useraddress?.firstName || "")}{" "}
                         {(sellerData.useraddress?.lastName || "")}
                       </td>
-                      <td>{formattedDate(sellerData.createdAt) || ""}</td>
-                      <td>{sellerData.paymentMethod || ""}</td>
-                      <td>${sellerData.totalPrice || ""}</td>
-                      <td>
+                      <td className="text-center">{formattedDate(sellerData.createdAt) || ""}</td>
+                      <td className="text-center">{sellerData.paymentMethod || ""}</td>
+                      <td className="text-center">${sellerData.totalPrice || ""}</td>
+                      <td className="text-center">
                         <span className={`${orderColor} ustatus`}>
                           {sellerData.orderStatus || ""}
                         </span>

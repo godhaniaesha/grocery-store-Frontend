@@ -265,7 +265,7 @@ function OrderHistory() {
                     </td>
                     <td>
                       {order?.paymentStatus ? (
-                        <div className={`${dt}`} style={{ width: "100px" }}>
+                        <div className={`${dt} mx-auto`} style={{ width: "100px" }}>
                           {order?.paymentStatus || "-"}
                         </div>
                       ) : (

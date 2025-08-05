@@ -491,7 +491,7 @@ function Payment() {
                       </td>
                       <td>
                         <div
-                          className={`sp_btn_${payment.paymentStatus?.toLowerCase()} text-center`}
+                          className={`sp_btn_${payment.paymentStatus?.toLowerCase()} text-center mx-auto`}
                           style={{ width: "100px" }}
                         >
                           {payment.paymentStatus || "-"}

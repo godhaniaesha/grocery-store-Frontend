@@ -255,6 +255,7 @@
   background-color: #eaf0ea!important;
   padding: 10px 20px;
   text-wrap: nowrap;
+  text-align: center;
   color: #2c6145;
   text-transform: capitalize;
 }
@@ -268,7 +269,7 @@
 }
 
 .sp_table td {
-  text-align: left;
+  text-align: center;
   padding: 10px 20px;
   border: none;
   text-wrap: nowrap;

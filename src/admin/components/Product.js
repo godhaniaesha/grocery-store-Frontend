@@ -234,7 +234,7 @@ function Product() {
                                     <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                     <td className="d-flex align-items-center">
                                         <div className="sp_table_img">
-                                            <img src={'http://localhost:4000/' + ele?.image} alt="Product" />
+                                            <img src={'http://localhost:4000/' + ele?.image}  />
                                         </div>
                                         {ele?.productName}
                                     </td>
